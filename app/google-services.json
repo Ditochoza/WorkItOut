@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "262450417310",
+    "project_id": "workitout-pad",
+    "storage_bucket": "workitout-pad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:262450417310:android:a45cf84ca7375f6494758f",
+        "android_client_info": {
+          "package_name": "es.ucm.fdi.workitout"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "262450417310-k0b5eru6khbqc9cmpvh6mpod8qhh8sgj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLwfeAihl0emeDnog9Er1wu1iHo1srtnU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "262450417310-k0b5eru6khbqc9cmpvh6mpod8qhh8sgj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
