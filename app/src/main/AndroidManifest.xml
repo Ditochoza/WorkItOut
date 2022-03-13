@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WorkItOut">
-        <activity android:name=".view.StartActivity"></activity>
+        <activity android:name=".view.StartActivity" />
         <activity
             android:name=".view.MainActivity"
             android:exported="true">

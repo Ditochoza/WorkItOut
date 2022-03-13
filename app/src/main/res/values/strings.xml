@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">WorkItOut</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="app_name">WorkItOut!</string>
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
-    <string name="app_icon">App Icon</string>
+    <string name="your_favorite_training_app">Your favorite training app</string>
 </resources>

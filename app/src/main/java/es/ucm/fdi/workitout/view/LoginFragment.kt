@@ -1,15 +1,31 @@
 package es.ucm.fdi.workitout.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import es.ucm.fdi.workitout.R
-class LoginFragment : Fragment() {
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import es.ucm.fdi.workitout.databinding.FragmentLoginBinding
+import es.ucm.fdi.workitout.viewModel.StartSharedViewModel
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_login, container, false)
+class LoginFragment : Fragment() {
+    private val startSharedViewModel: StartSharedViewModel by activityViewModels()
+
+    private var _binding: FragmentLoginBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        binding.sModel = startSharedViewModel
+        binding.lifecycleOwner = viewLifecycleOwner
+
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
