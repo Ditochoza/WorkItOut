@@ -19,6 +19,10 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
         Log.d("ViewModel", "2${user.value.email} ${user.value.tempPassword}")
     }
 
+    fun register(name: String, email: String, password: String, passwordValidate: String) {
+
+    }
+
     fun saveStateHandle() {
         savedStateHandle.set(::user.name, user.value)
     }

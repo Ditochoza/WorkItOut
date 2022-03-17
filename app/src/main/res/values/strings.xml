@@ -5,4 +5,8 @@
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
     <string name="your_favorite_training_app">Your favorite training app</string>
+    <string name="name">Name</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="back">Back</string>
+    <string name="register">Register</string>
 </resources>

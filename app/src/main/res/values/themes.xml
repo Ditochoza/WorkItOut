@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="Theme.WorkItOut" parent="Theme.Material3.Light.NoActionBar">
+    <style name="BaseAppTheme.WorkItOut" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/md_theme_light_primary</item>
         <item name="colorOnPrimary">@color/md_theme_light_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_light_primaryContainer</item>
@@ -32,4 +32,5 @@
         -->
         <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
     </style>
+    <style name="AppTheme.WorkItOut" parent="BaseAppTheme.WorkItOut"/>
 </resources>
