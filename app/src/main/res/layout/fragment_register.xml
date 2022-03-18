@@ -138,7 +138,7 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
-                android:onClick="@{() -> sModel.register(etName.getText().toString(),etEmail.getText().toString(), etPassword.getText().toString(),etPasswordValidate.getText().toString())}"
+                android:onClick="@{() -> registerFrag.signUp()}"
                 android:text="@string/register" />
 
         </LinearLayout>
