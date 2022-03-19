@@ -42,11 +42,13 @@
                 android:hint="@string/name"
                 app:errorEnabled="true">
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
+                    android:afterTextChanged="@{() -> sModel.clearErrors(tilName)}"
                     android:text="@={sModel.user.value.name}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -60,11 +62,13 @@
                 android:hint="@string/email_address"
                 app:errorEnabled="true">
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
+                    android:afterTextChanged="@{() -> sModel.clearErrors(tilEmail)}"
                     android:text="@={sModel.user.value.email}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -79,11 +83,13 @@
                 app:passwordToggleEnabled="true"
                 app:errorEnabled="true">
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:afterTextChanged="@{() -> sModel.clearErrors(tilPassword)}"
                     android:text="@={sModel.user.value.tempPassword}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -98,11 +104,13 @@
                 app:passwordToggleEnabled="true"
                 app:errorEnabled="true">
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_password_validate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:afterTextChanged="@{() -> sModel.clearErrors(tilPasswordValidate)}"
                     android:text="@={sModel.user.value.tempPasswordValidate}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -138,7 +146,7 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"
-                android:onClick="@{() -> registerFrag.signUp()}"
+                android:onClick="@{() -> sModel.register(tilName, tilEmail, tilPassword, tilPasswordValidate)}"
                 android:text="@string/register" />
 
         </LinearLayout>

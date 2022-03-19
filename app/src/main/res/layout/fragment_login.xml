@@ -62,11 +62,13 @@
                 android:hint="@string/email_address"
                 app:errorEnabled="true">
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
+                    android:afterTextChanged="@{() -> sModel.clearErrors(tilEmail)}"
                     android:text="@={sModel.user.value.email}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -81,11 +83,13 @@
                 app:passwordToggleEnabled="true"
                 app:errorEnabled="true">
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/et_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
+                    android:afterTextChanged="@{() -> sModel.clearErrors(tilPassword)}"
                     android:text="@={sModel.user.value.tempPassword}"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -120,7 +124,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:onClick="@{() -> sModel.getLoginCredentials(etEmail.getText().toString(), etPassword.getText().toString())}"
+                    android:onClick="@{() -> sModel.login(tilEmail, tilPassword)}"
                     android:text="@string/login" />
 
                 <com.google.android.material.button.MaterialButton
