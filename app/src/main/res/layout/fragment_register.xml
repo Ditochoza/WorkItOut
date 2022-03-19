@@ -15,12 +15,13 @@
         android:layout_marginHorizontal="24dp">
 
         <ImageView
-            android:layout_width="125dp"
-            android:layout_height="125dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@id/ll_form"
+            android:contentDescription="@string/profile_icon"
             app:srcCompat="@drawable/ic_round_person_24"/>
 
         <LinearLayout
@@ -38,6 +39,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:autofillHints="@string/name"
                 android:hint="@string/name"
                 app:errorEnabled="true">
@@ -58,6 +60,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:autofillHints="@string/email_address"
                 android:hint="@string/email_address"
                 app:errorEnabled="true">
@@ -78,6 +81,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/password"
                 android:autofillHints="@string/password"
                 app:passwordToggleEnabled="true"
@@ -99,6 +103,7 @@
                 style="?attr/textInputFilledStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/repeat_password"
                 android:autofillHints="@string/repeat_password"
                 app:passwordToggleEnabled="true"
@@ -134,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="8dp"
                 android:onClick="@{() -> registerFrag.goBack()}"
                 android:text="@string/back" />
 
@@ -145,11 +150,21 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
-                android:layout_marginStart="4dp"
-                android:onClick="@{() -> sModel.register(tilName, tilEmail, tilPassword, tilPasswordValidate)}"
+                android:layout_marginStart="8dp"
+                android:onClick="@{() -> sModel.register(pBar, tilName, tilEmail, tilPassword, tilPasswordValidate)}"
                 android:text="@string/register" />
 
         </LinearLayout>
 
+        <ProgressBar
+            android:id="@+id/p_Bar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

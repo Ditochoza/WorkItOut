@@ -9,4 +9,16 @@
     <string name="repeat_password">Repeat Password</string>
     <string name="back">Back</string>
     <string name="register">Register</string>
+    <string name="too_many_attempts_try_again_later_exception">Too many failed attempts. Try again later</string>
+    <string name="invalid_user_login_exception">There is no account associated with this email</string>
+    <string name="invalid_password_exception">Password is not correct</string>
+    <string name="error_login">Failed to login</string>
+    <string name="existing_user_login_exception">There is already an account associated with this email</string>
+    <string name="invalid_email">Email address is not valid</string>
+    <string name="register_error">Failed to sign up</string>
+    <string name="field_not_empty">This field cannot be empty</string>
+    <string name="short_password">Password must be at least 8 characters long</string>
+    <string name="passwords_not_equal">Validation password is not the same as the new password</string>
+    <string name="login_as">Logging in as %s</string>
+    <string name="profile_icon">Profile Icon</string>
 </resources>

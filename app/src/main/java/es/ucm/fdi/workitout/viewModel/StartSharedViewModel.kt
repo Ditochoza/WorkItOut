@@ -1,18 +1,17 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
-import android.util.Log
+import android.view.View
+import android.widget.ProgressBar
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
-import es.ucm.fdi.workitout.UserValidationUtil
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.UserRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import es.ucm.fdi.workitout.utils.DatabaseResult
+import es.ucm.fdi.workitout.utils.ValidationUserUtil
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class StartSharedViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
@@ -20,39 +19,55 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
 
+
+    private val _shortToastRes = MutableSharedFlow<Int>()
+    val shortToastRes: SharedFlow<Int> = _shortToastRes.asSharedFlow()
+
+    private val _navigateActionRes = MutableSharedFlow<Int>()
+    val navigateActionRes: SharedFlow<Int> = _navigateActionRes.asSharedFlow()
+
+    private val _login = MutableSharedFlow<String>()
+    val login: SharedFlow<String> = _login.asSharedFlow()
+
     private val userRepository = UserRepository()
 
-    fun getLoginCredentials(email: String, password: String) {
-        Log.d("ViewModel", "1$email $password")
-        Log.d("ViewModel", "2${user.value.email} ${user.value.tempPassword}")
-    }
-
-    fun login(tilEmail: TextInputLayout, tilPassword: TextInputLayout) {
-        val error = UserValidationUtil.validateLogin(
+    fun login(pb: ProgressBar, tilEmail: TextInputLayout, tilPassword: TextInputLayout) {
+        val error = ValidationUserUtil.validateLogin(
             user.value.email to tilEmail,
             user.value.tempPassword to tilPassword
         )
 
         if (!error) {
-            viewModelScope.launch(Dispatchers.IO) {
-                userRepository.login(user.value.email, user.value.tempPassword)
-            }
+            viewModelScope.launch {
+                pb.visibility = View.VISIBLE
+                val resultUser = userRepository.login(user.value.email, user.value.tempPassword)
+                pb.visibility = View.GONE
 
+                if (resultUser is DatabaseResult.Success) {
+                    resultUser.data?.email?.let { _login.emit(it) }
+                } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            }
         }
     }
 
-    fun register(tilName: TextInputLayout, tilEmail: TextInputLayout, tilPassword: TextInputLayout,
+    fun register(pb: ProgressBar, tilName: TextInputLayout, tilEmail: TextInputLayout, tilPassword: TextInputLayout,
                  tilPasswordValidate: TextInputLayout) {
-        val error = UserValidationUtil.validateRegister(
+        val error = ValidationUserUtil.validateRegister(
             user.value.name to tilName,
             user.value.email to tilEmail,
             user.value.tempPassword to tilPassword,
             user.value.tempPasswordValidate to tilPasswordValidate
         )
 
-        if(!error){
-            viewModelScope.launch(Dispatchers.IO) {
-                userRepository.register(user.value.name, user.value.email, user.value.tempPassword)
+        if (!error) {
+            viewModelScope.launch {
+                pb.visibility = View.VISIBLE
+                val resultUser = userRepository.register(user.value.name, user.value.email, user.value.tempPassword)
+                pb.visibility = View.GONE
+
+                if (resultUser is DatabaseResult.Success) {
+                    resultUser.data?.email?.let { _login.emit(it) }
+                } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
             }
         }
     }
