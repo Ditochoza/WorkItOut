@@ -5,6 +5,8 @@ import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 
 val LocalDateTime.dayOfWeekIndex: Int
@@ -33,3 +35,13 @@ fun LocalDateTime.toTimestamp() = Timestamp(this.atZone(ZoneId.systemDefault()).
 
 fun Timestamp.toDateTime(): LocalDateTime =
     Instant.ofEpochSecond(this.seconds, this.nanoseconds.toLong()).atZone(ZoneId.systemDefault()).toLocalDateTime()
+
+
+/**
+ * FORMATEOS
+ */
+fun LocalDateTime.timeString(): String =
+    format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+
+fun Timestamp.timeString(): String =
+    toDateTime().timeString()
