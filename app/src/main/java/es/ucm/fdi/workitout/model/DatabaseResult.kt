@@ -1,4 +1,4 @@
-package es.ucm.fdi.workitout.utils
+package es.ucm.fdi.workitout.model
 
 sealed class DatabaseResult<T> {
     data class Success<T>(val data: T) : DatabaseResult<T>()

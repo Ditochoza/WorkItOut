@@ -6,7 +6,6 @@
 
     <data>
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.StartSharedViewModel" />
-        <variable name="registerFrag" type="es.ucm.fdi.workitout.view.RegisterFragment" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -140,7 +139,7 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="8dp"
-                android:onClick="@{() -> registerFrag.goBack()}"
+                android:onClick="@{() -> sModel.navigate(0)}"
                 android:text="@string/back" />
 
             <com.google.android.material.button.MaterialButton

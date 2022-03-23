@@ -19,14 +19,9 @@ class RegisterFragment : Fragment() {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         binding.sModel = startSharedViewModel
-        binding.registerFrag = this
         binding.lifecycleOwner = viewLifecycleOwner
 
         return binding.root
-    }
-
-    fun goBack(){
-        activity?.onBackPressed()
     }
 
     override fun onDestroyView() {

@@ -6,8 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
-import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentLoginBinding
 import es.ucm.fdi.workitout.viewModel.StartSharedViewModel
 
@@ -21,15 +19,11 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         binding.sModel = startSharedViewModel
-        binding.loginFrag = this
         binding.lifecycleOwner = viewLifecycleOwner
 
         return binding.root
     }
 
-    fun navigateToRegister(){
-        view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
-    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

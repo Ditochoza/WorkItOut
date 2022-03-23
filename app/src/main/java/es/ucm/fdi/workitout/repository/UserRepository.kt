@@ -1,11 +1,12 @@
 package es.ucm.fdi.workitout.repository
 
+import android.util.Log
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.User
-import es.ucm.fdi.workitout.utils.DatabaseResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
@@ -14,6 +15,9 @@ class UserRepository {
 
     private val auth = FirebaseAuth.getInstance()
     private val dbUsers = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_USERS)
+
+    private val currentUser: FirebaseUser?
+        get() = auth.currentUser
 
     //Se realiza el registro con el método de correo electrónico y contraseña
     suspend fun register(name: String, email: String, password: String): DatabaseResult<FirebaseUser?> {
@@ -52,4 +56,22 @@ class UserRepository {
         }
     }
 
+    //Devuelve el usuario de la base de datos asociado a un correo electrónico
+    suspend fun fetchUserByEmail(email: String): DatabaseResult<User?> {
+        return try {
+            if (email == currentUser?.email) {
+                Log.d("ASD", email)
+                withContext(Dispatchers.IO) {
+                    val documentSnapshot = dbUsers.document(email).get().await()
+                    val user = documentSnapshot.toObject(User::class.java)
+                    Log.d("ASD2", user.toString())
+                    DatabaseResult.success(user?.copy(email = documentSnapshot.id))
+                }
+            } else {
+                DatabaseResult.failed(R.string.error_fetch_user)
+            }
+        } catch (e: Exception) {
+            DatabaseResult.failed(R.string.error_fetch_user)
+        }
+    }
 }

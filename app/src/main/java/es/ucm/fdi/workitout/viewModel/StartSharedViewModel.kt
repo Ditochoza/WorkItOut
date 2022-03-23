@@ -7,14 +7,16 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
+import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.model.ValidationResult
 import es.ucm.fdi.workitout.repository.UserRepository
-import es.ucm.fdi.workitout.utils.DatabaseResult
 import es.ucm.fdi.workitout.utils.ValidationUserUtil
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class StartSharedViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
+    private val userRepository = UserRepository()
 
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
@@ -29,15 +31,13 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
     private val _login = MutableSharedFlow<String>()
     val login: SharedFlow<String> = _login.asSharedFlow()
 
-    private val userRepository = UserRepository()
-
     fun login(pb: ProgressBar, tilEmail: TextInputLayout, tilPassword: TextInputLayout) {
-        val error = ValidationUserUtil.validateLogin(
+        val result = ValidationUserUtil.validateLogin(
             user.value.email to tilEmail,
             user.value.tempPassword to tilPassword
         )
 
-        if (!error) {
+        if (result is ValidationResult.Success) {
             viewModelScope.launch {
                 pb.visibility = View.VISIBLE
                 val resultUser = userRepository.login(user.value.email, user.value.tempPassword)
@@ -52,14 +52,14 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
 
     fun register(pb: ProgressBar, tilName: TextInputLayout, tilEmail: TextInputLayout, tilPassword: TextInputLayout,
                  tilPasswordValidate: TextInputLayout) {
-        val error = ValidationUserUtil.validateRegister(
+        val result = ValidationUserUtil.validateRegister(
             user.value.name to tilName,
             user.value.email to tilEmail,
             user.value.tempPassword to tilPassword,
             user.value.tempPasswordValidate to tilPasswordValidate
         )
 
-        if (!error) {
+        if (result is ValidationResult.Success) {
             viewModelScope.launch {
                 pb.visibility = View.VISIBLE
                 val resultUser = userRepository.register(user.value.name, user.value.email, user.value.tempPassword)
@@ -70,6 +70,11 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
                 } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
             }
         }
+    }
+
+    //Emite una acción de navegación como Resource
+    fun navigate(navActionRes: Int) {
+        viewModelScope.launch { _navigateActionRes.emit(navActionRes) }
     }
 
     fun clearErrors(til: TextInputLayout) {

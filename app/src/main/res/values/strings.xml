@@ -21,4 +21,6 @@
     <string name="passwords_not_equal">Validation password is not the same as the new password</string>
     <string name="login_as">Logging in as %s</string>
     <string name="profile_icon">Profile Icon</string>
+    <string name="error_fetch_user">Failed to fetch user</string>
+    <string name="welcome_user_name">Welcome, %s</string>
 </resources>
