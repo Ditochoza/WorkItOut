@@ -25,7 +25,7 @@ class UserDataStore (val context: Context) {
         return preferences[preferenceKey] ?: ""
     }
 
-    /*suspend fun deleteUserDataStore() {
+    suspend fun deleteUserDataStore() {
         context.dataStore.edit { it.clear() }
-    }*/
+    }
 }

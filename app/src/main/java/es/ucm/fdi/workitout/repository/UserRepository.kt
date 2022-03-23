@@ -74,4 +74,9 @@ class UserRepository {
             DatabaseResult.failed(R.string.error_fetch_user)
         }
     }
+
+    //Se cierra sesión en Firebase Authentication
+    fun logout() {
+        auth.signOut()
+    }
 }

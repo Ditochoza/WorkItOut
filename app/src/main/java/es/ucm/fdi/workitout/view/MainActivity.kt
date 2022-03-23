@@ -57,9 +57,12 @@ class MainActivity : AppCompatActivity() {
         }*/
 
         //Collector para pasar al MainActivity al iniciar sesión o registrarse
-        /*mainSharedViewModel.logout.collectLatestFlow(this) {
-            launchStartActivity()
-        }*/
+        mainSharedViewModel.logout.collectLatestFlow(this) {
+            if (it) {
+                Toast.makeText(this, getString(R.string.logging_out), Toast.LENGTH_SHORT).show()
+                launchStartActivity()
+            }
+        }
     }
 
     private fun launchStartActivity() {

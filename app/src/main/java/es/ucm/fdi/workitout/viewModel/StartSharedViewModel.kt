@@ -1,8 +1,6 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
-import android.view.View
-import android.widget.ProgressBar
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope

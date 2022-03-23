@@ -32,8 +32,8 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _shortToastRes = MutableSharedFlow<Int>()
     val shortToastRes: SharedFlow<Int> = _shortToastRes.asSharedFlow()
 
-    //private val _logout = MutableSharedFlow<Boolean>()
-    //val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
+    private val _logout = MutableSharedFlow<Boolean>()
+    val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
 
 
     //Obtiene un valor del usuario de DataStore instantáneamente
@@ -69,5 +69,15 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     fun saveStateHandle() {
         savedStateHandle.set(::user.name, user.value)
+    }
+
+    //Realiza el logout de FirebaseAuth y elimina el usuario de DataStore
+    //Emite evento para lanzar StartActivity
+    fun logout() {
+        viewModelScope.launch {
+            userRepository.logout()
+            userDataStore.deleteUserDataStore()
+            _logout.emit(true)
+        }
     }
 }
