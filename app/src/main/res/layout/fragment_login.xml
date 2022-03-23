@@ -5,7 +5,9 @@
     tools:context=".view.LoginFragment">
 
     <data>
+        <import type="android.view.View" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.StartSharedViewModel" />
+        <variable name="loading" type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -124,7 +126,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:onClick="@{() -> sModel.login(pBar, tilEmail, tilPassword)}"
+                    android:onClick="@{() -> sModel.login(tilEmail, tilPassword)}"
                     android:text="@string/login" />
 
                 <com.google.android.material.button.MaterialButton
@@ -150,7 +152,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="?android:progressBarStyleLarge"
-            android:visibility="gone"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

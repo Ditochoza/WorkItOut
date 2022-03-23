@@ -22,6 +22,9 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
 
+    private val _loading = MutableStateFlow(true)
+    val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
 
     //private val _navigateActionRes = MutableSharedFlow<Int>()
     //val navigateActionRes: SharedFlow<Int> = _navigateActionRes.asSharedFlow()
@@ -48,7 +51,9 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     private suspend fun fetchUserByEmail(email: String) {
         if (email.isNotEmpty()) { //Si el usuario no es invitado
+            _loading.emit(true)
             val resultUser = userRepository.fetchUserByEmail(email)
+            _loading.emit(false)
 
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = user.value.copy(email = newUser.email, name = newUser.name)

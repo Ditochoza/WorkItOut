@@ -63,13 +63,6 @@ object ValidationUserUtil {
             )
         ) result = ValidationResult.failed()
 
-        if (tempPasswordValidate.second.tilError( /** Error si las contraseñas no coinciden */
-                (tempPassword.first.isNotEmpty() && tempPasswordValidate.first.isNotEmpty() &&
-                        tempPassword.first != tempPasswordValidate.first),
-                resError = R.string.passwords_not_equal
-            )
-        ) result = ValidationResult.failed()
-
         if (tempPassword.second.tilError( /** Error si la contraseña está vacía */
                 tempPassword.first.isEmpty(),
                 resError = R.string.field_not_empty
@@ -81,16 +74,21 @@ object ValidationUserUtil {
             )
         ) result = ValidationResult.failed()
 
-        if (tempPasswordValidate.second.tilError( /** Error si la contraseña está vacía */
+        when {
+            tempPasswordValidate.second.tilError( /** Error si la contraseña está vacía */
                 tempPasswordValidate.first.isEmpty(),
                 resError = R.string.field_not_empty
-            )
-        ) result = ValidationResult.failed()
-        else if (tempPasswordValidate.second.tilError( /** Error si la contraseña tiene menos de 8 caracteres */
+            ) -> result = ValidationResult.failed()
+            tempPasswordValidate.second.tilError( /** Error si la contraseña tiene menos de 8 caracteres */
                 (tempPasswordValidate.first.length < 8),
                 resError = R.string.short_password
-            )
-        ) result = ValidationResult.failed()
+            ) -> result = ValidationResult.failed()
+            tempPasswordValidate.second.tilError( /** Error si las contraseñas no coinciden */
+                (tempPassword.first.isNotEmpty() && tempPasswordValidate.first.isNotEmpty() &&
+                        tempPassword.first != tempPasswordValidate.first),
+                resError = R.string.passwords_not_equal
+            ) -> result = ValidationResult.failed()
+        }
 
         return result
     }

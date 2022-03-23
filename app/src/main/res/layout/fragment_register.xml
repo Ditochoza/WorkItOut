@@ -5,7 +5,9 @@
     tools:context=".view.RegisterFragment">
 
     <data>
+        <import type="android.view.View" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.StartSharedViewModel" />
+        <variable name="loading" type="Boolean" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -150,17 +152,17 @@
                 android:layout_weight="1"
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="8dp"
-                android:onClick="@{() -> sModel.register(pBar, tilName, tilEmail, tilPassword, tilPasswordValidate)}"
+                android:onClick="@{() -> sModel.register(tilName, tilEmail, tilPassword, tilPasswordValidate)}"
                 android:text="@string/register" />
 
         </LinearLayout>
 
         <ProgressBar
             android:id="@+id/p_Bar"
-            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            style="?android:progressBarStyleLarge"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone }"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import es.ucm.fdi.workitout.databinding.FragmentRegisterBinding
+import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.StartSharedViewModel
 
 class RegisterFragment : Fragment() {
@@ -19,9 +20,16 @@ class RegisterFragment : Fragment() {
         _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
         binding.sModel = startSharedViewModel
+        binding.loading = startSharedViewModel.loading.value
         binding.lifecycleOwner = viewLifecycleOwner
 
+        setupCollectors()
+
         return binding.root
+    }
+
+    private fun setupCollectors() {
+        startSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
     }
 
     override fun onDestroyView() {

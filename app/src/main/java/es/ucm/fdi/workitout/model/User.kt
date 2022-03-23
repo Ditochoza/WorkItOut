@@ -9,5 +9,6 @@ data class User (
     @get: Exclude var email: String = "",
     var name: String = "",
     @get: Exclude var tempPassword: String = "",
-    @get: Exclude var tempPasswordValidate: String = ""
+    @get: Exclude var tempPasswordValidate: String = "",
+    @get: Exclude var routinesProgrammed: ArrayList<Routine> = ArrayList(), //TODO Asegurarse que están ordenadas
 ) : Parcelable

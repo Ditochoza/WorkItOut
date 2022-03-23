@@ -21,6 +21,9 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
 
+    private val _loading = MutableStateFlow(false)
+    val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
 
     private val _shortToastRes = MutableSharedFlow<Int>()
     val shortToastRes: SharedFlow<Int> = _shortToastRes.asSharedFlow()
@@ -31,7 +34,7 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
     private val _login = MutableSharedFlow<String>()
     val login: SharedFlow<String> = _login.asSharedFlow()
 
-    fun login(pb: ProgressBar, tilEmail: TextInputLayout, tilPassword: TextInputLayout) {
+    fun login(tilEmail: TextInputLayout, tilPassword: TextInputLayout) {
         val result = ValidationUserUtil.validateLogin(
             user.value.email to tilEmail,
             user.value.tempPassword to tilPassword
@@ -39,9 +42,9 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
 
         if (result is ValidationResult.Success) {
             viewModelScope.launch {
-                pb.visibility = View.VISIBLE
+                _loading.emit(true)
                 val resultUser = userRepository.login(user.value.email, user.value.tempPassword)
-                pb.visibility = View.GONE
+                _loading.emit(false)
 
                 if (resultUser is DatabaseResult.Success) {
                     resultUser.data?.email?.let { _login.emit(it) }
@@ -50,7 +53,7 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
         }
     }
 
-    fun register(pb: ProgressBar, tilName: TextInputLayout, tilEmail: TextInputLayout, tilPassword: TextInputLayout,
+    fun register(tilName: TextInputLayout, tilEmail: TextInputLayout, tilPassword: TextInputLayout,
                  tilPasswordValidate: TextInputLayout) {
         val result = ValidationUserUtil.validateRegister(
             user.value.name to tilName,
@@ -61,9 +64,9 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
 
         if (result is ValidationResult.Success) {
             viewModelScope.launch {
-                pb.visibility = View.VISIBLE
+                _loading.emit(true)
                 val resultUser = userRepository.register(user.value.name, user.value.email, user.value.tempPassword)
-                pb.visibility = View.GONE
+                _loading.emit(false)
 
                 if (resultUser is DatabaseResult.Success) {
                     resultUser.data?.email?.let { _login.emit(it) }
