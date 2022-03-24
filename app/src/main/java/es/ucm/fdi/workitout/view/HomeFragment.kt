@@ -21,6 +21,8 @@ class HomeFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.loading = mainSharedViewModel.loading.value
+        binding.user = mainSharedViewModel.user.value
+        binding.emptyList = emptyList<String>()
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupCollectors()

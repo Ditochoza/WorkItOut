@@ -13,6 +13,6 @@ data class Routine(
     var description: String = "",
     var imageUrl: String = "",
     var muscles: List<String> = emptyList(),
-    @get: Exclude var dayOfWeekProgrammed: Int = -1,
-    @get: Exclude var timeTimestampProgrammed: Timestamp = zeroTimestamp()
+    var dayOfWeekScheduled: Int = -1,
+    var timeTimestampScheduled: Timestamp = zeroTimestamp()
 ) : Parcelable

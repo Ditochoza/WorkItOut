@@ -1,7 +1,6 @@
 package es.ucm.fdi.workitout.utils
 
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -23,8 +22,8 @@ fun ImageView.loadResource(resource: String?, diskCacheStrategy: DiskCacheStrate
 }
 
 //Se obtiene el fragment actual
-val FragmentManager.currentFragment: Fragment?
-    get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
+//val FragmentManager.currentFragment: Fragment?
+//    get() = primaryNavigationFragment?.childFragmentManager?.fragments?.first()
 
 //Se obtiene el navController para realizar la navegación
 fun FragmentManager.getNavController(container: Int): NavController? {
@@ -42,6 +41,15 @@ fun TextInputLayout.tilError(conditionError: Boolean, resError: Int): Boolean {
         false
     }
 }
+
+//Se devuelve el color del atributo
+//@ColorInt
+/*fun Context.getColorFromAttr(@AttrRes attrColor: Int): Int {
+    val typedArray = theme.obtainStyledAttributes(intArrayOf(attrColor))
+    val textColor = typedArray.getColor(0, 0)
+    typedArray.recycle()
+    return textColor
+}*/
 
 //Collector para SharedFlow
 inline fun <T> Flow<T>.collectFlow(owner: LifecycleOwner, crossinline onCollect: suspend (T) -> Unit) =

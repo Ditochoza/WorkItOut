@@ -10,5 +10,6 @@ data class User (
     var name: String = "",
     @get: Exclude var tempPassword: String = "",
     @get: Exclude var tempPasswordValidate: String = "",
-    @get: Exclude var routinesProgrammed: ArrayList<Routine> = ArrayList(), //TODO Asegurarse que están ordenadas
+    @get: Exclude var routines: List<Routine> = emptyList(),
+    @get: Exclude var routinesScheduled: List<Routine> = emptyList(),
 ) : Parcelable

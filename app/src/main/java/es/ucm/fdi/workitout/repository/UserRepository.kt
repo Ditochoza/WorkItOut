@@ -1,13 +1,15 @@
 package es.ucm.fdi.workitout.repository
 
-import android.util.Log
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
@@ -60,12 +62,27 @@ class UserRepository {
     suspend fun fetchUserByEmail(email: String): DatabaseResult<User?> {
         return try {
             if (email == currentUser?.email) {
-                Log.d("ASD", email)
                 withContext(Dispatchers.IO) {
-                    val documentSnapshot = dbUsers.document(email).get().await()
-                    val user = documentSnapshot.toObject(User::class.java)
-                    Log.d("ASD2", user.toString())
-                    DatabaseResult.success(user?.copy(email = documentSnapshot.id))
+                    var user: User? = User()
+                    var routines: List<Routine> = emptyList()
+                    listOf(
+                        async { //Obtenemos el usuario de la sesión
+                            val dsUser = dbUsers.document(email).get().await()
+                            user = dsUser.toObject(User::class.java)?.copy(email = dsUser.id)
+                        },
+                        async { //Obtenemos las rutinas del usuario (Subcollections)
+                            val qsRoutines = dbUsers.document(email)
+                                .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+                            routines = qsRoutines.toObjects(Routine::class.java).mapIndexed { index, routine ->
+                                routine.copy(id = qsRoutines.documents[index].id)
+                            }
+                        }
+                    ).awaitAll()
+                    DatabaseResult.success(user?.copy( //Filtramos las rutinas programadas
+                        routines = routines,
+                        //TODO Ordenar dependiendo del día actual, la siguiente rutina desde hoy sera la primera
+                        routinesScheduled = routines.filter { it.dayOfWeekScheduled != -1 }
+                    ))
                 }
             } else {
                 DatabaseResult.failed(R.string.error_fetch_user)

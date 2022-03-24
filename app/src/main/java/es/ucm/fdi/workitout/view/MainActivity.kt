@@ -12,6 +12,7 @@ import es.ucm.fdi.workitout.repository.DbConstants
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.launch
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val mainSharedViewModel: MainSharedViewModel by viewModels()
@@ -32,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                 launchStartActivity()
             } else { //Hay un usuario con sesión iniciada
                 mainSharedViewModel.fetchAll(email)
-
+                Collections.emptyList<String>()
                 setContentView(R.layout.activity_main)
 
                 setupCollectors()

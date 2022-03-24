@@ -1,7 +1,6 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -43,23 +42,21 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     fun fetchAll(email: String = user.value.email) {
         viewModelScope.launch {
+            _loading.emit(true)
+
             listOf(
                 async { fetchUserByEmail(email) }
             ).awaitAll()
+
+            _loading.emit(false)
         }
     }
 
     private suspend fun fetchUserByEmail(email: String) {
         if (email.isNotEmpty()) { //Si el usuario no es invitado
-            _loading.emit(true)
             val resultUser = userRepository.fetchUserByEmail(email)
-            _loading.emit(false)
-
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
-                _user.value = user.value.copy(email = newUser.email, name = newUser.name)
-
-                Log.d("ASD3", user.value.name)
-                //Actualizamos el StateFlow de usuario y los valores del usuario en DataStore
+                _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
