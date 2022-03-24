@@ -21,22 +21,6 @@
         android:layout_marginHorizontal="24dp">
 
         <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:paddingTop="6dp"
-            android:text="Create Exercise"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.061" />
-
-        <TextView
             android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -50,7 +34,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.196" />
+            app:layout_constraintVertical_bias="0.102" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_name"
@@ -105,36 +89,31 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/categories"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> exerciseFrag.categoriesScreen()}"
-            android:text="Categories"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.166"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.171" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/muscles"
-            style="?attr/materialButtonOutlinedStyle"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="232dp"
-            android:onClick="@{() -> exerciseFrag.musclesScreen()}"
             android:text="Muscles"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="18dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.77"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="1.0" />
+            app:layout_constraintTop_toBottomOf="@+id/til_description" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2"
+            app:singleLine="false"
+            app:singleSelection="false"
+            app:muscles="@{eModel.exercise.value.muscles}"/>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveButton"
             style="?attr/materialButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -144,7 +123,7 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.807" />
+            app:layout_constraintVertical_bias="0.803" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

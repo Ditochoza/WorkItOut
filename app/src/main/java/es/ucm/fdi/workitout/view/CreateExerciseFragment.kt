@@ -7,9 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.databinding.BindingAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
 import es.ucm.fdi.workitout.viewModel.EditSharedViewModel
@@ -31,14 +34,8 @@ class CreateExerciseFragment : Fragment() {
         return binding.root
     }
 
-    fun categoriesScreen(){
-        view?.findNavController()?.navigate(R.id.action_createExerciseFragment_to_categoriesFragment)
-    }
 
-    fun musclesScreen(){
-        //view?.findNavController()?.navigate(R.id.action_loginFragment_to_registerFragment)
 
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -6,7 +6,7 @@ import com.google.firebase.firestore.Exclude
 data class Exercise(
     var name: String = "",
     var description: String = "",
-    var categories: Array<String> = listOf("artes marciales","futbol","natacion").toTypedArray(),
-    var muscles: Array<String> = listOf("biceps","triceps","abdominales").toTypedArray(),
-    var image: String = "default"
+    var muscles: List<String>  = listOf("biceps","triceps","abdominales"),
+    var image: String = "default",
+    var videoLinks: List<String> = listOf("www.youtube.com/v=fDsQ12Asd"),
 )
