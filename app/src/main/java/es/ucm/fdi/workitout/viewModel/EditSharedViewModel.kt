@@ -19,7 +19,7 @@ class EditSharedViewModel(application: Application,
 
     private val _exercise = MutableStateFlow(savedStateHandle.get(::exercise.name) ?: Exercise())
     val exercise: StateFlow<Exercise> = _exercise.asStateFlow()
-
+    var selectedMuscles = mutableListOf<String>()
 
     fun clearErrors(til: TextInputLayout) {
         til.error = ""

@@ -1,18 +1,15 @@
 package es.ucm.fdi.workitout.view
 
-import android.content.DialogInterface
-import android.content.DialogInterface.OnMultiChoiceClickListener
+
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
-import androidx.databinding.BindingAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
 import es.ucm.fdi.workitout.viewModel.EditSharedViewModel
@@ -31,10 +28,17 @@ class CreateExerciseFragment : Fragment() {
         binding.exerciseFrag = this
         binding.lifecycleOwner = viewLifecycleOwner
 
+        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
+            val chipsText = mutableListOf<String>()
+            checkedIds.forEach { chipId ->
+                chipsText.add(binding.chipGroup.findViewById<Chip>(chipId).text.toString())
+            }
+
+            editSharedViewModel.selectedMuscles = chipsText
+        }
+
         return binding.root
     }
-
-
 
 
     override fun onDestroyView() {

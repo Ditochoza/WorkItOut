@@ -15,115 +15,152 @@
             type="es.ucm.fdi.workitout.view.CreateExerciseFragment" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginHorizontal="24dp">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView1"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:paddingTop="6dp"
-            android:text="Aqui para subir imagen"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.102" />
+            android:layout_height="match_parent"
+            android:layout_marginHorizontal="24dp"
+            android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_name"
-            style="?attr/textInputFilledStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name"
-            app:errorEnabled="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView1"
-            app:layout_constraintVertical_bias="0.114">
-
-            <!--suppress AndroidUnknownAttribute -->
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/edit_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
-                android:inputType="textPersonName"
-                android:text="@={eModel.exercise.value.name}" />
+                android:layout_height="?attr/actionBarSize"
+                app:title="Create Exercise"
+                app:titleCentered="true"
+                app:titleTextAppearance="?attr/textAppearanceHeadlineMedium"
+                app:titleTextColor="?attr/colorPrimary" />
 
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_description"
-            style="?attr/textInputFilledStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"
-            app:errorEnabled="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_name"
-            app:layout_constraintVertical_bias="0.043">
-
-            <!--suppress AndroidUnknownAttribute -->
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_description"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                android:text="@={eModel.exercise.value.description}" />
+                android:layout_height="wrap_content">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="180dp"
+                    android:layout_height="150dp"
+                    android:src="@android:drawable/ic_menu_gallery"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/upload_image"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Image"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_name"
+                style="?attr/textInputFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Name"
+                app:errorEnabled="true"
+                android:layout_marginTop="9dp"
+                android:layout_marginBottom="16dp">
+
+                <!--suppress AndroidUnknownAttribute -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
+                    android:inputType="textPersonName"
+                    android:text="@={eModel.exercise.value.name}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_description"
+                style="?attr/textInputFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Description"
+                app:errorEnabled="true"
+                android:layout_marginBottom="16dp">
+
+                <!--suppress AndroidUnknownAttribute -->
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine"
+                    android:text="@={eModel.exercise.value.description}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="Muscles"
+                android:textSize="18dp" />
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="12dp"
+                android:orientation="vertical">
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroup"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:muscles="@{eModel.exercise.value.muscles}"
+                    app:singleLine="false"
+                    app:singleSelection="false"/>
+
+            </androidx.core.widget.NestedScrollView>
+            
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_vlink"
+                style="?attr/textInputFilledStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:hint="Video Link (Optional)"
+                app:errorEnabled="true"
+                app:layout_constraintBottom_toTopOf="@+id/saveButton">
+
+                <!--suppress AndroidUnknownAttribute -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_vlink"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:afterTextChanged="@{() -> eModel.clearErrors(tilVlink)}"
+                    android:inputType="textUri"
+                    android:text="@={eModel.exercise.value.videoLink}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/saveButton"
+                style="?attr/materialButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="40dp"
+                android:text="Save" />
+        </LinearLayout>
 
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Muscles"
-            android:textSize="18dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description" />
+    </ScrollView>
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2"
-            app:singleLine="false"
-            app:singleSelection="false"
-            app:muscles="@{eModel.exercise.value.muscles}"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveButton"
-            style="?attr/materialButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.803" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_edit_graph"
-    app:startDestination="@id/createExerciseFragment">
-
+    app:startDestination="@id/createExerciseFragment2">
     <fragment
-        android:id="@+id/createExerciseFragment"
+        android:id="@+id/createExerciseFragment2"
         android:name="es.ucm.fdi.workitout.view.CreateExerciseFragment"
         android:label="fragment_create_exercise"
         tools:layout="@layout/fragment_create_exercise" />
