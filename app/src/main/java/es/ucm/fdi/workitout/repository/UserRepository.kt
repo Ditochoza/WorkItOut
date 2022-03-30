@@ -7,6 +7,7 @@ import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -65,6 +66,7 @@ class UserRepository {
                 withContext(Dispatchers.IO) {
                     var user: User? = User()
                     var routines: List<Routine> = emptyList()
+                    var routinesScheduled: List<Routine> = emptyList()
                     listOf(
                         async { //Obtenemos el usuario de la sesión
                             val dsUser = dbUsers.document(email).get().await()
@@ -76,12 +78,12 @@ class UserRepository {
                             routines = qsRoutines.toObjects(Routine::class.java).mapIndexed { index, routine ->
                                 routine.copy(id = qsRoutines.documents[index].id)
                             }
+                            routinesScheduled = orderRoutinesByWeekDay(routines.filter { it.dayOfWeekScheduled != -1 })
                         }
                     ).awaitAll()
                     DatabaseResult.success(user?.copy( //Filtramos las rutinas programadas
                         routines = routines,
-                        //TODO Ordenar dependiendo del día actual, la siguiente rutina desde hoy sera la primera
-                        routinesScheduled = routines.filter { it.dayOfWeekScheduled != -1 }
+                        routinesScheduled = routinesScheduled
                     ))
                 }
             } else {

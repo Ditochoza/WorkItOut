@@ -1,11 +1,14 @@
 package es.ucm.fdi.workitout.adapters
 
+import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -43,9 +46,25 @@ fun ImageView.loadImage(imageUrl: String) {
 @BindingAdapter("muscles")
 fun ChipGroup.adapterChipsMuscles(muscles: List<String>) {
     muscles.forEach {
-        addView(Chip(context).apply {
+        val chip = LayoutInflater.from(context).inflate(R.layout.muscle_chip, this, false) as Chip
+        addView(chip.apply {
             text = it
             isClickable = false
         })
     }
+}
+
+//BindingAdapter para configurar el adaptador del RecyclerView de rutinas programadas
+@BindingAdapter("routines", "sModel", "scheduled", requireAll = true)
+fun RecyclerView.adapterRoutines(routines: List<Routine>, sModel: MainSharedViewModel, scheduled: Boolean) {
+    val routinesArrayList = if (scheduled && routines.size > 1) { //Sólo las rutinas programadas (A partir de la 1)
+        ArrayList(routines.subList(1, routines.size))
+    } else { //Todas las rutinas
+        ArrayList(routines)
+    }
+
+    if (this.adapter == null)
+        this.adapter = RoutinesRecyclerViewAdapter(routinesArrayList, sModel)
+    else
+        (adapter as RoutinesRecyclerViewAdapter).updateList(routinesArrayList)
 }

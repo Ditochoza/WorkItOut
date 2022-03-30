@@ -59,7 +59,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="16dp"
             android:orientation="vertical">
 
             <com.google.android.material.textview.MaterialTextView
@@ -67,6 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
+                android:layout_marginHorizontal="16dp"
                 android:textAlignment="center"
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:visibility="@{user.routinesScheduled.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
@@ -78,6 +78,7 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
+                android:layout_marginHorizontal="16dp"
                 android:visibility="@{user.routinesScheduled.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
                 app:cardCornerRadius="24dp"
                 style="?attr/materialCardViewFilledStyle">
@@ -127,7 +128,7 @@
                                 android:layout_marginHorizontal="12dp"
                                 android:layout_marginBottom="4dp"
                                 android:textAppearance="?attr/textAppearanceBodyLarge"
-                                android:text="@{user.routinesScheduled.size() > 0 ? @string/programmed_routine_week_day_time(@stringArray/week_days[user.routinesScheduled.get(0).dayOfWeekScheduled], TimeUtilsKt.timeString(user.routinesScheduled.get(0).timeTimestampScheduled)) : @string/empty}"/>
+                                android:text="@{user.routinesScheduled.size() > 0 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[user.routinesScheduled.get(0).dayOfWeekScheduled], TimeUtilsKt.timeString(user.routinesScheduled.get(0).timeTimestampScheduled)) : @string/empty}"/>
 
                         </LinearLayout>
 
@@ -203,13 +204,25 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_other_routines"
                 android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?attr/textAppearanceTitleLarge"
                 android:visibility="@{user.routinesScheduled.size() > 1 ? View.VISIBLE : View.GONE, default=gone}"
-                android:text="@string/your_other_programmed_routiens"/>
+                android:text="@string/other_scheduled_routines"/>
 
-            <!--TODO Añadir RecyclerView con el resto de rutinas programadas-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_routines_scheduled"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingBottom="70dp"
+                android:clipToPadding="false"
+                android:scrollbars="none"
+                app:layoutManager="LinearLayoutManager"
+                app:routines="@{user.routinesScheduled}"
+                app:sModel="@{sModel}"
+                app:scheduled="@{true}"/>
 
         </LinearLayout>
 
