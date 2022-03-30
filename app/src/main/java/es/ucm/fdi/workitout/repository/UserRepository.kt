@@ -1,10 +1,13 @@
 package es.ucm.fdi.workitout.repository
 
+import android.util.Log
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
+import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
@@ -18,6 +21,7 @@ class UserRepository {
 
     private val auth = FirebaseAuth.getInstance()
     private val dbUsers = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_USERS)
+    private val dbExercises = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_EXERCISES)
 
     private val currentUser: FirebaseUser?
         get() = auth.currentUser
@@ -75,8 +79,18 @@ class UserRepository {
                         async { //Obtenemos las rutinas del usuario (Subcollections)
                             val qsRoutines = dbUsers.document(email)
                                 .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
-                            routines = qsRoutines.toObjects(Routine::class.java).mapIndexed { index, routine ->
-                                routine.copy(id = qsRoutines.documents[index].id)
+                            routines = qsRoutines.toObjects(Routine::class.java).mapIndexed { indexRoutiens, routine ->
+                                var exercises = emptyList<Exercise>()
+                                if (routine.exercisesIds.isNotEmpty()) {
+                                    val qsExercises = dbExercises.whereIn(FieldPath.documentId(),
+                                        routine.exercisesIds).get().await()
+                                    exercises = qsExercises.toObjects(Exercise::class.java)
+                                        .mapIndexed { indexExercises, exercise ->
+                                            exercise.copy(id = qsExercises.documents[indexExercises].id)
+                                        }
+                                }
+
+                                routine.copy(id = qsRoutines.documents[indexRoutiens].id, exercises = exercises)
                             }
                             routinesScheduled = orderRoutinesByWeekDay(routines.filter { it.dayOfWeekScheduled != -1 })
                         }
@@ -90,6 +104,7 @@ class UserRepository {
                 DatabaseResult.failed(R.string.error_fetch_user)
             }
         } catch (e: Exception) {
+            Log.d("ASD", e.message.toString())
             DatabaseResult.failed(R.string.error_fetch_user)
         }
     }

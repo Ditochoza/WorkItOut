@@ -12,7 +12,8 @@ data class Routine(
     var name: String = "",
     var description: String = "",
     var imageUrl: String = "",
-    var muscles: List<String> = emptyList(),
+    var exercisesIds: List<String> = emptyList(),
     var dayOfWeekScheduled: Int = -1,
-    var timeTimestampScheduled: Timestamp = zeroTimestamp()
+    var timeTimestampScheduled: Timestamp = zeroTimestamp(),
+    @get: Exclude var exercises: List<Exercise> = emptyList(),
 ) : Parcelable

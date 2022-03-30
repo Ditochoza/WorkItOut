@@ -9,7 +9,7 @@
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="user" type="es.ucm.fdi.workitout.model.User" />
         <variable name="loading" type="Boolean" />
-        <variable name="emptyList" type="java.util.List&lt;String&gt;" />
+        <variable name="emptyList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Exercise&gt;" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -161,7 +161,7 @@
                         <com.google.android.material.chip.ChipGroup
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:muscles="@{user.routinesScheduled.size() > 0 ? user.routinesScheduled.get(0).muscles : emptyList}"
+                            app:exercises="@{user.routinesScheduled.size() > 0 ? user.routinesScheduled.get(0).exercises : emptyList}"
                             app:singleLine="true">
 
                         </com.google.android.material.chip.ChipGroup>

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import es.ucm.fdi.workitout.databinding.FragmentHomeBinding
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -22,7 +23,7 @@ class HomeFragment : Fragment() {
         binding.sModel = mainSharedViewModel
         binding.loading = mainSharedViewModel.loading.value
         binding.user = mainSharedViewModel.user.value
-        binding.emptyList = emptyList<String>()
+        binding.emptyList = emptyList<Exercise>()
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupCollectors()

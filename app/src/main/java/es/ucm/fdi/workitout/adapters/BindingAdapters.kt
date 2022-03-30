@@ -8,6 +8,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -43,8 +44,9 @@ fun ImageView.loadImage(imageUrl: String) {
 }
 
 //BindingAdapter para mostrar los chips con los músculos de las rutinas
-@BindingAdapter("muscles")
-fun ChipGroup.adapterChipsMuscles(muscles: List<String>) {
+@BindingAdapter("exercises")
+fun ChipGroup.adapterChipsMuscles(exercises: List<Exercise>) {
+    val muscles = exercises.flatMap { it.muscles }.distinct()
     muscles.forEach {
         val chip = LayoutInflater.from(context).inflate(R.layout.muscle_chip, this, false) as Chip
         addView(chip.apply {
