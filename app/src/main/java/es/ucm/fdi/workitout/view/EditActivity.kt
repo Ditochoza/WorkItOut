@@ -11,6 +11,12 @@ class EditActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_start)
+        setContentView(R.layout.activity_edit)
+    }
+
+    //Guardamos el estado del ViewModel cuando la app pasa a segundo plano
+    override fun onPause() {
+        editSharedViewModel.saveStateHandle()
+        super.onPause()
     }
 }
