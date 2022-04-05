@@ -13,5 +13,5 @@ data class Exercise(
     var description: String = "",
     var muscles: List<String>  = listOf(),
     var image: Uri = Uri.EMPTY,
-    var videoLinks: String = "",
+    var videoLinks: List<String>  = listOf()
 ):Parcelable

@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.chip.Chip
+import com.google.firebase.ktx.Firebase
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
 import es.ucm.fdi.workitout.viewModel.EditSharedViewModel
 
@@ -21,6 +22,7 @@ class CreateExerciseFragment : Fragment() {
 
     private var _binding: FragmentCreateExerciseBinding? = null
     private val binding get() = _binding!!
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         _binding = FragmentCreateExerciseBinding.inflate(inflater, container, false)

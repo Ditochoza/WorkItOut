@@ -14,10 +14,16 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.ktx.app
+import com.google.firebase.storage.ktx.storage
 import es.ucm.fdi.workitout.ExerciseValidationUtil
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.UserValidationUtil
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.repository.ExerciseRepository
+import es.ucm.fdi.workitout.repository.UserRepository
 import es.ucm.fdi.workitout.view.EditActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,11 +43,11 @@ class EditSharedViewModel(application: Application,
 
     var muscles: List<String>  = listOf("biceps","triceps","abdominales", "gemelos","espalda","cuello","cabeza","piernas")
 
+    private val exerciseRepository = ExerciseRepository()
+
     fun createExercise(imageTexView: TextView,imageTexViewError: TextView,
                        tilName: TextInputLayout, tilDescription: TextInputLayout,
                        musclesTexView: TextView) {
-
-        Log.i("CreateExerciseFragment","muscles list: $exercise.value.muscles")
 
         val error = ExerciseValidationUtil.validateExercise(
             exercise.value.image to (imageTexView to imageTexViewError),
@@ -51,9 +57,9 @@ class EditSharedViewModel(application: Application,
         )
 
         if(!error){
-            Log.i("CreateExerciseFragment","Objeto: $exercise.value")
             viewModelScope.launch(Dispatchers.IO) {
                //registar ejercicio en base de datos
+                exerciseRepository.saveExercise(exercise.value)
             }
         }
     }
@@ -73,7 +79,6 @@ class EditSharedViewModel(application: Application,
     }
 
     fun saveStateHandle() {
-        Log.d("Error", exercise.value.toString())
         savedStateHandle.set(::exercise.name, exercise.value)
     }
 }
