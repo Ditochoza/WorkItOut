@@ -31,11 +31,12 @@ class CreateExerciseFragment : Fragment() {
 
         binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
             val chipsText = mutableListOf<String>()
+            binding.textViewMuscleError.isVisible = false
             checkedIds.forEach { chipId ->
                 chipsText.add(binding.chipGroup.findViewById<Chip>(chipId).text.toString())
             }
 
-            editSharedViewModel.selectedMuscles = chipsText
+            editSharedViewModel.setMusclesList(chipsText)
         }
 
         if(editSharedViewModel.tempImageUri.value != Uri.EMPTY){
@@ -57,9 +58,12 @@ class CreateExerciseFragment : Fragment() {
             editSharedViewModel.setTempImage(uri)
             binding.imageView.setImageURI(uri)
             binding.imageTexView.isVisible=false
+            binding.imageTexViewError.visibility = View.GONE
 
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

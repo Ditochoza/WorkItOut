@@ -67,6 +67,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
+                <TextView
+                    android:id="@+id/imageTexViewError"
+                    android:layout_width="167dp"
+                    android:layout_height="70dp"
+                    android:text="Please select an image!"
+                    android:textColor="@color/md_theme_light_error"
+                    android:textSize="24sp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/cardView"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -107,7 +120,7 @@
                     android:id="@+id/et_description"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
+                    android:afterTextChanged="@{() -> eModel.clearErrors(tilDescription)}"
                     android:ems="10"
                     android:gravity="start|top"
                     android:inputType="textMultiLine"
@@ -123,32 +136,32 @@
                 android:text="Muscles"
                 android:textSize="18dp" />
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/textViewMuscleError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="6dp"
+                android:text="You must select at least one muscle"
+                android:textColor="@color/md_theme_light_error"
+                android:visibility="gone"
+                android:textSize="18dp" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:muscles="@{eModel.exercise.value.muscles}"
+                app:muscles="@{eModel.muscles}"
                 app:singleLine="false"
                 app:singleSelection="false"/>
-
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/addLinkButton"
-                style="?attr/materialButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="40dp"
-                android:text="Add Video Links" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/saveButton"
                 style="?attr/materialButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:onClick="@{() -> eModel.createExercise(imageTexView,imageTexViewError,tilName,tilDescription,textViewMuscleError)}"
                 android:text="Save" />
         </LinearLayout>
 
