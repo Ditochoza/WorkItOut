@@ -34,4 +34,16 @@
     <string name="nothing_to_see_here_image">Nothing To See Here Image</string>
     <string name="logging_out">Logging out…</string>
     <string name="update">Update</string>
+    <string name="account_header">Account</string>
+    <string name="change_password">Change Password</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="change_password_var">changePassword</string>
+    <string name="delete_account_var">deleteAccount</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+    <string name="validate_password">Validate Password</string>
+    <string name="new_password">New Password</string>
+    <string name="current_password">Current Password</string>
+    <string name="settings_user_change_password">Chage Password</string>
+    <string name="new_password_equal_current_password">New password cannot be the same as your current password</string>
 </resources>
