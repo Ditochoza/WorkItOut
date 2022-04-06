@@ -2,6 +2,7 @@ package es.ucm.fdi.workitout.repository
 
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Routine
@@ -28,10 +29,11 @@ class RoutineRepository {
                     "image" to routine.image,
                     "hour" to routine.hour,
                     "days" to routine.days,
-                    "user" to dbRoutines.doc("/users/" + currentUser.getEmail())
+                    "user" to dbRoutines.doc("/users/" + currentUser?.email),
+                    "exercises" to routine.exercises
                 )
                 dbRoutines.add(routineParse).await()
-                DatabaseResult.success(auth.currentUser)
+                DatabaseResult.success()
             }
         } catch (e: FirebaseFirestoreException) {
             DatabaseResult.failed(R.string.add_routine_error)
