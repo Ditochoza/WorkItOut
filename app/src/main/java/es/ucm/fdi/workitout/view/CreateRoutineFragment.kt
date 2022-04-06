@@ -1,5 +1,6 @@
 package es.ucm.fdi.workitout.view
 
+import android.net.Uri
 import android.os.Bundle
 import android.text.format.DateFormat.is24HourFormat
 import android.util.Log
@@ -7,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.findNavController
@@ -32,6 +34,22 @@ class CreateRoutineFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
 
         return binding.root
+    }
+
+    //Se lanza el intent para elegir una imagen del almacenamiento interno
+    fun selectImageFromGallery() = selectImageFromGalleryResultFlow.launch("image/*")
+
+    //Al volver del intent se recupera el uri de la imagen elegida
+    private val selectImageFromGalleryResultFlow = registerForActivityResult(
+        ActivityResultContracts.GetContent()) { uri: Uri? ->
+
+        uri?.let {
+            editSharedViewModel.setTempImage(uri)
+            binding.imageView.setImageURI(uri)
+            binding.imageTexView.isVisible=false
+            binding.imageTexViewError.visibility = View.GONE
+
+        }
     }
 
     fun exercisesScreen(){

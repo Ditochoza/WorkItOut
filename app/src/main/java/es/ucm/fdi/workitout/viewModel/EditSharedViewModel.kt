@@ -2,6 +2,7 @@ package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
 import android.content.DialogInterface
+import android.net.Uri
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.AndroidViewModel
@@ -40,5 +41,9 @@ class EditSharedViewModel(application: Application,
 
     fun saveStateHandle() {
         savedStateHandle.set(::routine.name, routine.value)
+    }
+
+    fun setTempImage(uri: Uri) {
+
     }
 }

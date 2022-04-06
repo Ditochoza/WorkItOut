@@ -33,7 +33,6 @@ class RoutineRepository {
                     "exercises" to routine.exercises
                 )
                 dbRoutines.add(routineParse).await()
-                DatabaseResult.success()
             }
         } catch (e: FirebaseFirestoreException) {
             DatabaseResult.failed(R.string.add_routine_error)

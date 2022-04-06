@@ -15,41 +15,71 @@
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/edit_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginHorizontal="24dp">
 
-        <TextView
-            android:id="@+id/textView"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/edit_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:paddingTop="6dp"
-            android:text="Create Routine"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.061" />
+            android:layout_height="?attr/actionBarSize"
+            app:layout_constraintTop_toTopOf="@+id/edit_layout"
+            app:title="Create Routine"
+            app:titleCentered="true"
+            app:titleTextAppearance="?attr/textAppearanceHeadlineMedium"
+            app:titleTextColor="?attr/colorPrimary" />
 
-        <TextView
-            android:id="@+id/textView1"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:paddingTop="6dp"
-            android:text="Añadir imagen"
-            android:textAlignment="center"
-            android:textColor="#000000"
-            android:textSize="24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.196" />
+            android:layout_height="wrap_content"
+            android:id="@+id/image_layout"
+            app:layout_constraintTop_toBottomOf="@+id/edit_toolbar"
+            app:layout_constraintBottom_toTopOf="@+id/til_name"
+            android:layout_marginBottom="15dp">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{() -> routinesFrag.selectImageFromGallery()}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="180dp"
+                    android:layout_height="150dp" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/imageTexView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Image"
+                android:textColor="@color/browser_actions_text_color"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/imageTexViewError"
+                android:layout_width="167dp"
+                android:layout_height="70dp"
+                android:text="Please select an image!"
+                android:textColor="@color/md_theme_light_error"
+                android:textSize="24sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/cardView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_name"
@@ -58,11 +88,11 @@
             android:layout_height="wrap_content"
             android:hint="Name"
             app:errorEnabled="true"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image_layout"
+            app:layout_constraintBottom_toTopOf="@+id/til_description"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView1"
             app:layout_constraintVertical_bias="0.114">
 
             <!--suppress AndroidUnknownAttribute -->
@@ -83,15 +113,15 @@
             android:layout_height="wrap_content"
             android:hint="Description"
             app:errorEnabled="true"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/exercises"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/til_name"
             app:layout_constraintVertical_bias="0.043">
 
-            <!--suppress AndroidUnknownAttribute -->
 
+            <!--suppress AndroidUnknownAttribute -->
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_description"
                 android:layout_width="match_parent"
@@ -100,7 +130,9 @@
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
-                android:text="@={eModel.routine.value.description}" />
+                android:text="@={eModel.routine.value.description}"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_editor_absoluteX="2dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -110,14 +142,14 @@
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
             android:onClick="@{() -> routinesFrag.exercisesScreen()}"
+
             android:text="Exercises"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.196"
+            app:layout_constraintHorizontal_bias="0.141"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.096" />
+            app:layout_constraintTop_toBottomOf="@+id/til_description" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/hour"
@@ -129,10 +161,10 @@
             android:text="Hour"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.465"
+            app:layout_constraintHorizontal_bias="0.438"
             app:layout_constraintStart_toEndOf="@+id/exercises"
             app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.562" />
+            app:layout_constraintVertical_bias="0.685" />
 
         <CheckBox
             android:id="@+id/checkbox_lunes"
