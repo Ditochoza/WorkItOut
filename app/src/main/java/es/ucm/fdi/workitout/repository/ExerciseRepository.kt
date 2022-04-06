@@ -1,13 +1,22 @@
 package es.ucm.fdi.workitout.repository
 
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
+import android.util.Log
+import android.widget.ImageView
+import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.UploadTask
 import com.google.firebase.storage.ktx.storage
 import es.ucm.fdi.workitout.model.Exercise
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 
 class ExerciseRepository {
@@ -20,25 +29,27 @@ class ExerciseRepository {
 
     private var storage = Firebase.storage("gs://workitout-pad.appspot.com")
 
-    /*
-    * Regla de cloudstorage cambiada, esta es la que estaba:
 
-    * */
-    suspend fun saveExercise(exercise:Exercise) {
+    suspend fun saveExercise(exercise:Exercise,imageView:ImageView) {
+
+        val dateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+        val fileName = exercise.name.filter { !it.isWhitespace() } + dateTime
+
         try {
-            try {
-                val result = auth.signInWithEmailAndPassword("prueba@prueba.es", "123456")
-            } catch (e: Exception) {
-                //TODO Mensaje error
-            }
             // Subir imagen y conseguir la url
 
-            var file = exercise.image
-            var storageRef = storage.reference
-            val ref = storageRef.child("images/exercises/${file.lastPathSegment}")
-            val uploadTask = ref.putFile(file)
 
-            val urlTask = uploadTask.continueWithTask { task ->
+            var storageRef = storage.reference
+            val ref = storageRef.child("images/exercises/$fileName")
+
+            val bitmap = (imageView.drawable as BitmapDrawable).bitmap
+            val baos = ByteArrayOutputStream()
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+            val imageInByte: ByteArray = baos.toByteArray()
+
+            val uploadTask = ref.putBytes(imageInByte).await()
+
+            val urlTask = uploadTask.task.continueWithTask { task ->
                 if (!task.isSuccessful) {
                     task.exception?.let {
                         throw it
@@ -47,20 +58,17 @@ class ExerciseRepository {
                 ref.downloadUrl
             }.addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    //downloadUri
-                    exercise.image = task.result
+                    //Subir ejercicio
+                    exercise.image =  task.result.toString()
+                    dbExercises.add(exercise)
+
                 } else {
                     // Handle failures
                 }
             }
 
-            //Subir ejercicio
-            dbUsers.document()
-            dbExercises.add(exercise).await()
 
-            //Asociar el ejercicio creado con el usuario
 
-            //dbCreatedExcercises.document(user.email).set()
 
         } catch(e: Exception) {
             //TODO Mensaje error

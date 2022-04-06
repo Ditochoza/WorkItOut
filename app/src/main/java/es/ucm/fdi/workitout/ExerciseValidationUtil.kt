@@ -8,7 +8,7 @@ import com.google.android.material.textfield.TextInputLayout
 object ExerciseValidationUtil {
 
     fun validateExercise(
-        image: Pair<Uri, Pair<TextView,TextView>>,
+        image: Pair<String, Pair<TextView,TextView>>,
         name: Pair<String, TextInputLayout>,
         description: Pair<String, TextInputLayout>,
         muscles: Pair<List<String>,TextView>
@@ -16,11 +16,11 @@ object ExerciseValidationUtil {
 
         var error = false
 
-        if(image.first == Uri.EMPTY){
+        /*if(image.first == Uri.EMPTY){
             error = true
             image.second.first.visibility = View.GONE
             image.second.second.visibility = View.VISIBLE
-        }
+        }*/
 
         if (name.first.isEmpty()) {
             error = true

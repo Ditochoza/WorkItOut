@@ -15,7 +15,9 @@
             type="es.ucm.fdi.workitout.view.CreateExerciseFragment" />
     </data>
 
-
+    <!--//coordinator layout
+            //app bar
+            //scroll view / linear layout-->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -52,6 +54,7 @@
                         android:id="@+id/imageView"
                         android:layout_width="180dp"
                         android:layout_height="150dp"
+                        android:scaleType="centerCrop"
                         />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -161,7 +164,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:onClick="@{() -> eModel.createExercise(imageTexView,imageTexViewError,tilName,tilDescription,textViewMuscleError)}"
+                android:onClick="@{() -> eModel.createExercise(imageView,imageTexView,imageTexViewError,tilName,tilDescription,textViewMuscleError)}"
                 android:text="Save" />
         </LinearLayout>
 

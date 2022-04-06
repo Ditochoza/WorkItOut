@@ -5,6 +5,7 @@ import android.content.DialogInterface
 import android.net.Uri
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -45,9 +46,10 @@ class EditSharedViewModel(application: Application,
 
     private val exerciseRepository = ExerciseRepository()
 
-    fun createExercise(imageTexView: TextView,imageTexViewError: TextView,
+    fun createExercise(imageView: ImageView,imageTexView: TextView,imageTexViewError: TextView,
                        tilName: TextInputLayout, tilDescription: TextInputLayout,
-                       musclesTexView: TextView) {
+                       musclesTexView: TextView
+    ) {
 
         val error = ExerciseValidationUtil.validateExercise(
             exercise.value.image to (imageTexView to imageTexViewError),
@@ -59,7 +61,7 @@ class EditSharedViewModel(application: Application,
         if(!error){
             viewModelScope.launch(Dispatchers.IO) {
                //registar ejercicio en base de datos
-                exerciseRepository.saveExercise(exercise.value)
+                exerciseRepository.saveExercise(exercise.value,imageView)
             }
         }
     }
@@ -75,7 +77,6 @@ class EditSharedViewModel(application: Application,
 
     fun setTempImage(uri: Uri){
         _tempImageUri.value = uri
-        exercise.value.image = uri
     }
 
     fun saveStateHandle() {
