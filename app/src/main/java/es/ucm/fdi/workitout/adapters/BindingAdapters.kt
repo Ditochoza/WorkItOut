@@ -2,6 +2,8 @@ package es.ucm.fdi.workitout.adapters
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,6 +11,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
@@ -96,4 +99,13 @@ fun RecyclerView.adapterRoutines(routines: List<Routine>, sModel: MainSharedView
         this.adapter = RoutinesRecyclerViewAdapter(routinesArrayList, sModel)
     else
         (adapter as RoutinesRecyclerViewAdapter).updateList(routinesArrayList)
+}
+
+@BindingAdapter("weekDays","vModel","til", requireAll = true)
+fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: CreateRoutineViewModel, til: TextInputLayout) {
+    setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, weekDays))
+    setOnItemClickListener { _, _, i, _ ->
+        vModel.updateWeekDay(i)
+        til.error = ""
+    }
 }

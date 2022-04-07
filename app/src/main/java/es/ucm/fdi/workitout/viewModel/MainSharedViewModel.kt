@@ -3,12 +3,16 @@ package es.ucm.fdi.workitout.viewModel
 import android.app.Application
 import android.net.Uri
 import android.widget.ImageView
+import android.net.Uri
+import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.DbConstants
 import es.ucm.fdi.workitout.repository.UserDataStore
@@ -91,6 +95,18 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             userRepository.logout()
             userDataStore.deleteUserDataStore()
             _logout.emit(true)
+        }
+    }
+
+    fun createRoutine(ivRoutine: ImageView, newRoutine: Routine) {
+        viewModelScope.launch {
+            val resultUser = userRepository.uploadRoutineAndImage(user.value.email, newRoutine,
+                ivRoutine, tempImageUri.value != Uri.EMPTY)
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            }
+            else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
     }
 
