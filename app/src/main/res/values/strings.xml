@@ -23,5 +23,21 @@
     <string name="profile_icon">Profile Icon</string>
     <string name="error_fetch_user">Failed to fetch user</string>
     <string name="welcome_user_name">Welcome, %s</string>
-    <string name="add_routine_error">Failed to add routine</string>
+    <string name="new_routine">New Routine</string>
+    <string name="update_routine">Update Routine</string>
+    <string name="routine_image">Routine Image</string>
+    <string name="time_arrow">&lt;- Time</string>
+    <string name="week_day">Week Day</string>
+    <string name="save">Save</string>
+    <string name="select_image">Select Image</string>
+    <string name="please_select_an_image">Please Select an Image!</string>
+    <string name="description">Description</string>
+    <string name="schedule">Schedule:</string>
+    <string name="de_schedule">De-Schedule</string>
+    <string name="exercises">Exercises:</string>
+    <string name="field_long">This field must be shorter</string>
+    <string name="field_short">This field must be longer</string>
+    <string name="unschedule_or_complete_field">De-Schedule or complete this field</string>
+    <string name="error_upload_routine">Failed to upload routine</string>
+    <string name="time_scheduled">Time Scheduled</string>
 </resources>

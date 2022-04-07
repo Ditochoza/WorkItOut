@@ -1,15 +1,8 @@
 package es.ucm.fdi.workitout.repository
 
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreException
-import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.User
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class RoutineRepository {
 
@@ -20,7 +13,7 @@ class RoutineRepository {
     private val currentUser: FirebaseUser?
         get() = auth.currentUser
 
-    suspend fun addRoutine(routine: Routine): DatabaseResult<Routine?> {
+    /*suspend fun addRoutine(routine: Routine): DatabaseResult<Routine?> {
         return try {
             withContext(Dispatchers.IO) {
                 val routineParse = hashMapOf(
@@ -37,5 +30,5 @@ class RoutineRepository {
         } catch (e: FirebaseFirestoreException) {
             DatabaseResult.failed(R.string.add_routine_error)
         }
-    }
+    }*/
 }

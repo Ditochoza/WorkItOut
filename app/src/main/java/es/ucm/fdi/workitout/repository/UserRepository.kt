@@ -1,19 +1,24 @@
 package es.ucm.fdi.workitout.repository
 
 import android.util.Log
+import android.widget.ImageView
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
-import kotlinx.coroutines.Dispatchers
+import es.ucm.fdi.workitout.utils.getByteArray
+import es.ucm.fdi.workitout.utils.getImageRef
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class UserRepository {
 
     private val auth = FirebaseAuth.getInstance()
+    private val storage = FirebaseStorage.getInstance()
     private val dbUsers = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_USERS)
 
     private val currentUser: FirebaseUser?
@@ -73,5 +78,39 @@ class UserRepository {
         } catch (e: Exception) {
             DatabaseResult.failed(R.string.error_fetch_user)
         }
+    }
+
+    suspend fun uploadRoutineAndImage(email: String, newRoutine: Routine, ivRoutine: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            val deferreds = ArrayList<Deferred<Any>>()
+            if (isNewImageUploaded && ivRoutine != null) { //Si hay nueva imagen se actualiza y se borra la anterior
+                val byteArray = ivRoutine.getByteArray(75)
+                val imageRef = storage.getImageRef(DbConstants.COLLECTION_ROUTINES, newRoutine.name)
+
+                if (newRoutine.imageUrl.isNotEmpty())
+                    deferreds.add( //Si se está actualizando la imagen se elimina la anterior
+                        async { storage.getReferenceFromUrl(newRoutine.imageUrl).delete().await() }
+                    )
+
+                deferreds.add(
+                    async { //Subimos la nueva imagen
+                        imageRef.putBytes(byteArray).await()
+                        val newImageUrl = imageRef.downloadUrl.await().toString()
+                        //Una vez subida la imagen se sube la rutina con la URL obtenida
+                        newRoutine.imageUrl = newImageUrl
+                    }
+                )
+            }
+            deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir la rutina
+
+            if (newRoutine.id.isNotEmpty()) { //Actualizamos rutina
+                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                    .document(newRoutine.id).set(newRoutine).await()
+            } else //Creamos rutina
+                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                    .add(newRoutine).await()
+
+            fetchUserByEmail(email)
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_routine) }
     }
 }

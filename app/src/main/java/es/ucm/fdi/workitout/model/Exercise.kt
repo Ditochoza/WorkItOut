@@ -1,12 +1,15 @@
 package es.ucm.fdi.workitout.model
 
+import android.os.Parcelable
 import com.google.firebase.firestore.Exclude
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Exercise(
+    @get: Exclude var id: String = "",
     var name: String = "",
     var description: String = "",
-    var categories: Array<String> = listOf("artes marciales","futbol","natacion").toTypedArray(),
-    var muscles: Array<String> = listOf("biceps","triceps","abdominales").toTypedArray(),
-    var image: String = "default"
-)
-
+    var muscles: List<String>  = emptyList(),
+    var imageUrl: String = "",
+    var videoLinks: List<String>  = emptyList()
+):Parcelable

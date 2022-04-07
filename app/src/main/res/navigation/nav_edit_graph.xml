@@ -3,30 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_edit_graph"
-    app:startDestination="@id/createExerciseFragment">
+    app:startDestination="@id/createRoutineFragment">
 
-    <fragment
-        android:id="@+id/createExerciseFragment"
-        android:name="es.ucm.fdi.workitout.view.CreateExerciseFragment"
-        android:label="fragment_create_exercise"
-        tools:layout="@layout/fragment_create_exercise" >
-        <action
-            android:id="@+id/action_createExerciseFragment_to_categoriesFragment"
-            app:destination="@id/categoriesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/categoriesFragment"
-        android:name="es.ucm.fdi.workitout.view.CategoriesFragment"
-        android:label="fragment_categories"
-        tools:layout="@layout/fragment_categories" />
     <fragment
         android:id="@+id/createRoutineFragment"
         android:name="es.ucm.fdi.workitout.view.CreateRoutineFragment"
         android:label="fragment_create_routine"
-        tools:layout="@layout/fragment_create_routine" >
-        <action
-            android:id="@+id/action_createRoutineFragment_to_createExerciseFragment"
-            app:destination="@id/createExerciseFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_create_routine" />
 
 </navigation>

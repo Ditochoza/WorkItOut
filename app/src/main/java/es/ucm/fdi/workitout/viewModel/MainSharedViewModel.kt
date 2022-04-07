@@ -1,11 +1,15 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
+import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.DbConstants
 import es.ucm.fdi.workitout.repository.UserDataStore
@@ -19,8 +23,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val userRepository = UserRepository()
     private val userDataStore by lazy { UserDataStore(application) }
 
-    private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
+    private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User("ditochoza@gmail.com", "Víctor"))
     val user: StateFlow<User> = _user.asStateFlow()
+
+    //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
+    private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
+    val tempImageUri: StateFlow<Uri> = _tempImageUri.asStateFlow()
 
 
     //private val _navigateActionRes = MutableSharedFlow<Int>()
@@ -60,6 +68,24 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
+    }
+
+    fun createRoutine(ivRoutine: ImageView, newRoutine: Routine) {
+        viewModelScope.launch {
+            val resultUser = userRepository.uploadRoutineAndImage(user.value.email, newRoutine,
+                ivRoutine, tempImageUri.value != Uri.EMPTY)
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            }
+            else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+        }
+    }
+
+    fun clearErrors(til: TextInputLayout) { til.error = "" }
+
+    fun setTempImage(uri: Uri) {
+        _tempImageUri.value = uri
     }
 
     fun saveStateHandle() {

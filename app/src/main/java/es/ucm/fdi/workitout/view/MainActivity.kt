@@ -3,6 +3,7 @@ package es.ucm.fdi.workitout.view
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -18,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DynamicColors.applyIfAvailable(this)
+        DynamicColors.applyToActivityIfAvailable(this)
 
         val emailIntent = intent.getStringExtra(DbConstants.USER_EMAIL)
 
@@ -73,4 +74,13 @@ class MainActivity : AppCompatActivity() {
         mainSharedViewModel.saveStateHandle()
         super.onPause()
     }
+
+    //Se lanza el intent para elegir una imagen del almacenamiento interno
+    fun selectImageFromGallery() = selectImageFromGalleryResultFlow.launch("image/*")
+
+    //Al volver del intent se recupera el uri de la imagen elegida
+    private val selectImageFromGalleryResultFlow =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let { mainSharedViewModel.setTempImage(uri) }
+        }
 }

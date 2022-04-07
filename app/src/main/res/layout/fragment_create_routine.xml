@@ -5,255 +5,238 @@
     tools:context=".view.CreateRoutineFragment">
 
     <data>
-        <variable
-            name="eModel"
-            type="es.ucm.fdi.workitout.viewModel.EditSharedViewModel" />
-
-        <variable
-            name="routinesFrag"
-            type="es.ucm.fdi.workitout.view.CreateRoutineFragment" />
+        <import type="android.view.View" />
+        <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+        <variable name="vModel" type="es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel" />
+        <variable name="mainActivity" type="es.ucm.fdi.workitout.view.MainActivity" />
+        <variable name="loading" type="Boolean" />
+        <variable name="tempImageUri" type="android.net.Uri" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/edit_layout"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginHorizontal="24dp">
+        android:fitsSystemWindows="true">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/edit_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintTop_toTopOf="@+id/edit_layout"
-            app:title="Create Routine"
-            app:titleCentered="true"
-            app:titleTextAppearance="?attr/textAppearanceHeadlineMedium"
-            app:titleTextColor="?attr/colorPrimary" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/image_layout"
-            app:layout_constraintTop_toBottomOf="@+id/edit_toolbar"
-            app:layout_constraintBottom_toTopOf="@+id/til_name"
-            android:layout_marginBottom="15dp">
+            android:fitsSystemWindows="true"
+            app:liftOnScroll="true">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="@{() -> routinesFrag.selectImageFromGallery()}"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:title="@{vModel.tempRoutine.value.id.isEmpty() ? @string/new_routine : @string/update_routine}"
+                app:titleCentered="true"
+                app:navigationIcon="@drawable/ic_round_arrow_back_24">
 
-                <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="180dp"
-                    android:layout_height="150dp" />
-            </com.google.android.material.card.MaterialCardView>
+            </com.google.android.material.appbar.MaterialToolbar>
 
-            <TextView
-                android:id="@+id/imageTexView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select Image"
-                android:textColor="@color/browser_actions_text_color"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/cardView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        </com.google.android.material.appbar.AppBarLayout>
 
-            <TextView
-                android:id="@+id/imageTexViewError"
-                android:layout_width="167dp"
-                android:layout_height="70dp"
-                android:text="Please select an image!"
-                android:textColor="@color/md_theme_light_error"
-                android:textSize="24sp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/cardView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_name"
-            style="?attr/textInputFilledStyle"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Name"
-            app:errorEnabled="true"
-            app:layout_constraintTop_toBottomOf="@+id/image_layout"
-            app:layout_constraintBottom_toTopOf="@+id/til_description"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintVertical_bias="0.114">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <!--suppress AndroidUnknownAttribute -->
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
-                android:inputType="textPersonName"
-                android:text="@={eModel.routine.value.name}" />
+                android:layout_marginHorizontal="20dp"
+                android:orientation="vertical">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="26dp"
+                    android:onClick="@{() -> mainActivity.selectImageFromGallery()}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/til_description"
-            style="?attr/textInputFilledStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Description"
-            app:errorEnabled="true"
-            app:layout_constraintBottom_toTopOf="@+id/exercises"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_name"
-            app:layout_constraintVertical_bias="0.043">
+                    <ImageView
+                        android:id="@+id/iv_routine"
+                        android:layout_width="match_parent"
+                        android:layout_height="170dp"
+                        android:scaleType="centerCrop"
+                        app:imageUrl="@{vModel.tempRoutine.value.imageUrl}"
+                        app:tempImageUri="@{tempImageUri}"
+                        android:translationZ="2dp"
+                        android:contentDescription="@string/routine_image" />
+
+                    <TextView
+                        style="?attr/textAppearanceHeadlineSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/select_image"/>
+
+                    <TextView
+                        android:id="@+id/tv_image_error"
+                        style="?attr/textAppearanceHeadlineSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:backgroundTint="@color/browser_actions_bg_grey"
+                        android:translationZ="1dp"
+                        android:gravity="center"
+                        android:text="@string/please_select_an_image"
+                        android:textColor="?attr/colorError"
+                        android:background="?attr/colorErrorContainer"
+                        android:visibility="gone"/>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_name"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/name"
+                    app:errorEnabled="true"
+                    android:layout_marginBottom="8dp">
+
+                    <!--suppress AndroidUnknownAttribute -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:afterTextChanged="@{() -> sModel.clearErrors(tilName)}"
+                        android:inputType="textPersonName"
+                        android:text="@={vModel.tempRoutine.value.name}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_description"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/description"
+                    app:errorEnabled="true"
+                    android:layout_marginBottom="16dp">
+
+                    <!--suppress AndroidUnknownAttribute -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:afterTextChanged="@{() -> sModel.clearErrors(tilDescription)}"
+                        android:gravity="start|top"
+                        android:lines="3"
+                        android:inputType="textMultiLine"
+                        android:text="@={vModel.tempRoutine.value.description}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/schedule" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:baselineAligned="false">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_time"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="8dp"
+                        android:hint="@string/time_arrow"
+                        android:autofillHints="@string/time_arrow"
+                        app:startIconDrawable="@drawable/ic_round_select_hour_24"
+                        app:startIconTint="?attr/colorTertiary"
+                        app:errorEnabled="true">
+
+                        <!--suppress AndroidUnknownAttribute -->
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/et_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:afterTextChanged="@{() -> sModel.clearErrors(tilTime)}"
+                            android:focusable="false"
+                            android:longClickable="false"
+                            android:cursorVisible="false"
+                            android:inputType="time" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
-            <!--suppress AndroidUnknownAttribute -->
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_description"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:afterTextChanged="@{() -> eModel.clearErrors(tilName)}"
-                android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
-                android:text="@={eModel.routine.value.description}"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="2dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/til_week_day"
+                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="8dp"
+                        android:hint="@string/week_day">
 
+                        <AutoCompleteTextView
+                            android:id="@+id/et_week_day"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            app:weekDays="@{@stringArray/week_days}"
+                            app:vModel="@{vModel}"
+                            app:til="@{tilWeekDay}"
+                            tools:ignore="LabelFor" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:onClick="@{() -> vModel.deSchedule(etTime,tilTime,etWeekDay,tilWeekDay)}"
+                    android:text="@string/de_schedule"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/exercises" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/exercises"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:onClick="@{() -> routinesFrag.exercisesScreen()}"
-
-            android:text="Exercises"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.141"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/hour"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="232dp"
-            android:onClick="@{() -> routinesFrag.hourScreen()}"
-            android:text="Hour"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.438"
-            app:layout_constraintStart_toEndOf="@+id/exercises"
-            app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.685" />
-
-        <CheckBox
-            android:id="@+id/checkbox_lunes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> routinesFrag.setDaysOfWeek()}"
-            android:text="L"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintEnd_toStartOf="@+id/checkbox_martes"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/exercises" />
-
-        <CheckBox
-            android:id="@+id/checkbox_martes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> routinesFrag.setDaysOfWeek()}"
-            android:text="M"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintEnd_toStartOf="@+id/checkbox_miercoles"
-            app:layout_constraintTop_toBottomOf="@+id/exercises" />
-
-        <CheckBox
-            android:id="@+id/checkbox_miercoles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> routinesFrag.setDaysOfWeek()}"
-            android:text="X"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintEnd_toStartOf="@+id/checkbox_jueves"
-            app:layout_constraintTop_toBottomOf="@+id/exercises"
-            app:layout_constraintVertical_bias="0.503" />
-
-        <CheckBox
-            android:id="@+id/checkbox_jueves"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> routinesFrag.setDaysOfWeek()}"
-            android:text="J"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintStart_toEndOf="@+id/checkbox_miercoles"
-            app:layout_constraintTop_toBottomOf="@+id/exercises" />
-
-        <CheckBox
-            android:id="@+id/checkbox_viernes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="@{() -> routinesFrag.setDaysOfWeek()}"
-            android:text="V"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintTop_toBottomOf="@+id/exercises"
-            app:layout_constraintStart_toEndOf="@+id/checkbox_jueves"
-            tools:layout_editor_absoluteX="213dp" />
-
-        <CheckBox
-            android:id="@+id/checkbox_sabado"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:layout_marginEnd="1dp"
-            android:onClick="@{() -> routinesFrag.setDaysOfWeek()}"
-            android:text="S"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintEnd_toStartOf="@+id/checkbox_domingo"
-            app:layout_constraintStart_toEndOf="@+id/checkbox_viernes"
-            app:layout_constraintTop_toBottomOf="@+id/exercises" />
-
-        <CheckBox
-            android:id="@+id/checkbox_domingo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onCheckboxClicked"
-            android:text="D"
-            app:layout_constraintBottom_toTopOf="@+id/materialButton"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/exercises" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/materialButton"
+            android:id="@+id/saveButton"
             style="?attr/materialButtonStyle"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:onClick="@{() -> vModel.createRoutine(ivRoutine,tvImageError,tilName,tilDescription,tilTime,tilWeekDay,sModel)}"
+            android:text="@string/save" />
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Save"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/til_description"
-            app:layout_constraintVertical_bias="0.892" />
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>
