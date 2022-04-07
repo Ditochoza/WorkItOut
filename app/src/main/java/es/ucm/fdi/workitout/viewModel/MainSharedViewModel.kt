@@ -34,8 +34,8 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
 
-    //private val _navigateActionRes = MutableSharedFlow<Int>()
-    //val navigateActionRes: SharedFlow<Int> = _navigateActionRes.asSharedFlow()
+    private val _navigateActionRes = MutableSharedFlow<Int>()
+    val navigateActionRes: SharedFlow<Int> = _navigateActionRes.asSharedFlow()
 
     private val _shortToastRes = MutableSharedFlow<Int>()
     val shortToastRes: SharedFlow<Int> = _shortToastRes.asSharedFlow()
@@ -113,7 +113,9 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     fun clearErrors(til: TextInputLayout) { til.error = "" }
 
-    fun setTempImage(uri: Uri) { _tempImageUri.value = uri }
+    fun setTempImage(uri: Uri) { viewModelScope.launch { _tempImageUri.emit(uri) } }
 
     fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
+
+    fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
 }

@@ -11,6 +11,7 @@ import com.google.android.material.color.DynamicColors
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.collectLatestFlow
+import es.ucm.fdi.workitout.utils.getNavController
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.launch
 import java.util.*
@@ -49,14 +50,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         //Collector para realizar navegación
-        /*mainSharedViewModel.navigateActionRes.collectLatestFlow(this) { navActionRes ->
+        mainSharedViewModel.navigateActionRes.collectLatestFlow(this) { navActionRes ->
             if (navActionRes == 0) {
                 onBackPressed()
             } else {
                 val navController = supportFragmentManager.getNavController(R.id.fc_main_activity)
                 navController?.navigate(navActionRes)
             }
-        }*/
+        }
 
         //Collector para pasar al MainActivity al iniciar sesión o registrarse
         mainSharedViewModel.logout.collectLatestFlow(this) {

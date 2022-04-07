@@ -29,6 +29,7 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
                 app:title="@{vModel.tempRoutine.value.id.isEmpty() ? @string/new_routine : @string/update_routine}"
                 app:titleCentered="true"
                 app:navigationIcon="@drawable/ic_round_arrow_back_24">
