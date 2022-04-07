@@ -2,11 +2,6 @@ package es.ucm.fdi.workitout.utils
 
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.EditText
@@ -25,8 +20,6 @@ import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.google.firebase.storage.FirebaseStorage

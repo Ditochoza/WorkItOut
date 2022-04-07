@@ -7,7 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.color.DynamicColors
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.repository.DbConstants
+import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.collectFlow
 import es.ucm.fdi.workitout.utils.getNavController
 import es.ucm.fdi.workitout.viewModel.StartSharedViewModel
@@ -17,7 +17,7 @@ class StartActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DynamicColors.applyIfAvailable(this)
+        DynamicColors.applyToActivityIfAvailable(this)
 
         setContentView(R.layout.activity_start)
 

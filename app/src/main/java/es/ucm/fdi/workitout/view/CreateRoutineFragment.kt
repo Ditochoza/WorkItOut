@@ -28,12 +28,12 @@ class CreateRoutineFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.vModel = viewModel
-        //binding.loading = mainSharedViewModel.loading.value
+        binding.loading = mainSharedViewModel.loading.value
         binding.tempImageUri = mainSharedViewModel.tempImageUri.value
         binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
 
-        setupTimeSelector()
+        setupTimePicker()
         setupCollectors()
 
         return binding.root
@@ -41,10 +41,10 @@ class CreateRoutineFragment : Fragment() {
 
     private fun setupCollectors() {
         mainSharedViewModel.tempImageUri.collectLatestFlow(this) { binding.tempImageUri = it }
-        //mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
+        mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
     }
 
-    private fun setupTimeSelector() {
+    private fun setupTimePicker() {
         activity?.createEditTextTimePicker(binding.etTime, binding.tilTime,
             "", R.string.time_scheduled) { viewModel.updateTime(zeroTimestamp().withTime(it)) }
     }

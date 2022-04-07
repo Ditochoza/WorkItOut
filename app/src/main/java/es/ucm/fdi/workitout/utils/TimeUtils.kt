@@ -1,10 +1,6 @@
 package es.ucm.fdi.workitout.utils
 
 import com.google.firebase.Timestamp
-import java.time.DayOfWeek
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
 import java.time.*
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle

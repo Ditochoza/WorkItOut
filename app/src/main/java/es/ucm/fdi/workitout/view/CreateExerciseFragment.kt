@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
-import es.ucm.fdi.workitout.utils.collectFlow
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -27,6 +26,8 @@ class CreateExerciseFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.vModel = viewModel
+        binding.loading = mainSharedViewModel.loading.value
+        binding.tempImageUri = mainSharedViewModel.tempImageUri.value
         binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -47,7 +48,6 @@ class CreateExerciseFragment : Fragment() {
 
     //Guardamos el estado del ViewModel cuando la app pasa a segundo plano
     override fun onPause() {
-        mainSharedViewModel.saveStateHandle()
         viewModel.saveStateHandle()
         super.onPause()
     }

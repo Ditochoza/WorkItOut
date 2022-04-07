@@ -17,6 +17,7 @@ import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
+import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 //BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado

@@ -1,8 +1,6 @@
 package es.ucm.fdi.workitout.repository
 
 import android.widget.ImageView
-import android.util.Log
-import android.widget.ImageView
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FieldPath
@@ -12,17 +10,13 @@ import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.getByteArray
 import es.ucm.fdi.workitout.utils.getImageRef
 import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
 import kotlinx.coroutines.*
-import es.ucm.fdi.workitout.utils.getByteArray
-import es.ucm.fdi.workitout.utils.getImageRef
-import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class UserRepository {
 
@@ -80,14 +74,12 @@ class UserRepository {
                 var routinesScheduled: List<Routine> = emptyList()
                 listOf(
                     async { //Obtenemos el usuario de la sesión
-                        val dsUser = dbUsers.document(email).get().await()
-                        user = dsUser.toObject(User::class.java)?.copy(email = dsUser.id)
+                        user = dbUsers.document(email).get().await().toObject(User::class.java)
                     },
                     async { //Obtenemos las rutinas del usuario (Subcollections)
-                        val qsRoutines = dbUsers.document(email)
+                        routines = dbUsers.document(email)
                             .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
-                        routines = qsRoutines.toObjects(Routine::class.java)
-                            .mapIndexed { indexRoutiens, routine ->
+                            .toObjects(Routine::class.java).map { routine ->
                                 var exercises = emptyList<Exercise>()
                                 if (routine.exercisesIds.isNotEmpty()) {
                                     val qsExercises = dbExercises.whereIn(
@@ -95,13 +87,9 @@ class UserRepository {
                                         routine.exercisesIds
                                     ).get().await()
                                     exercises = qsExercises.toObjects(Exercise::class.java)
-                                        .mapIndexed { indexExercises, exercise ->
-                                            exercise.copy(id = qsExercises.documents[indexExercises].id)
-                                        }
                                 }
 
                                 routine.copy(
-                                    id = qsRoutines.documents[indexRoutiens].id,
                                     exercises = exercises
                                 )
                             }
@@ -110,7 +98,7 @@ class UserRepository {
                     }
                 ).awaitAll()
                 DatabaseResult.success(
-                    user?.copy( //Filtramos las rutinas programadas
+                    user?.copy(
                         routines = routines,
                         routinesScheduled = routinesScheduled
                     )
@@ -119,11 +107,6 @@ class UserRepository {
                 DatabaseResult.failed(R.string.error_fetch_user)
             }
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
-    }
-
-    //Se cierra sesión en Firebase Authentication
-    fun logout() {
-        auth.signOut()
     }
 
     suspend fun uploadExerciseAndImage(email: String, newExercise: Exercise, ivExercise: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
@@ -192,5 +175,10 @@ class UserRepository {
 
             fetchUserByEmail(email)
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_routine) }
+    }
+
+    //Se cierra sesión en Firebase Authentication
+    fun logout() {
+        auth.signOut()
     }
 }

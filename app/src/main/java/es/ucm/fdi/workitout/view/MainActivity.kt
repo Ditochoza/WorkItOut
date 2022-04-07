@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.color.DynamicColors
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.repository.DbConstants
+import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.launch
@@ -73,12 +73,6 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
-    //Guardamos el estado del ViewModel cuando la app pasa a segundo plano
-    override fun onPause() {
-        mainSharedViewModel.saveStateHandle()
-        super.onPause()
-    }
-
     //Se lanza el intent para elegir una imagen del almacenamiento interno
     fun selectImageFromGallery() = selectImageFromGalleryResultFlow.launch("image/*")
 
@@ -87,4 +81,10 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let { mainSharedViewModel.setTempImage(uri) }
         }
+
+    //Guardamos el estado del ViewModel cuando la app pasa a segundo plano
+    override fun onPause() {
+        mainSharedViewModel.saveStateHandle()
+        super.onPause()
+    }
 }

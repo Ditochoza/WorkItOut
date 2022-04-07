@@ -39,7 +39,6 @@
     <string name="name">Name</string>
     <string name="muscles">Muscles:</string>
     <string name="muscles_not_selected_error">You must select at least one muscle</string>
-    <string name="welcome_user_name">Welcome, %s</string>
     <string name="new_routine">New Routine</string>
     <string name="update_routine">Update Routine</string>
     <string name="routine_image">Routine Image</string>

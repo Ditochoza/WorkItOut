@@ -18,7 +18,6 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class CreateRoutineViewModel(private var savedStateHandle: SavedStateHandle): ViewModel() {
 
-
     private val _tempRoutine = MutableStateFlow(savedStateHandle.get(::tempRoutine.name) ?: Routine())
     val tempRoutine: StateFlow<Routine> = _tempRoutine.asStateFlow()
 
