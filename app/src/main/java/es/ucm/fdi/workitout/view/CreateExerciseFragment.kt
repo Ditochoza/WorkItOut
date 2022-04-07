@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
 import es.ucm.fdi.workitout.utils.collectFlow
+import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -35,7 +36,8 @@ class CreateExerciseFragment : Fragment() {
     }
 
     private fun setupCollectors() {
-        mainSharedViewModel.tempImageUri.collectFlow(this) { binding.tempImageUri = it }
+        mainSharedViewModel.tempImageUri.collectLatestFlow(this) { binding.tempImageUri = it }
+        mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
     }
 
     override fun onDestroyView() {
