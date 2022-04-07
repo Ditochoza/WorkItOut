@@ -14,8 +14,8 @@ import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 //BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado
-@BindingAdapter("sModel")
-fun MaterialToolbar.onClick(sModel: MainSharedViewModel) {
+@BindingAdapter("sModel", "navActionResToSettings")
+fun MaterialToolbar.onClick(sModel: MainSharedViewModel, navActionResToSettings: Int) {
     this.menu.findItem(R.id.item_update_menu_main).setOnMenuItemClickListener {
         sModel.fetchAll()
         return@setOnMenuItemClickListener true
@@ -25,7 +25,7 @@ fun MaterialToolbar.onClick(sModel: MainSharedViewModel) {
         return@setOnMenuItemClickListener true
     }
     this.menu.findItem(R.id.item_settings_menu_main).setOnMenuItemClickListener {
-        //TODO Implementar navegación a Ajustes
+        sModel.navigate(navActionResToSettings)
         return@setOnMenuItemClickListener true
     }
 }

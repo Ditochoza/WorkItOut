@@ -1,9 +1,11 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.DbConstants
@@ -25,8 +27,8 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
 
-    //private val _navigateActionRes = MutableSharedFlow<Int>()
-    //val navigateActionRes: SharedFlow<Int> = _navigateActionRes.asSharedFlow()
+    private val _navigateActionRes = MutableSharedFlow<Int>()
+    val navigateActionRes: SharedFlow<Int> = _navigateActionRes.asSharedFlow()
 
     private val _shortToastRes = MutableSharedFlow<Int>()
     val shortToastRes: SharedFlow<Int> = _shortToastRes.asSharedFlow()
@@ -64,10 +66,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
-    fun saveStateHandle() {
-        savedStateHandle.set(::user.name, user.value)
-    }
-
     //Realiza el logout de FirebaseAuth y elimina el usuario de DataStore
     //Emite evento para lanzar StartActivity
     fun logout() {
@@ -77,4 +75,10 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             _logout.emit(true)
         }
     }
+
+    fun clearErrors(til: TextInputLayout) { til.error = "" }
+
+    fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
+
+    fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
 }

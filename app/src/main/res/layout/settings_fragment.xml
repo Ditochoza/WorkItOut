@@ -20,8 +20,7 @@
             android:layout_height="?attr/actionBarSize"
             app:title="@string/settings"
             app:titleCentered="true"
-            app:navigationIcon="@drawable/ic_round_close_24"
-            app:menu="@menu/menu_main" />
+            app:navigationIcon="@drawable/ic_round_close_24" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
