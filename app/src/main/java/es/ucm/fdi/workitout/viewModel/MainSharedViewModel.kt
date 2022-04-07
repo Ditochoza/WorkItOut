@@ -21,6 +21,10 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
 
+    //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
+    private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
+    val tempImageUri: StateFlow<Uri> = _tempImageUri.asStateFlow()
+
     private val _loading = MutableStateFlow(true)
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
@@ -64,6 +68,18 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
+    fun createExercise(ivExercise: ImageView, newExercise: Exercise) {
+        viewModelScope.launch {
+            val resultUser = userRepository.uploadExerciseAndImage(user.value.email, newExercise,
+                ivExercise, tempImageUri.value != Uri.EMPTY)
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            }
+            else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+        }
+    }
+
     fun saveStateHandle() {
         savedStateHandle.set(::user.name, user.value)
     }
@@ -76,5 +92,14 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             userDataStore.deleteUserDataStore()
             _logout.emit(true)
         }
+
+    fun clearErrors(til: TextInputLayout) { til.error = "" }
+
+    fun setTempImage(uri: Uri){
+        _tempImageUri.value = uri
+    }
+
+    fun saveStateHandle() {
+        savedStateHandle.set(::user.name, user.value)
     }
 }

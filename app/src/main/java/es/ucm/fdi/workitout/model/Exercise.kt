@@ -9,6 +9,7 @@ data class Exercise(
     @get: Exclude var id: String = "",
     var name: String = "",
     var description: String = "",
+    var muscles: List<String>  = emptyList(),
     var imageUrl: String = "",
-    var muscles: List<String> = emptyList(),
-) : Parcelable
+    var videoLinks: List<String>  = emptyList()
+):Parcelable
