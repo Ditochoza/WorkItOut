@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.ValidationResult
-import es.ucm.fdi.workitout.utils.ExerciseValidationUtil
+import es.ucm.fdi.workitout.utils.ValidationExerciseUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +20,7 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
     fun createExercise(ivExercise: ImageView, tvImageError: TextView, tilName: TextInputLayout,
                        tilDescription: TextInputLayout, tvMusclesError: TextView, sModel: MainSharedViewModel
     ) {
-        val result = ExerciseValidationUtil.validateExercise(
+        val result = ValidationExerciseUtil.validateExercise(
             ivExercise to tvImageError,
             tempExercise.value.name to tilName,
             tempExercise.value.description to tilDescription,

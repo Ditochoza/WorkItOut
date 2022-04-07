@@ -1,16 +1,19 @@
 package es.ucm.fdi.workitout.adapters
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.loadResource
+import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 //BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado
@@ -27,15 +30,8 @@ fun MaterialToolbar.onClick(sModel: MainSharedViewModel) {
     this.menu.findItem(R.id.item_settings_menu_main).setOnMenuItemClickListener {
         //TODO Implementar navegación a Ajustes
         return@setOnMenuItemClickListener true
-import android.net.Uri
-import android.widget.ImageView
-import androidx.databinding.BindingAdapter
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
-import com.google.android.material.chip.ChipGroup
-import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.utils.loadResource
-import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
+    }
+}
 
 //BindingAdapter para colocar los músculos para seleccionar en el ChipGroup de CreateExercise
 //También se le añade un listener para actualizar los músculos seleccionados

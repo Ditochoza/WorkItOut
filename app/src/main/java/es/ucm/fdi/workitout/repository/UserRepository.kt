@@ -1,30 +1,21 @@
 package es.ucm.fdi.workitout.repository
 
-import android.util.Log
+import android.widget.ImageView
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FieldPath
-import android.widget.ImageView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.Routine
 import com.google.firebase.storage.FirebaseStorage
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
-import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import es.ucm.fdi.workitout.utils.getByteArray
 import es.ucm.fdi.workitout.utils.getImageRef
+import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
 
 class UserRepository {
 
@@ -69,54 +60,58 @@ class UserRepository {
         } catch (e: FirebaseAuthInvalidCredentialsException) { //La contraseña introducida no es correcta
             DatabaseResult.failed(R.string.invalid_password_exception)
         } catch (e: Exception) {
-            //TODO Mensaje error
+            DatabaseResult.failed(R.string.error_login)
         }
     }
 
     //Devuelve el usuario de la base de datos asociado a un correo electrónico
     suspend fun fetchUserByEmail(email: String): DatabaseResult<User?> {
-        return try {
+        return try { withContext(Dispatchers.IO) {
             if (email == currentUser?.email) {
-                withContext(Dispatchers.IO) {
-                    var user: User? = User()
-                    var routines: List<Routine> = emptyList()
-                    var routinesScheduled: List<Routine> = emptyList()
-                    listOf(
-                        async { //Obtenemos el usuario de la sesión
-                            val dsUser = dbUsers.document(email).get().await()
-                            user = dsUser.toObject(User::class.java)?.copy(email = dsUser.id)
-                        },
-                        async { //Obtenemos las rutinas del usuario (Subcollections)
-                            val qsRoutines = dbUsers.document(email)
-                                .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
-                            routines = qsRoutines.toObjects(Routine::class.java).mapIndexed { indexRoutiens, routine ->
+                var user: User? = User()
+                var routines: List<Routine> = emptyList()
+                var routinesScheduled: List<Routine> = emptyList()
+                listOf(
+                    async { //Obtenemos el usuario de la sesión
+                        val dsUser = dbUsers.document(email).get().await()
+                        user = dsUser.toObject(User::class.java)?.copy(email = dsUser.id)
+                    },
+                    async { //Obtenemos las rutinas del usuario (Subcollections)
+                        val qsRoutines = dbUsers.document(email)
+                            .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+                        routines = qsRoutines.toObjects(Routine::class.java)
+                            .mapIndexed { indexRoutiens, routine ->
                                 var exercises = emptyList<Exercise>()
                                 if (routine.exercisesIds.isNotEmpty()) {
-                                    val qsExercises = dbExercises.whereIn(FieldPath.documentId(),
-                                        routine.exercisesIds).get().await()
+                                    val qsExercises = dbExercises.whereIn(
+                                        FieldPath.documentId(),
+                                        routine.exercisesIds
+                                    ).get().await()
                                     exercises = qsExercises.toObjects(Exercise::class.java)
                                         .mapIndexed { indexExercises, exercise ->
                                             exercise.copy(id = qsExercises.documents[indexExercises].id)
                                         }
                                 }
 
-                                routine.copy(id = qsRoutines.documents[indexRoutiens].id, exercises = exercises)
+                                routine.copy(
+                                    id = qsRoutines.documents[indexRoutiens].id,
+                                    exercises = exercises
+                                )
                             }
-                            routinesScheduled = orderRoutinesByWeekDay(routines.filter { it.dayOfWeekScheduled != -1 })
-                        }
-                    ).awaitAll()
-                    DatabaseResult.success(user?.copy( //Filtramos las rutinas programadas
+                        routinesScheduled =
+                            orderRoutinesByWeekDay(routines.filter { it.dayOfWeekScheduled != -1 })
+                    }
+                ).awaitAll()
+                DatabaseResult.success(
+                    user?.copy( //Filtramos las rutinas programadas
                         routines = routines,
                         routinesScheduled = routinesScheduled
-                    ))
-                }
+                    )
+                )
             } else {
                 DatabaseResult.failed(R.string.error_fetch_user)
             }
-        } catch (e: Exception) {
-            Log.d("ASD", e.message.toString())
-            DatabaseResult.failed(R.string.error_fetch_user)
-        }
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
     }
 
     //Se cierra sesión en Firebase Authentication
@@ -154,8 +149,7 @@ class UserRepository {
                 dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES)
                     .add(newExercise).await()
 
-            DatabaseResult.success(User())
-            //TODO Devolver el usuario actualizado con fetchUserByEmail(email)
+            fetchUserByEmail(email)
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_exercise) }
     }
 }

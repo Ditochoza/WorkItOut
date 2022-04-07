@@ -9,6 +9,7 @@
         <item>cuello</item>
         <item>cabeza</item>
         <item>piernas</item>
+    </string-array>
     <string-array name="week_days">
         <item>Monday</item>
         <item>Tuesday</item>

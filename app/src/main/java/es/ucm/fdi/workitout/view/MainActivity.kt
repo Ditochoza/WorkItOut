@@ -1,8 +1,8 @@
 package es.ucm.fdi.workitout.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -14,14 +14,13 @@ import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.launch
 import java.util.*
-import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class MainActivity : AppCompatActivity() {
     private val mainSharedViewModel: MainSharedViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DynamicColors.applyIfAvailable(this)
+        DynamicColors.applyToActivityIfAvailable(this)
 
         val emailIntent = intent.getStringExtra(DbConstants.USER_EMAIL)
 

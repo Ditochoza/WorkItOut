@@ -11,11 +11,6 @@ import es.ucm.fdi.workitout.model.ValidationResult
 import es.ucm.fdi.workitout.repository.UserRepository
 import es.ucm.fdi.workitout.utils.ValidationUserUtil
 import kotlinx.coroutines.flow.*
-import es.ucm.fdi.workitout.utils.UserValidationUtil
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class StartSharedViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {

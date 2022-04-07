@@ -1,10 +1,14 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
+import android.net.Uri
+import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.DbConstants
 import es.ucm.fdi.workitout.repository.UserDataStore
@@ -80,10 +84,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
-    fun saveStateHandle() {
-        savedStateHandle.set(::user.name, user.value)
-    }
-
     //Realiza el logout de FirebaseAuth y elimina el usuario de DataStore
     //Emite evento para lanzar StartActivity
     fun logout() {
@@ -92,10 +92,11 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             userDataStore.deleteUserDataStore()
             _logout.emit(true)
         }
+    }
 
     fun clearErrors(til: TextInputLayout) { til.error = "" }
 
-    fun setTempImage(uri: Uri){
+    fun setTempImage(uri: Uri) {
         _tempImageUri.value = uri
     }
 

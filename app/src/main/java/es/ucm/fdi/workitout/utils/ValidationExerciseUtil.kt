@@ -6,7 +6,7 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.ValidationResult
 
-object ExerciseValidationUtil {
+object ValidationExerciseUtil {
 
     fun validateExercise(
         image: Pair<ImageView, TextView>,
