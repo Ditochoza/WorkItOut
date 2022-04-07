@@ -1,75 +1,53 @@
 package es.ucm.fdi.workitout.view
 
-
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import com.google.android.material.chip.Chip
-import com.google.firebase.ktx.Firebase
+import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
-import es.ucm.fdi.workitout.viewModel.EditSharedViewModel
+import es.ucm.fdi.workitout.utils.collectFlow
+import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
+import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
 class CreateExerciseFragment : Fragment() {
-    private val editSharedViewModel: EditSharedViewModel by activityViewModels()
+    private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
+    private val viewModel: CreateExerciseViewModel by viewModels()
 
     private var _binding: FragmentCreateExerciseBinding? = null
     private val binding get() = _binding!!
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateExerciseBinding.inflate(inflater, container, false)
 
-        binding.eModel = editSharedViewModel
-        binding.exerciseFrag = this
+        binding.sModel = mainSharedViewModel
+        binding.vModel = viewModel
+        binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.chipGroup.setOnCheckedStateChangeListener { group, checkedIds ->
-            val chipsText = mutableListOf<String>()
-            binding.textViewMuscleError.isVisible = false
-            checkedIds.forEach { chipId ->
-                chipsText.add(binding.chipGroup.findViewById<Chip>(chipId).text.toString())
-            }
-
-            editSharedViewModel.setMusclesList(chipsText)
-        }
-
-        if(editSharedViewModel.tempImageUri.value != Uri.EMPTY){
-            binding.imageView.setImageURI(editSharedViewModel.tempImageUri.value)
-        }
-
+        setupCollectors()
 
         return binding.root
     }
 
-    //Se lanza el intent para elegir una imagen del almacenamiento interno
-    fun selectImageFromGallery() = selectImageFromGalleryResultFlow.launch("image/*")
-
-    //Al volver del intent se recupera el uri de la imagen elegida
-    private val selectImageFromGalleryResultFlow = registerForActivityResult(
-        ActivityResultContracts.GetContent()) { uri: Uri? ->
-
-        uri?.let {
-            editSharedViewModel.setTempImage(uri)
-            binding.imageView.setImageURI(uri)
-            binding.imageTexView.isVisible=false
-            binding.imageTexViewError.visibility = View.GONE
-
-        }
+    private fun setupCollectors() {
+        mainSharedViewModel.tempImageUri.collectFlow(this) { binding.tempImageUri = it }
     }
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    //Guardamos el estado del ViewModel cuando la app pasa a segundo plano
+    override fun onPause() {
+        mainSharedViewModel.saveStateHandle()
+        viewModel.saveStateHandle()
+        super.onPause()
     }
 }
 

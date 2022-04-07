@@ -6,9 +6,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
-import es.ucm.fdi.workitout.UserValidationUtil
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.UserRepository
+import es.ucm.fdi.workitout.utils.UserValidationUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

@@ -1,0 +1,53 @@
+package es.ucm.fdi.workitout.viewModel
+
+import android.app.Application
+import android.net.Uri
+import android.widget.ImageView
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
+import com.google.android.material.textfield.TextInputLayout
+import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.repository.UserRepository
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+
+class MainSharedViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
+    private val userRepository = UserRepository()
+
+    private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User("ditochoza@gmail.com", "Víctor"))
+    val user: StateFlow<User> = _user.asStateFlow()
+
+    //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
+    private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
+    val tempImageUri: StateFlow<Uri> = _tempImageUri.asStateFlow()
+
+
+    private val _shortToastRes = MutableSharedFlow<Int>()
+    val shortToastRes: SharedFlow<Int> = _shortToastRes.asSharedFlow()
+
+    fun createExercise(ivExercise: ImageView, newExercise: Exercise) {
+        viewModelScope.launch {
+            val resultUser = userRepository.uploadExerciseAndImage(user.value.email, newExercise,
+                ivExercise, tempImageUri.value != Uri.EMPTY)
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            }
+            else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+        }
+    }
+
+
+    fun clearErrors(til: TextInputLayout) { til.error = "" }
+
+    fun setTempImage(uri: Uri){
+        _tempImageUri.value = uri
+    }
+
+    fun saveStateHandle() {
+        savedStateHandle.set(::user.name, user.value)
+    }
+}

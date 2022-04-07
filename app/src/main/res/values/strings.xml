@@ -5,10 +5,23 @@
     <string name="login">Login</string>
     <string name="sign_up">Sign Up</string>
     <string name="your_favorite_training_app">Your favorite training app</string>
-    <string name="name">Name</string>
     <string name="repeat_password">Repeat Password</string>
     <string name="back">Back</string>
     <string name="register">Register</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_upload_exercise">Failed to upload exercise</string>
+    <string name="field_not_empty">Field cannot be empty</string>
+    <string name="field_long">Field must be shorter</string>
+    <string name="field_short">Field must be longer</string>
+    <string name="exercise_image">Exercise Image</string>
+    <string name="new_exercise">New Exercise</string>
+    <string name="update_exercise">Update Exercise</string>
+    <string name="select_image">Select Image</string>
+    <string name="please_select_an_image">Please select an image!</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="muscles">Muscles:</string>
+    <string name="muscles_not_selected_error">You must select at least one muscle</string>
+    <string name="save">Save</string>
 </resources>

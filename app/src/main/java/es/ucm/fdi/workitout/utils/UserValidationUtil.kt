@@ -1,4 +1,4 @@
-package es.ucm.fdi.workitout
+package es.ucm.fdi.workitout.utils
 
 import android.util.Patterns
 import com.google.android.material.textfield.TextInputLayout

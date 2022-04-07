@@ -10,7 +10,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.WorkItOut">
         <activity android:name=".view.StartActivity" />
-        <activity android:name=".view.EditActivity" />
         <activity
             android:name=".view.MainActivity"
             android:exported="true">
