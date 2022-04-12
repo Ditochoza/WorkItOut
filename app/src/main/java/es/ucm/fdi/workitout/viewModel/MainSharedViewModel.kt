@@ -2,11 +2,14 @@ package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
+import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
@@ -43,6 +46,18 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _logout = MutableSharedFlow<Boolean>()
     val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
 
+    // Lista de ejericicos
+
+    val exercisesList = listOf<Exercise>(
+        Exercise("id","correr","mover las piernas rapido",listOf("gemelos","piernas"),
+            "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb"),
+        Exercise("id","correr","mover las piernas rapido",listOf("gemelos","piernas"),
+            "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb"),
+        Exercise("id","correr","mover las piernas rapido",listOf("gemelos","piernas"),
+            "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb")
+    )
+
+    ///
 
     //Obtiene un valor del usuario de DataStore instantáneamente
     suspend fun getStringUserDataStore(key: String): String {
@@ -118,4 +133,5 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
 
     fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
+    fun navigateToMyExercises(view: View) { view.findNavController().navigate(R.id.action_homeFragment_to_myExercises) }
 }

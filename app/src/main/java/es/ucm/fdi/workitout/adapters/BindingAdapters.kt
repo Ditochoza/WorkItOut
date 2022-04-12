@@ -110,3 +110,14 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
         til.error = ""
     }
 }
+
+@BindingAdapter("sModel", requireAll = true)
+fun RecyclerView.adapterExercises(sModel: MainSharedViewModel) {
+
+    val exercisesArrayList = ArrayList(sModel.exercisesList)
+
+    if (this.adapter == null)
+        this.adapter = ExercisesRecyclerViewAdapter(exercisesArrayList, sModel)
+    else
+        (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesArrayList)
+}
