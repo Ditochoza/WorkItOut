@@ -14,7 +14,15 @@
     </fragment>
     <fragment
         android:id="@+id/myExercises"
-        android:name="es.ucm.fdi.workitout.view.MyExercises"
+        android:name="es.ucm.fdi.workitout.view.MyExercisesFragment"
         android:label="fragment_my_exercises"
-        tools:layout="@layout/fragment_my_exercises" />
+        tools:layout="@layout/fragment_my_exercises" >
+        <action
+            android:id="@+id/action_myExercises_to_manageExerciseFragment"
+            app:destination="@id/manageExerciseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/manageExerciseFragment"
+        android:name="es.ucm.fdi.workitout.view.ManageExerciseFragment"
+        android:label="ManageExerciseFragment" />
 </navigation>

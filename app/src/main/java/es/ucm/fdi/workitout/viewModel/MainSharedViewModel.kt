@@ -57,6 +57,20 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb")
     )
 
+    private var _selectedExercise = MutableStateFlow(Exercise(name="Exercise Placeholder"))
+    val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
+
+    fun setSelectedExercise(view:View,exercise: Exercise){
+        _selectedExercise.value = exercise
+        savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
+        view.findNavController().navigate(R.id.action_myExercises_to_manageExerciseFragment)
+    }
+
+    fun deleteExercise(){
+        //Llama a operacion del backend que lo elimina de la bbdd
+
+        //El ejercicio que se elimina es el que esta en la var selectedExercise
+    }
     ///
 
     //Obtiene un valor del usuario de DataStore instantáneamente

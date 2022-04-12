@@ -96,9 +96,9 @@ fun RecyclerView.adapterRoutines(routines: List<Routine>, sModel: MainSharedView
         ArrayList(routines)
     }
 
-    if (this.adapter == null)
+    if (this.adapter == null){
         this.adapter = RoutinesRecyclerViewAdapter(routinesArrayList, sModel)
-    else
+    }else
         (adapter as RoutinesRecyclerViewAdapter).updateList(routinesArrayList)
 }
 

@@ -39,6 +39,7 @@
                     android:layout_width="108dp"
                     android:layout_height="108dp"
                     android:padding="2px"
+                    android:scaleType="centerCrop"
                     app:imageUrl="@{exercise.imageUrl}"/>
 
             </com.google.android.material.card.MaterialCardView>

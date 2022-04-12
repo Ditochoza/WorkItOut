@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import es.ucm.fdi.workitout.databinding.ExerciseItemBinding
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
+import kotlin.math.absoluteValue
 
 class ExercisesRecyclerViewAdapter(
     private var exercisesArrayList: ArrayList<Exercise>,
@@ -21,6 +22,9 @@ class ExercisesRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(exercisesArrayList[position])
         holder.binding.executePendingBindings()
+        holder.binding.root.setOnClickListener {
+            mainSharedViewModel.setSelectedExercise(it,exercisesArrayList[position])
+        }
     }
 
     override fun getItemCount() = exercisesArrayList.size
