@@ -2,6 +2,7 @@ package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
@@ -57,12 +58,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb")
     )
 
-    private var _selectedExercise = MutableStateFlow(Exercise(name="Exercise Placeholder"))
+
+    var _selectedExercise = MutableStateFlow(Exercise(name="Exercise Placeholder"))
     val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
 
     fun setSelectedExercise(view:View,exercise: Exercise){
         _selectedExercise.value = exercise
-        savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
         view.findNavController().navigate(R.id.action_myExercises_to_manageExerciseFragment)
     }
 
@@ -147,5 +148,5 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
 
     fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
-    fun navigateToMyExercises(view: View) { view.findNavController().navigate(R.id.action_homeFragment_to_myExercises) }
+
 }

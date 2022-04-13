@@ -3,15 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_main_graph"
-    app:startDestination="@id/homeFragment">
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="es.ucm.fdi.workitout.view.HomeFragment"
-        android:label="HomeFragment" >
-        <action
-            android:id="@+id/action_homeFragment_to_myExercises"
-            app:destination="@id/myExercises" />
-    </fragment>
+    app:startDestination="@id/myExercises">
     <fragment
         android:id="@+id/myExercises"
         android:name="es.ucm.fdi.workitout.view.MyExercisesFragment"
@@ -25,4 +17,9 @@
         android:id="@+id/manageExerciseFragment"
         android:name="es.ucm.fdi.workitout.view.ManageExerciseFragment"
         android:label="ManageExerciseFragment" />
+    <fragment
+        android:id="@+id/createExerciseFragment"
+        android:name="es.ucm.fdi.workitout.view.CreateExerciseFragment"
+        android:label="fragment_create_exercise"
+        tools:layout="@layout/fragment_create_exercise" />
 </navigation>

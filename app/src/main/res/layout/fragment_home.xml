@@ -47,11 +47,7 @@
                     android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
 
             </com.google.android.material.appbar.MaterialToolbar>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="My exercises"
-                android:onClick="@{(v) -> sModel.navigateToMyExercises(v)}"/>
+
         </com.google.android.material.appbar.AppBarLayout>
 
 
