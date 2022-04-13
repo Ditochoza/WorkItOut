@@ -9,6 +9,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.DialogSettingsChangePasswordBinding
+import es.ucm.fdi.workitout.databinding.DialogSettingsDeleteAccountBinding
 import es.ucm.fdi.workitout.utils.createAlertDialog
 import es.ucm.fdi.workitout.utils.string
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -42,7 +43,8 @@ class PreferencesFragment : PreferenceFragmentCompat()  {
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                         viewModel.validateAndUpdatePassword(binding.etCurrentPassword.string,
                             binding.tilCurrentPassword, binding.etNewPassword.string, binding.tilNewPassword,
-                            binding.etValidationPassword.string, binding.tilValidationPassword, sharedViewModel)
+                            binding.etValidationPassword.string, binding.tilValidationPassword, sharedViewModel,
+                            alertDialog)
                     }
                 }
                 alertDialog?.show()
@@ -52,13 +54,13 @@ class PreferencesFragment : PreferenceFragmentCompat()  {
         }
 
         //Botón de dar de baja el usuario
-        /*val btnDeleteAccount: Preference = preferenceManager.findPreference(getString(R.string.delete_account_var))!!
+        val btnDeleteAccount: Preference = preferenceManager.findPreference(getString(R.string.delete_account_var))!!
         btnDeleteAccount.setOnPreferenceClickListener {
             activity?.let { activity ->
                 val binding = DialogSettingsDeleteAccountBinding.inflate(activity.layoutInflater)
                 val alertDialog =
-                    context?.createAlertDialog(R.string.settings_user_unsubscribe_title,
-                        R.string.settings_user_unsubscribe,
+                    context?.createAlertDialog(R.string.settings_user_delete_account_title,
+                        R.string.settings_user_delete_account_message,
                         ok = R.string.confirm to {},
                         cancel = R.string.cancel to {}
                     )?.setView(binding.root)?.create()
@@ -69,13 +71,14 @@ class PreferencesFragment : PreferenceFragmentCompat()  {
                 alertDialog?.setOnShowListener {
                     alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                         val currentPassword = binding.etCurrentPassword.string
-                        sharedViewModel.validateCheckPasswordAndDeleteAccount(currentPassword, binding.tilCurrentPassword)
+                        viewModel.validateAndDeleteAccount(currentPassword, binding.tilCurrentPassword,
+                            sharedViewModel, alertDialog)
                     }
                 }
                 alertDialog?.show()
             }
 
             return@setOnPreferenceClickListener true
-        }*/
+        }
     }
 }

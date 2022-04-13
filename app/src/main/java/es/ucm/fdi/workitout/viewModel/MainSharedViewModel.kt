@@ -1,11 +1,12 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
-import android.net.Uri
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
+import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.repository.DbConstants
@@ -63,6 +64,31 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+        }
+    }
+
+    fun updatePassword(currentPassword: String, newPassword: String, alertDialog: AlertDialog) {
+        viewModelScope.launch {
+            _loading.emit(true)
+            val result = userRepository.checkAndUpdatePassword(currentPassword, newPassword)
+            _loading.emit(false)
+
+            if (result is DatabaseResult.Success) {
+                _shortToastRes.emit(R.string.password_updated)
+                alertDialog.dismiss()
+            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+        }
+    }
+
+    fun deleteAccount(currentPassword: String, alertDialog: AlertDialog) {
+        viewModelScope.launch {
+            val result = userRepository.checkPasswordAndDeleteAccount(currentPassword)
+
+            if (result is DatabaseResult.Success) {
+                _shortToastRes.emit(R.string.user_deleted)
+                alertDialog.dismiss()
+                logout()
+            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }
 

@@ -135,11 +135,30 @@ object ValidationUserUtil {
                 validationPassword.first.length < 8,
                 resError = R.string.short_password
             ) -> result = ValidationResult.failed()
-            newPassword.second.tilError( /** Error si la contraseña nueva es diferente que la de validación */
+            validationPassword.second.tilError( /** Error si la contraseña nueva es diferente que la de validación */
                 newPassword.first != validationPassword.first,
                 resError = R.string.passwords_not_equal
             ) -> result = ValidationResult.failed()
         }
+
+        return result
+    }
+
+    fun validateDeleteAccount(
+        currentPassword: Pair<String, TextInputLayout>
+    ) : ValidationResult {
+        var result: ValidationResult = ValidationResult.success()
+
+        if (currentPassword.second.tilError( /** Error si la contraseña actual está vacío */
+                currentPassword.first.isEmpty(),
+                resError = R.string.field_not_empty
+            )
+        ) result = ValidationResult.failed()
+        else if (currentPassword.second.tilError( /** Error si la contraseña actual tiene menos de 8 caracteres */
+                currentPassword.first.length < 8,
+                resError = R.string.short_password
+            )
+        ) result = ValidationResult.failed()
 
         return result
     }

@@ -46,4 +46,10 @@
     <string name="current_password">Current Password</string>
     <string name="settings_user_change_password">Chage Password</string>
     <string name="new_password_equal_current_password">New password cannot be the same as your current password</string>
+    <string name="error_update_password">Failed to update password</string>
+    <string name="password_updated">Password updated</string>
+    <string name="user_deleted">User deleted</string>
+    <string name="error_delete_user">Failed to delete user account</string>
+    <string name="settings_user_delete_account_message">Are you sure you want to delete your account? Type your password to continue:</string>
+    <string name="settings_user_delete_account_title">Delete account</string>
 </resources>
