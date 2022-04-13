@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.navigation.NavigationView
+import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentHomeBinding
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.utils.collectLatestFlow
@@ -26,9 +28,20 @@ class HomeFragment : Fragment() {
         binding.emptyList = emptyList<Exercise>()
         binding.lifecycleOwner = viewLifecycleOwner
 
+        setupNavigationDrawerItemListener(binding.homeMainNavigationDrawer)
         setupCollectors()
 
         return binding.root
+    }
+
+    private fun setupNavigationDrawerItemListener(homeMainNavigationDrawer: NavigationView) {
+        homeMainNavigationDrawer.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.exercises_nav_drawer_menu_item -> mainSharedViewModel.navigate(/*TODO Implementar navegación*/0)
+                R.id.routines_nav_drawer_menu_item -> mainSharedViewModel.navigate(/*TODO Implementar navegación*/0)
+            }
+            true
+        }
     }
 
     private fun setupCollectors() {
