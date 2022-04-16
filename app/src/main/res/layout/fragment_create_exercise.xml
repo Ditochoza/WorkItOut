@@ -160,19 +160,30 @@
                     app:vModel="@{vModel}"
                     app:singleLine="false"
                     app:singleSelection="false" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addVideoLinks"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:onClick="@{() -> sModel.navigate(@id/action_createExerciseFragment_to_addVideoLinksFragment)}"
+                    android:text="Add video links" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveButton"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMuscleError,sModel)}"
+                    android:text="@string/save" />
+
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveButton"
-            style="?attr/materialButtonStyle"
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMuscleError,sModel)}"
-            android:text="@string/save" />
+
 
         <ProgressBar
             android:id="@+id/pBar"

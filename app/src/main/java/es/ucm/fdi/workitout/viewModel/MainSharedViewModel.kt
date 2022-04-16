@@ -58,6 +58,9 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         _selectedExercise.value = exercise
         view.findNavController().navigate(R.id.action_myExercisesFragment_to_manageExerciseFragment)
     }
+    fun setSelectedExercise(exercise: Exercise){
+        _selectedExercise.value = exercise
+    }
 
     fun deleteExercise(exercise: Exercise){
 

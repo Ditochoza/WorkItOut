@@ -62,7 +62,7 @@ fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExercise
         vModel.updateMuscles(newMuscles)
     }
 }
-//Para ManageExerciseFragment
+//Para ViewExerciseFragment
 @BindingAdapter("muscles","sModel")
 fun ChipGroup.adapterChipsMuscles(muscles: List<String>, sModel: MainSharedViewModel) {
     muscles.forEach {
@@ -70,8 +70,42 @@ fun ChipGroup.adapterChipsMuscles(muscles: List<String>, sModel: MainSharedViewM
             text = it
         })
     }
+
 }
 
+//Para AddVideoLinks : videolinks
+@BindingAdapter("vModel")
+fun ChipGroup.adapterChipsVideolinks(vModel: CreateExerciseViewModel) {
+
+
+    /*setOnCheckedStateChangeListener { group, checkedIds ->
+        val deletedVideos = ArrayList<String>()
+        checkedIds.forEach { chipId ->
+            val chip = findViewById<Chip>(chipId)
+            deletedVideos.add(chip.text.toString())
+            group.removeView(chip)
+        }
+        vModel.updateVideoLinks(deletedVideos)
+    }*/
+
+    vModel.tempExercise.value.videoLinks.forEach { link ->
+        addView(Chip(context).apply {
+            text = link
+            isClickable = true
+            setChipDrawable(ChipDrawable.createFromAttributes(context,
+                null,
+                0,
+                R.style.Widget_Material3_Chip_Input
+            ))
+            setOnClickListener {
+                removeView(it)
+                vModel.updateVideoLinks(link)
+            }
+        })
+    }
+
+
+}
 //BindingAdapter para colocar una imagen en el ImageView a partir de su URL (HTTP) o Uri de imagen elegida
 @BindingAdapter("imageUrl", "tempImageUri")
 fun ImageView.loadImage(imageUrl: String, tempImageUri: Uri) {

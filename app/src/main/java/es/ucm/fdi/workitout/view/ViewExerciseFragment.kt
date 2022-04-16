@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import es.ucm.fdi.workitout.databinding.FragmentManageExerciseBinding
+import es.ucm.fdi.workitout.databinding.FragmentViewExerciseBinding
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -16,12 +16,12 @@ class ViewExerciseFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
 
 
-    private var _binding: FragmentManageExerciseBinding? = null
+    private var _binding: FragmentViewExerciseBinding? = null
     private val binding get() = _binding!!
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentManageExerciseBinding.inflate(inflater, container, false)
+        _binding = FragmentViewExerciseBinding.inflate(inflater, container, false)
 
         binding.sModel = mainSharedViewModel
         binding.exercise = mainSharedViewModel.selectedExercise.value

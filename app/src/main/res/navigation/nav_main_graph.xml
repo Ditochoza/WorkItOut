@@ -31,5 +31,13 @@
         android:id="@+id/createExerciseFragment"
         android:name="es.ucm.fdi.workitout.view.CreateExerciseFragment"
         android:label="fragment_create_exercise"
-        tools:layout="@layout/fragment_create_exercise" />
+        tools:layout="@layout/fragment_create_exercise" >
+        <action
+            android:id="@+id/action_createExerciseFragment_to_addVideoLinksFragment"
+            app:destination="@id/addVideoLinksFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addVideoLinksFragment"
+        android:name="es.ucm.fdi.workitout.view.AddVideoLinksFragment"
+        android:label="AddVideoLinksFragment" />
 </navigation>

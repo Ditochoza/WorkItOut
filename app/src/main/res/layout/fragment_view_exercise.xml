@@ -125,6 +125,20 @@
                     app:sModel="@{sModel}"/>
 
 
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/video_links" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cgVideos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:muscles="@{exercise.videoLinks}"
+                    app:sModel="@{sModel}"/>
+
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>

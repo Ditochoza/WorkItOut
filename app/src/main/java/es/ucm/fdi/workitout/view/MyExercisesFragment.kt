@@ -45,6 +45,7 @@ class MyExercisesFragment : Fragment() {
             setTitle("Manage Exercise")
             setItems(items) { dialog, which ->
                 if(items[which] == "Edit"){
+                    mainSharedViewModel.setSelectedExercise(exercise)
                     view.findNavController().navigate(R.id.action_myExercisesFragment_to_createExerciseFragment)
                 }else if(items[which] == "Delete") {
                     mainSharedViewModel.deleteExercise(exercise)
