@@ -7,6 +7,7 @@
     <data>
         <import type="android.view.View" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+        <variable name="myExercises" type="es.ucm.fdi.workitout.view.MyExercisesFragment" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -52,7 +53,8 @@
                     android:clipToPadding="false"
                     android:scrollbars="none"
                     app:layoutManager="LinearLayoutManager"
-                    app:sModel="@{sModel}"/>
+                    app:sModel="@{sModel}"
+                    app:myExercises="@{myExercises}"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.ucm.fdi.workitout.databinding.ExerciseItemBinding
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.view.MyExercisesFragment
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlin.math.absoluteValue
 
 class ExercisesRecyclerViewAdapter(
     private var exercisesArrayList: ArrayList<Exercise>,
-    private val mainSharedViewModel: MainSharedViewModel
+    private val mainSharedViewModel: MainSharedViewModel,
+    private val myExercisesFragment: MyExercisesFragment
 ): RecyclerView.Adapter<ExercisesRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,6 +27,11 @@ class ExercisesRecyclerViewAdapter(
         holder.binding.root.setOnClickListener {
             mainSharedViewModel.setSelectedExercise(it,exercisesArrayList[position])
         }
+        holder.binding.root.setOnLongClickListener {
+            myExercisesFragment.onLongClickExercise(it,exercisesArrayList[position])
+        }
+
+
     }
 
     override fun getItemCount() = exercisesArrayList.size
@@ -41,3 +48,4 @@ class ExercisesRecyclerViewAdapter(
         }
     }
 }
+

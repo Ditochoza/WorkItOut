@@ -2,6 +2,7 @@ package es.ucm.fdi.workitout.adapters
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -16,6 +17,7 @@ import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.loadResource
+import es.ucm.fdi.workitout.view.MyExercisesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -58,6 +60,15 @@ fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExercise
         val newMuscles = ArrayList<String>()
         checkedIds.forEach { chipId -> newMuscles.add(findViewById<Chip>(chipId).text.toString()) }
         vModel.updateMuscles(newMuscles)
+    }
+}
+//Para ManageExerciseFragment
+@BindingAdapter("muscles","sModel")
+fun ChipGroup.adapterChipsMuscles(muscles: List<String>, sModel: MainSharedViewModel) {
+    muscles.forEach {
+        addView(Chip(context).apply {
+            text = it
+        })
     }
 }
 
@@ -111,13 +122,14 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
     }
 }
 
-@BindingAdapter("sModel", requireAll = true)
-fun RecyclerView.adapterExercises(sModel: MainSharedViewModel) {
+@BindingAdapter("sModel","myExercises", requireAll = true)
+fun RecyclerView.adapterExercises(sModel: MainSharedViewModel,myExercises:MyExercisesFragment) {
 
     val exercisesArrayList = ArrayList(sModel.exercisesList)
 
     if (this.adapter == null)
-        this.adapter = ExercisesRecyclerViewAdapter(exercisesArrayList, sModel)
+        this.adapter = ExercisesRecyclerViewAdapter(exercisesArrayList, sModel, myExercises)
     else
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesArrayList)
 }
+

@@ -116,27 +116,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
                     android:text="@string/muscles" />
-                <com.google.android.material.textview.MaterialTextView
-                    style="?attr/textAppearanceTitleLarge"
-                    android:layout_width="wrap_content"
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cgMuscles"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:text="@{exercise.muscles.toString()}"/>
+                    app:muscles="@{exercise.muscles}"
+                    app:sModel="@{sModel}"/>
 
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveButton"
-            style="?attr/materialButtonStyle"
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:onClick="@{() -> sModel.deleteExercise()}"
-            android:text="Delete Exercise" />
 
          </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -49,28 +49,26 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     // Lista de ejericicos
 
-    val exercisesList = listOf<Exercise>(
-        Exercise("id","correr","mover las piernas rapido",listOf("gemelos","piernas"),
-            "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb"),
-        Exercise("id","correr","mover las piernas rapido",listOf("gemelos","piernas"),
-            "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb"),
-        Exercise("id","correr","mover las piernas rapido",listOf("gemelos","piernas"),
-            "https://firebasestorage.googleapis.com/v0/b/workitout-pad.appspot.com/o/images%2Fexercises%2Fpruebaejercicio20220406195253?alt=media&token=4c2dd693-dde9-490f-b293-d1fa993066bb")
-    )
+    var exercisesList = ArrayList<Exercise>()
 
-
-    var _selectedExercise = MutableStateFlow(Exercise(name="Exercise Placeholder"))
+    private var _selectedExercise = MutableStateFlow(Exercise())
     val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
 
     fun setSelectedExercise(view:View,exercise: Exercise){
         _selectedExercise.value = exercise
-        view.findNavController().navigate(R.id.action_myExercises_to_manageExerciseFragment)
+        view.findNavController().navigate(R.id.action_myExercisesFragment_to_manageExerciseFragment)
     }
 
-    fun deleteExercise(){
-        //Llama a operacion del backend que lo elimina de la bbdd
+    fun deleteExercise(exercise: Exercise){
 
-        //El ejercicio que se elimina es el que esta en la var selectedExercise
+        viewModelScope.launch {
+            listOf(
+                async {
+                    val result = userRepository.deleteExercise(exercise.id)
+                    if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+                }
+            ).awaitAll()
+        }
     }
     ///
 
@@ -98,6 +96,11 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
+
+                val resultExercises = userRepository.fetchExercises(email)
+                if (resultExercises is DatabaseResult.Success) resultExercises.data?.let { exercises ->
+                    exercisesList = exercises
+                }else if (resultExercises is DatabaseResult.Failed) _shortToastRes.emit(resultExercises.resMessage)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }

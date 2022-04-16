@@ -24,6 +24,10 @@ class CreateExerciseFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateExerciseBinding.inflate(inflater, container, false)
 
+        if(mainSharedViewModel.selectedExercise.value.id.isNotEmpty()){
+            viewModel.editExercise(mainSharedViewModel.selectedExercise.value)
+        }
+
         binding.sModel = mainSharedViewModel
         binding.vModel = viewModel
         binding.loading = mainSharedViewModel.loading.value

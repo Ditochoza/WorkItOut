@@ -32,6 +32,9 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
         }
     }
 
+    fun editExercise(exercise: Exercise){
+        _tempExercise.value = exercise
+    }
     fun updateMuscles(muscles: List<String>) {
         _tempExercise.value.muscles = muscles
     }

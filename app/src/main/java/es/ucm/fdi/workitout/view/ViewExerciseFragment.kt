@@ -12,7 +12,7 @@ import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
-class ManageExerciseFragment : Fragment() {
+class ViewExerciseFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
 
 
