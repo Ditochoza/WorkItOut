@@ -56,7 +56,6 @@
     <string name="exercise_image">Exercise Image</string>
     <string name="new_exercise">New Exercise</string>
     <string name="update_exercise">Update Exercise</string>
-    <string name="name">Name</string>
     <string name="muscles">Muscles:</string>
     <string name="muscles_not_selected_error">You must select at least one muscle</string>
     <string name="new_routine">New Routine</string>

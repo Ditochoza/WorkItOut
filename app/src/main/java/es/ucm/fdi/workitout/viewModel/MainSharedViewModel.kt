@@ -8,13 +8,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
-import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
-import es.ucm.fdi.workitout.repository.DbConstants
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
 import es.ucm.fdi.workitout.utils.DbConstants
@@ -89,6 +87,8 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
+    }
+
     fun updatePassword(currentPassword: String, newPassword: String, alertDialog: AlertDialog) {
         viewModelScope.launch {
             _loading.emit(true)
@@ -123,8 +123,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
-            }
-            else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
     }
 
