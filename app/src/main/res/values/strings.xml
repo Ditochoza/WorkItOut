@@ -75,4 +75,8 @@
     <string name="unschedule_or_complete_field">De-Schedule or complete this field</string>
     <string name="error_upload_routine">Failed to upload routine</string>
     <string name="time_scheduled">Time Scheduled</string>
+    <string name="navigation">Navigation</string>
+    <string name="home_menu">Home</string>
+    <string name="routines_menu">Routines</string>
+    <string name="exercises_menu">Exercises</string>
 </resources>

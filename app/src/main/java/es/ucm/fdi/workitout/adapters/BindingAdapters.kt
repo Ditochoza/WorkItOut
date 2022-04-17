@@ -11,6 +11,7 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipDrawable
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
@@ -109,4 +110,9 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
         vModel.updateWeekDay(i)
         til.error = ""
     }
+}
+
+@BindingAdapter("checkedItem")
+fun NavigationView.adapterNavigationView(checkedItem: Int) {
+    setCheckedItem(checkedItem)
 }
