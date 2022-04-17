@@ -12,6 +12,7 @@ import androidx.navigation.findNavController
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentMyExercisesBinding
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
@@ -28,8 +29,10 @@ class MyExercisesFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.lifecycleOwner = viewLifecycleOwner
-
+        binding.user = mainSharedViewModel.user.value
         binding.myExercises = this
+
+        setupCollectors()
 
         return binding.root
     }
@@ -61,6 +64,9 @@ class MyExercisesFragment : Fragment() {
         return true
     }
 
+    private fun setupCollectors() {
+        mainSharedViewModel.user.collectLatestFlow(this) { binding.user = it }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()

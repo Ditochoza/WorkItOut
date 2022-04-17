@@ -8,6 +8,7 @@
         <import type="android.view.View" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="myExercises" type="es.ucm.fdi.workitout.view.MyExercisesFragment" />
+        <variable name="user" type="es.ucm.fdi.workitout.model.User" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -54,6 +55,7 @@
                     android:scrollbars="none"
                     app:layoutManager="LinearLayoutManager"
                     app:sModel="@{sModel}"
+                    app:exercises="@{user.exercises}"
                     app:myExercises="@{myExercises}"/>
 
             </LinearLayout>

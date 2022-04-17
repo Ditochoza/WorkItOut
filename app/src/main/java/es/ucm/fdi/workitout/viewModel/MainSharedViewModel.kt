@@ -49,8 +49,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     // Lista de ejericicos
 
-    var exercisesList = ArrayList<Exercise>()
-
     private var _selectedExercise = MutableStateFlow(Exercise())
     val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
 
@@ -65,12 +63,15 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun deleteExercise(exercise: Exercise){
 
         viewModelScope.launch {
-            listOf(
-                async {
-                    val result = userRepository.deleteExercise(exercise.id)
-                    if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
-                }
-            ).awaitAll()
+
+
+            val resultUser = userRepository.deleteExercise(exercise.id)
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+
+            }else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+
         }
     }
     ///
@@ -99,11 +100,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
-
-                val resultExercises = userRepository.fetchExercises(email)
-                if (resultExercises is DatabaseResult.Success) resultExercises.data?.let { exercises ->
-                    exercisesList = exercises
-                }else if (resultExercises is DatabaseResult.Failed) _shortToastRes.emit(resultExercises.resMessage)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }

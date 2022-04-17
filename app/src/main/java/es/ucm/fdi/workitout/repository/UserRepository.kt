@@ -120,14 +120,15 @@ class UserRepository {
         } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.error_login) }
     }
 
-    suspend fun deleteExercise(exerciseId: String): DatabaseResult<String> {
+    suspend fun deleteExercise(exerciseId: String): DatabaseResult<User?> {
 
-        return try { withContext(Dispatchers.IO) {
+        return try {
+            withContext(Dispatchers.IO) {
             val email:String = currentUser!!.email!!
-            val ejercicios = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES).document(exerciseId).delete()
-            DatabaseResult.success("Exercise deleted")
-
-        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
+            dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES).document(exerciseId).delete()
+            fetchUserByEmail(email)
+           }
+        } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
     }
 
 
