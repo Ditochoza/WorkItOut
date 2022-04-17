@@ -46,10 +46,11 @@ class YoutubeAPI {
                             val snippet = items.getJSONObject("snippet")
                             video.url = url
                             video.title = snippet.getString("title")
-                            video.description = snippet.getString("description")
+                            video.title = video.title.substring(0,75) + "..."
+
 
                             val miniaturas = snippet.getJSONObject("thumbnails")
-                            val miniatura = miniaturas.getJSONObject("default")
+                            val miniatura = miniaturas.getJSONObject("medium")
                             video.thumbnail = miniatura.getString("url")
 
                         }
