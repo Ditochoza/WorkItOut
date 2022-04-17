@@ -74,8 +74,8 @@ fun ChipGroup.adapterChipsMuscles(muscles: List<String>, sModel: MainSharedViewM
 }
 
 //Para AddVideoLinks : videolinks
-@BindingAdapter("vModel")
-fun ChipGroup.adapterChipsVideolinks(vModel: CreateExerciseViewModel) {
+@BindingAdapter("videolinks","vModel")
+fun ChipGroup.adapterChipsVideolinks(videolinks:List<String>,vModel: CreateExerciseViewModel) {
 
 
     /*setOnCheckedStateChangeListener { group, checkedIds ->
@@ -88,7 +88,7 @@ fun ChipGroup.adapterChipsVideolinks(vModel: CreateExerciseViewModel) {
         vModel.updateVideoLinks(deletedVideos)
     }*/
 
-    vModel.tempExercise.value.videoLinks.forEach { link ->
+    videolinks.forEach { link ->
         addView(Chip(context).apply {
             text = link
             isClickable = true

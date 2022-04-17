@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.CreateExerciseFragment">
+    tools:context=".view.AddVideoLinksFragment">
 
     <data>
         <import type="android.view.View" />
@@ -81,6 +81,7 @@
                     android:id="@+id/cgVideos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:videolinks="@{vModel.tempExercise.value.videoLinks}"
                     app:vModel="@{vModel}" />
 
             </LinearLayout>

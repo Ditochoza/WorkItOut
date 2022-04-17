@@ -46,7 +46,6 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
             var videoLinks = tempExercise.value.videoLinks.toMutableList()
             videoLinks.add(vlink)
             _tempExercise.value.videoLinks = videoLinks
-            tempExercise.value.videoLinks = videoLinks
         }
     }
 
@@ -62,7 +61,6 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
             it != deletedVideo
         }
         _tempExercise.value.videoLinks = newVideoList
-        tempExercise.value.videoLinks = newVideoList
     }
 
     fun saveStateHandle() {
