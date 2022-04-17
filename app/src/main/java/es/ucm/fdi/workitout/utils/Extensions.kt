@@ -1,10 +1,11 @@
 package es.ucm.fdi.workitout.utils
 
+import android.content.Context
+import android.widget.EditText
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.text.format.DateFormat
 import android.view.View
-import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged
@@ -19,6 +20,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
@@ -116,6 +118,24 @@ fun FragmentActivity.createEditTextTimePicker(et: EditText, til: TextInputLayout
 
 val EditText.string: String
     get() = text.toString()
+
+fun Context.createAlertDialog(title: Any? = null, message: Int? = null, icon: Int? = null,
+                              ok: Pair<Int,()->Unit>, cancel: Pair<Int,()->Unit>? = null,
+                              neutral: Pair<Int, ()->Unit>? = null): MaterialAlertDialogBuilder {
+    val builder = MaterialAlertDialogBuilder(this)
+        .setPositiveButton(getString(ok.first)) { _,_ -> ok.second() }
+
+    title?.let {
+        if (it is Int) builder.setTitle(getString(it))
+        if (it is String) builder.setTitle(it)
+    }
+    message?.let { builder.setMessage(getString(it)) }
+    icon?.let { builder.setIcon(it) }
+    neutral?.let { builder.setNeutralButton(getString(it.first)) { _, _ -> it.second() } }
+    cancel?.let { builder.setNegativeButton(getString(it.first)) { _, _ -> it.second() } }
+
+    return builder
+}
 
 //Se devuelve el color del atributo
 /*@ColorInt

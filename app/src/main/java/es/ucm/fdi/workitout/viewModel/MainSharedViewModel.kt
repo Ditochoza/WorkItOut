@@ -3,14 +3,18 @@ package es.ucm.fdi.workitout.viewModel
 import android.app.Application
 import android.net.Uri
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
+import com.google.android.material.textfield.TextInputLayout
+import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.repository.DbConstants
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
 import es.ucm.fdi.workitout.utils.DbConstants
@@ -85,6 +89,29 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
+    fun updatePassword(currentPassword: String, newPassword: String, alertDialog: AlertDialog) {
+        viewModelScope.launch {
+            _loading.emit(true)
+            val result = userRepository.checkAndUpdatePassword(currentPassword, newPassword)
+            _loading.emit(false)
+
+            if (result is DatabaseResult.Success) {
+                _shortToastRes.emit(R.string.password_updated)
+                alertDialog.dismiss()
+            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+        }
+    }
+
+    fun deleteAccount(currentPassword: String, alertDialog: AlertDialog) {
+        viewModelScope.launch {
+            val result = userRepository.checkPasswordAndDeleteAccount(currentPassword)
+
+            if (result is DatabaseResult.Success) {
+                _shortToastRes.emit(R.string.user_deleted)
+                alertDialog.dismiss()
+                logout()
+            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+        }
     }
 
     fun createRoutine(ivRoutine: ImageView, newRoutine: Routine) {
@@ -113,9 +140,9 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     fun clearErrors(til: TextInputLayout) { til.error = "" }
 
-    fun setTempImage(uri: Uri) { viewModelScope.launch { _tempImageUri.emit(uri) } }
-
     fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
 
     fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
+
+    fun setTempImage(uri: Uri) { viewModelScope.launch { _tempImageUri.emit(uri) } }
 }

@@ -177,6 +177,45 @@ class UserRepository {
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_routine) }
     }
 
+    suspend fun checkAndUpdatePassword(currentPassword: String, newPassword: String): DatabaseResult<Unit> =
+        try { withContext(Dispatchers.IO) {
+            val user = currentUser
+            val email = user?.email
+            val credential = email?.let { EmailAuthProvider.getCredential(it, currentPassword) }
+            if (user != null && email != null && credential != null) {
+                user.reauthenticate(credential).await()
+                user.updatePassword(newPassword)
+                DatabaseResult.success(Unit)
+            } else {
+                DatabaseResult.failed(R.string.error_update_password)
+            }
+        } } catch (e: FirebaseTooManyRequestsException) { //Cuenta bloqueada por demasiados intentos fallidos
+            DatabaseResult.failed(R.string.too_many_attempts_try_again_later_exception)
+        } catch (e: FirebaseAuthInvalidCredentialsException) { //La contraseña introducida no es correcta
+            DatabaseResult.failed(R.string.invalid_password_exception)
+        } catch (e: Exception) { DatabaseResult.failed(R.string.error_update_password) }
+
+    suspend fun checkPasswordAndDeleteAccount(password: String): DatabaseResult<Unit> =
+        try { withContext(Dispatchers.IO) {
+            val user = currentUser
+            val email = user?.email
+            val credential = email?.let { EmailAuthProvider.getCredential(it, password) }
+            if (user != null && email != null && credential != null) {
+                user.reauthenticate(credential).await()
+                user.delete().await()
+                dbUsers.document(email).delete().await()
+                //TODO Eliminar rutinas y ejercicios del usuario
+
+                DatabaseResult.success(Unit)
+            } else {
+                DatabaseResult.failed(R.string.error_delete_user)
+            }
+        } } catch (e: FirebaseTooManyRequestsException) { //Cuenta bloqueada por demasiados intentos fallidos
+            DatabaseResult.failed(R.string.too_many_attempts_try_again_later_exception)
+        } catch (e: FirebaseAuthInvalidCredentialsException) { //La contraseña introducida no es correcta
+            DatabaseResult.failed(R.string.invalid_password_exception)
+        } catch (e: Exception) { DatabaseResult.failed(R.string.error_delete_user) }
+
     //Se cierra sesión en Firebase Authentication
     fun logout() {
         auth.signOut()
