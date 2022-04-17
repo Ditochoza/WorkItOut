@@ -9,75 +9,73 @@
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
     </data>
 
-    <!--suppress AndroidUnknownAttribute -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        app:cardCornerRadius="12dp"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="6dp"
-        android:layout_marginBottom="12dp"
+        app:cardCornerRadius="24dp"
         style="?attr/materialCardViewFilledStyle">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/roundImage"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="12dp"
                 app:cardCornerRadius="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.02"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                style="?attr/materialCardViewFilledStyle">
 
                 <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="108dp"
-                    android:layout_height="108dp"
-                    android:padding="2px"
-                    android:scaleType="centerCrop"
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:contentDescription="@{video.title}"
                     app:imageUrl="@{video.thumbnail}"
-                    tools:layout_editor_absoluteX="5dp"
-                    tools:layout_editor_absoluteY="5dp" />
+                    android:scaleType="centerCrop"/>
+
             </com.google.android.material.card.MaterialCardView>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="225dp"
-                android:layout_height="93dp"
-                android:text="@{video.title}"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.896"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.52" />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
-            <!--
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="220dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:text="@{video.description.substring(15)}" />
-            -->
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="12dp"
+                        android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                        android:text="@{video.title}"/>
+                </LinearLayout>
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/btn_favorites"
+                    android:layout_gravity="center"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginHorizontal="12dp"
+                    android:contentDescription="@string/start_routine"
+                    app:srcCompat="@drawable/ic_round_play_circle_24"
+                    android:tint="?attr/colorSecondary"
+                    android:background="@android:color/transparent"/>
+
+            </LinearLayout>
 
 
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
+
 
 </layout>
