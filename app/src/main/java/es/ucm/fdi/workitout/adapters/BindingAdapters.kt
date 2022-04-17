@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.view.MyExercisesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
@@ -167,3 +168,13 @@ fun RecyclerView.adapterExercises(sModel: MainSharedViewModel,exercises:List<Exe
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesArrayList)
 }
 
+@BindingAdapter("sModel","videos","viewModel", requireAll = false)
+fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: List<Video>,viewModel:CreateExerciseViewModel?) {
+
+    var videoArrayList = ArrayList(videos)
+
+    if (this.adapter == null)
+        this.adapter = VideosRecyclerViewAdapter(videoArrayList, sModel,viewModel)
+    else
+        (adapter as VideosRecyclerViewAdapter).updateList(videoArrayList)
+}

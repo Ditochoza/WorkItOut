@@ -8,6 +8,7 @@
         <import type="android.view.View" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="videoList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Video>" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -132,17 +133,32 @@
                     android:layout_marginBottom="6dp"
                     android:text="@string/video_links" />
 
-                <com.google.android.material.chip.ChipGroup
+                <!--<com.google.android.material.chip.ChipGroup
                     android:id="@+id/cgVideos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:muscles="@{exercise.videoLinks}"
-                    app:sModel="@{sModel}"/>
+                    app:sModel="@{sModel}"/>-->
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_my_exercises"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="70dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none"
+                    app:layoutManager="LinearLayoutManager"
+                    app:sModel="@{sModel}"
+                    app:videos="@{videoList}"/>
+
+
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
-         </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

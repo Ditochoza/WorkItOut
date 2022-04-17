@@ -1,6 +1,7 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import android.view.View
@@ -11,12 +12,10 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
+import es.ucm.fdi.workitout.repository.YoutubeAPI
 import es.ucm.fdi.workitout.utils.DbConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -51,13 +50,52 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     private var _selectedExercise = MutableStateFlow(Exercise())
     val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
+    private val _videoList = MutableStateFlow(emptyList<Video>())
+    val videoList: StateFlow<List<Video>> = _videoList.asStateFlow()
+    private val yotubeAPI = YoutubeAPI()
 
     fun setSelectedExercise(view:View,exercise: Exercise){
         _selectedExercise.value = exercise
+        viewModelScope.launch {
+            exercise.videoLinks.forEach { vlink ->
+                val videoResult = yotubeAPI.getVideoInfo(vlink)
+                if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
+
+                    var videoData = _videoList.value.toMutableList()
+                    videoData.add(video)
+                    _videoList.value = videoData
+
+                }else{
+                    var videoOffline = Video(url=vlink,title=vlink)
+                    var videoData = _videoList.value.toMutableList()
+                    videoData.add(videoOffline)
+                    _videoList.value = videoData
+                }
+            }
+
+        }
         view.findNavController().navigate(R.id.action_myExercisesFragment_to_manageExerciseFragment)
     }
     fun setSelectedExercise(exercise: Exercise){
         _selectedExercise.value = exercise
+        viewModelScope.launch {
+            exercise.videoLinks.forEach { vlink ->
+                val videoResult = yotubeAPI.getVideoInfo(vlink)
+                if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
+
+                    var videoData = _videoList.value.toMutableList()
+                    videoData.add(video)
+                    _videoList.value = videoData
+
+                }else{
+                    var videoOffline = Video(url=vlink,title=vlink)
+                    var videoData = _videoList.value.toMutableList()
+                    videoData.add(videoOffline)
+                    _videoList.value = videoData
+                }
+            }
+
+        }
     }
 
     fun deleteExercise(exercise: Exercise){
@@ -74,6 +112,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
     ///
+
+    fun goToVideoLink (view: View, url:String){
+        val urlUri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, urlUri)
+        view.context.startActivity(intent)
+    }
 
     //Obtiene un valor del usuario de DataStore instantáneamente
     suspend fun getStringUserDataStore(key: String): String {

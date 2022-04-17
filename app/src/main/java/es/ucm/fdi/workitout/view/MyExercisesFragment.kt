@@ -64,6 +64,7 @@ class MyExercisesFragment : Fragment() {
         return true
     }
 
+
     private fun setupCollectors() {
         mainSharedViewModel.user.collectLatestFlow(this) { binding.user = it }
     }

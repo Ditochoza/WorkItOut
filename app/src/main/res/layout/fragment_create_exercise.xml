@@ -12,6 +12,7 @@
         <variable name="loading" type="Boolean" />
         <variable name="tempImageUri" type="android.net.Uri" />
         <variable name="tempExercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="videoList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Video>" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -192,12 +193,18 @@
                     android:onClick="@{() -> vModel.addVideoLink(etVlink,tilVlink)}"
                     android:text="Add video link" />
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/cgVideos"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_my_exercises"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:videolinks="@{tempExercise.videoLinks}"
-                    app:vModel="@{vModel}" />
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="70dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none"
+                    app:layoutManager="LinearLayoutManager"
+                    app:sModel="@{sModel}"
+                    app:videos="@{videoList}"
+                    app:viewModel="@{vModel}"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveButton"
