@@ -56,4 +56,12 @@
     <string name="unschedule_or_complete_field">De-Schedule or complete this field</string>
     <string name="error_upload_routine">Failed to upload routine</string>
     <string name="time_scheduled">Time Scheduled</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="exercise_could_not_be_deleted">Exercise could not be deleted</string>
+    <string name="video_links">Video links:</string>
+    <string name="youtube_link">https://www.youtube.com/watch?v=</string>
+    <string name="routine_could_not_be_deleted">Exercise could not be deleted</string>
+    <string name="day_of_week">Day of week</string>
+    <string name="hour">Hour</string>
 </resources>

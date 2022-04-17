@@ -1,5 +1,6 @@
 package es.ucm.fdi.workitout.viewModel
 
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.SavedStateHandle
@@ -17,6 +18,7 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
     private val _tempExercise = MutableStateFlow(savedStateHandle.get(::tempExercise.name) ?: Exercise())
     val tempExercise: StateFlow<Exercise> = _tempExercise.asStateFlow()
 
+
     fun createExercise(ivExercise: ImageView, tvImageError: TextView, tilName: TextInputLayout,
                        tilDescription: TextInputLayout, tvMusclesError: TextView, sModel: MainSharedViewModel
     ) {
@@ -32,11 +34,40 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
         }
     }
 
+    fun addVideoLink(etVideolink: EditText,tilVideolink: TextInputLayout) {
+
+        val vlink = etVideolink.text.toString()
+
+        val error = ValidationExerciseUtil.validateVideoLink(
+            vlink to tilVideolink,
+        )
+
+        if(!error){
+            var videoLinks = tempExercise.value.videoLinks.toMutableList()
+            videoLinks.add(vlink)
+            _tempExercise.value.videoLinks = videoLinks
+            tempExercise.value.videoLinks = videoLinks
+        }
+    }
+
+    fun editExercise(exercise: Exercise){
+        _tempExercise.value = exercise
+    }
     fun updateMuscles(muscles: List<String>) {
         _tempExercise.value.muscles = muscles
+    }
+
+    fun updateVideoLinks(deletedVideo: String) {
+        var newVideoList:List<String> = tempExercise.value.videoLinks.filter {
+            it != deletedVideo
+        }
+        _tempExercise.value.videoLinks = newVideoList
+        tempExercise.value.videoLinks = newVideoList
     }
 
     fun saveStateHandle() {
         savedStateHandle.set(::tempExercise.name, tempExercise.value)
     }
+
+
 }

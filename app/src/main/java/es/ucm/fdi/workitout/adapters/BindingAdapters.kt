@@ -2,6 +2,7 @@ package es.ucm.fdi.workitout.adapters
 
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -16,6 +17,8 @@ import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.loadResource
+import es.ucm.fdi.workitout.view.MyExercisesFragment
+import es.ucm.fdi.workitout.view.MyRoutinesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -60,7 +63,50 @@ fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExercise
         vModel.updateMuscles(newMuscles)
     }
 }
+//Para ViewExerciseFragment
+@BindingAdapter("muscles","sModel")
+fun ChipGroup.adapterChipsMuscles(muscles: List<String>, sModel: MainSharedViewModel) {
+    muscles.forEach {
+        addView(Chip(context).apply {
+            text = it
+        })
+    }
 
+}
+
+//Para AddVideoLinks : videolinks
+@BindingAdapter("vModel")
+fun ChipGroup.adapterChipsVideolinks(vModel: CreateExerciseViewModel) {
+
+
+    /*setOnCheckedStateChangeListener { group, checkedIds ->
+        val deletedVideos = ArrayList<String>()
+        checkedIds.forEach { chipId ->
+            val chip = findViewById<Chip>(chipId)
+            deletedVideos.add(chip.text.toString())
+            group.removeView(chip)
+        }
+        vModel.updateVideoLinks(deletedVideos)
+    }*/
+
+    vModel.tempExercise.value.videoLinks.forEach { link ->
+        addView(Chip(context).apply {
+            text = link
+            isClickable = true
+            setChipDrawable(ChipDrawable.createFromAttributes(context,
+                null,
+                0,
+                R.style.Widget_Material3_Chip_Input
+            ))
+            setOnClickListener {
+                removeView(it)
+                vModel.updateVideoLinks(link)
+            }
+        })
+    }
+
+
+}
 //BindingAdapter para colocar una imagen en el ImageView a partir de su URL (HTTP) o Uri de imagen elegida
 @BindingAdapter("imageUrl", "tempImageUri")
 fun ImageView.loadImage(imageUrl: String, tempImageUri: Uri) {
@@ -96,9 +142,9 @@ fun RecyclerView.adapterRoutines(routines: List<Routine>, sModel: MainSharedView
         ArrayList(routines)
     }
 
-    if (this.adapter == null)
+    if (this.adapter == null){
         this.adapter = RoutinesRecyclerViewAdapter(routinesArrayList, sModel)
-    else
+    }else
         (adapter as RoutinesRecyclerViewAdapter).updateList(routinesArrayList)
 }
 
@@ -110,3 +156,26 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
         til.error = ""
     }
 }
+
+@BindingAdapter("sModel","myExercises", requireAll = true)
+fun RecyclerView.adapterExercises(sModel: MainSharedViewModel,myExercises:MyExercisesFragment) {
+
+    val exercisesArrayList = ArrayList(sModel.exercisesList)
+
+    if (this.adapter == null)
+        this.adapter = ExercisesRecyclerViewAdapter(exercisesArrayList, sModel, myExercises)
+    else
+        (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesArrayList)
+}
+
+@BindingAdapter("sModel","myRoutines", requireAll = true)
+fun RecyclerView.adapterRoutines(sModel: MainSharedViewModel,myRoutines:MyRoutinesFragment) {
+
+    val routinesArrayList = ArrayList(sModel.routinesList)
+
+    if (this.adapter == null)
+        this.adapter = MyRoutinesRecyclerViewAdapter(routinesArrayList, sModel, myRoutines)
+    else
+        (adapter as MyRoutinesRecyclerViewAdapter).updateList(routinesArrayList)
+}
+

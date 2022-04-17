@@ -7,33 +7,32 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipDrawable
+import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.databinding.FragmentAddVideoLinksBinding
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
-class CreateExerciseFragment : Fragment() {
+class AddVideoLinksFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
     private val viewModel: CreateExerciseViewModel by activityViewModels()
 
-    private var _binding: FragmentCreateExerciseBinding? = null
+    private var _binding: FragmentAddVideoLinksBinding? = null
     private val binding get() = _binding!!
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        _binding = FragmentCreateExerciseBinding.inflate(inflater, container, false)
+        _binding = FragmentAddVideoLinksBinding.inflate(inflater, container, false)
 
-        if(mainSharedViewModel.selectedExercise.value.id.isNotEmpty()){
-            viewModel.editExercise(mainSharedViewModel.selectedExercise.value)
-        }
 
         binding.sModel = mainSharedViewModel
         binding.vModel = viewModel
-        binding.loading = mainSharedViewModel.loading.value
-        binding.tempImageUri = mainSharedViewModel.tempImageUri.value
         binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
+
 
         setupCollectors()
 
@@ -41,9 +40,9 @@ class CreateExerciseFragment : Fragment() {
     }
 
     private fun setupCollectors() {
-        mainSharedViewModel.tempImageUri.collectLatestFlow(this) { binding.tempImageUri = it }
-        mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
+
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

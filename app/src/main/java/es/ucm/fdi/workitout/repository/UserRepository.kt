@@ -109,6 +109,28 @@ class UserRepository {
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
     }
 
+    suspend fun fetchExercises(email: String): DatabaseResult<ArrayList<Exercise>> {
+        return try { withContext(Dispatchers.IO) {
+
+            val ejercicios = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES).get().await()
+                .toObjects(Exercise::class.java)
+
+            DatabaseResult.success(ArrayList(ejercicios))
+
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.error_login) }
+    }
+
+    suspend fun deleteExercise(exerciseId: String): DatabaseResult<String> {
+
+        return try { withContext(Dispatchers.IO) {
+            val email:String = currentUser!!.email!!
+            val ejercicios = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES).document(exerciseId).delete()
+            DatabaseResult.success("Exercise deleted")
+
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
+    }
+
+
     suspend fun uploadExerciseAndImage(email: String, newExercise: Exercise, ivExercise: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {
             val deferreds = ArrayList<Deferred<Any>>()
@@ -141,6 +163,27 @@ class UserRepository {
 
             fetchUserByEmail(email)
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_exercise) }
+    }
+
+    suspend fun fetchRoutines(email: String): DatabaseResult<ArrayList<Routine>> {
+        return try { withContext(Dispatchers.IO) {
+
+            val routines = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+                .toObjects(Routine::class.java)
+
+            DatabaseResult.success(ArrayList(routines))
+
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.error_login) }
+    }
+
+    suspend fun deleteRoutine(routineId: String): DatabaseResult<String> {
+
+        return try { withContext(Dispatchers.IO) {
+            val email:String = currentUser!!.email!!
+            val routine = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES).document(routineId).delete()
+            DatabaseResult.success("Routine deleted")
+
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.routine_could_not_be_deleted) }
     }
 
     suspend fun uploadRoutineAndImage(email: String, newRoutine: Routine, ivRoutine: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {

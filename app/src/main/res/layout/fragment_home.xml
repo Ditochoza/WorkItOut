@@ -47,15 +47,41 @@
                     android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
 
             </com.google.android.material.appbar.MaterialToolbar>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/botones"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <Button
+                    android:id="@+id/myRoutinesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="My routines"
+                    android:onClick="@{() -> sModel.navigate(@id/action_homeFragment_to_myRoutinesFragment)}"
+                    app:layout_constraintTop_toTopOf="@+id/botones"
+                    app:layout_constraintStart_toStartOf="@+id/botones"
+                    android:layout_marginStart="64dp"/>
+                <Button
+                    android:id="@+id/myExercisesButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="My exercises"
+                    android:onClick="@{() -> sModel.navigate(@id/action_homeFragment_to_myExercisesFragment)}"
+                    app:layout_constraintTop_toTopOf="@+id/botones"
+                    app:layout_constraintStart_toEndOf="myRoutinesButton"
+                    app:layout_constraintEnd_toEndOf="@+id/botones"
+                    android:layout_marginEnd="64dp"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+
+
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
