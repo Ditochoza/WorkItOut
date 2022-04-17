@@ -1,23 +1,24 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
+import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
+import es.ucm.fdi.workitout.repository.YoutubeAPI
 import es.ucm.fdi.workitout.utils.DbConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+
 
 class MainSharedViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application)  {
     private val userRepository = UserRepository()
@@ -43,11 +44,26 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _logout = MutableSharedFlow<Boolean>()
     val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
 
+    // Videos
+    private val yotubeAPI = YoutubeAPI()
+    val listaLinks : List<String> = listOf("https://www.youtube.com/watch?v=uRwQKikomtE","https://www.youtube.com/watch?v=aQP-mUGWh1U")
+
+    var videoList =  ArrayList<Video>()
+
+    fun goToVideoLink (view: View, url:String){
+        val urlUri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, urlUri)
+        view.context.startActivity(intent)
+    }
+    // ---------------
 
     //Obtiene un valor del usuario de DataStore instantáneamente
     suspend fun getStringUserDataStore(key: String): String {
         return userDataStore.getStringUserDataStoreOrEmpty(key)
     }
+
+
+
 
     fun fetchAll(email: String = user.value.email) {
         viewModelScope.launch {
@@ -70,6 +86,15 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            //Coger videos
+            listaLinks.forEach { url ->
+                val videoResult = yotubeAPI.getVideoInfo(url)
+                if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
+                    videoList.add(video)
+
+                }
+            }
+
         }
     }
 

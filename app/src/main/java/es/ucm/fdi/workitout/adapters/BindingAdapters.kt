@@ -15,7 +15,9 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
+import es.ucm.fdi.workitout.view.VideosFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -109,4 +111,14 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
         vModel.updateWeekDay(i)
         til.error = ""
     }
+}
+
+@BindingAdapter("sModel","videos", requireAll = true)
+fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: ArrayList<Video>) {
+
+
+    if (this.adapter == null)
+        this.adapter = VideosRecyclerViewAdapter(sModel.videoList, sModel)
+    else
+        (adapter as VideosRecyclerViewAdapter).updateList(sModel.videoList)
 }

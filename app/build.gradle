@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
+    id 'kotlin-android'
 }
 
 android {
@@ -64,6 +65,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore:24.1.0'
     implementation platform('com.google.firebase:firebase-bom:29.2.0')
 
+    //Para hacer peticiones a la api de youtube: OkHttp
+
+    // define a BOM and its version
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
+
+    // define any required OkHttp artifacts without version
+    implementation("com.squareup.okhttp3:okhttp")
+    implementation("com.squareup.okhttp3:logging-interceptor")
+
     //DataStore
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("androidx.datastore:datastore-rxjava2:1.0.0")
@@ -74,6 +84,7 @@ dependencies {
 
     //Glide (Imágenes)
     implementation "com.github.bumptech.glide:glide:4.13.1"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:1.1.5")
 
