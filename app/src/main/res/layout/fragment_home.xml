@@ -42,7 +42,8 @@
                     app:navigationOnClickListener="@{() -> homeMainDrawerLayout.open()}"
                     app:navigationIcon="@drawable/ic_round_menu_24"
                     app:menu="@menu/menu_main"
-                    app:sModel="@{sModel}">
+                    app:sModel="@{sModel}"
+                    app:navActionResToSettings="@{@id/action_homeFragment_to_settingsFragment}">
 
                     <ProgressBar
                         android:id="@+id/pBar"
