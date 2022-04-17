@@ -64,7 +64,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
         viewModelScope.launch {
 
-
             val resultUser = userRepository.deleteExercise(exercise.id)
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser

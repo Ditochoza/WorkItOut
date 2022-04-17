@@ -35,6 +35,7 @@ class CreateExerciseFragment : Fragment() {
         binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
 
+        binding.tempExercise = viewModel.tempExercise.value
         setupCollectors()
 
         return binding.root
@@ -43,6 +44,8 @@ class CreateExerciseFragment : Fragment() {
     private fun setupCollectors() {
         mainSharedViewModel.tempImageUri.collectLatestFlow(this) { binding.tempImageUri = it }
         mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
+
+        viewModel.tempExercise.collectLatestFlow(this) { binding.tempExercise = it }
     }
 
     override fun onDestroyView() {

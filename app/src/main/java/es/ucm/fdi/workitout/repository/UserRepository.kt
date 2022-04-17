@@ -72,6 +72,7 @@ class UserRepository {
                 var user: User? = User()
                 var routines: List<Routine> = emptyList()
                 var routinesScheduled: List<Routine> = emptyList()
+                var exercises: List<Exercise> = emptyList()
                 listOf(
                     async { //Obtenemos el usuario de la sesión
                         user = dbUsers.document(email).get().await().toObject(User::class.java)
@@ -93,14 +94,19 @@ class UserRepository {
                                     exercises = exercises
                                 )
                             }
+
                         routinesScheduled =
                             orderRoutinesByWeekDay(routines.filter { it.dayOfWeekScheduled != -1 })
+
+                        exercises = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES).get().await()
+                            .toObjects(Exercise::class.java)
                     }
                 ).awaitAll()
                 DatabaseResult.success(
                     user?.copy(
                         routines = routines,
-                        routinesScheduled = routinesScheduled
+                        routinesScheduled = routinesScheduled,
+                        exercises = ArrayList(exercises)
                     )
                 )
             } else {

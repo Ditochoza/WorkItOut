@@ -11,6 +11,7 @@
         <variable name="mainActivity" type="es.ucm.fdi.workitout.view.MainActivity" />
         <variable name="loading" type="Boolean" />
         <variable name="tempImageUri" type="android.net.Uri" />
+        <variable name="tempExercise" type="es.ucm.fdi.workitout.model.Exercise" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -66,7 +67,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="170dp"
                         android:scaleType="centerCrop"
-                        app:imageUrl="@{vModel.tempExercise.value.imageUrl}"
+                        app:imageUrl="@{tempExercise.imageUrl}"
                         app:tempImageUri="@{tempImageUri}"
                         android:translationZ="2dp"
                         android:contentDescription="@string/exercise_image" />
@@ -109,7 +110,7 @@
                         android:layout_height="match_parent"
                         android:afterTextChanged="@{() -> sModel.clearErrors(tilName)}"
                         android:inputType="textPersonName"
-                        android:text="@={vModel.tempExercise.value.name}" />
+                        android:text="@={tempExercise.name}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -131,7 +132,7 @@
                         android:gravity="start|top"
                         android:lines="3"
                         android:inputType="textMultiLine"
-                        android:text="@={vModel.tempExercise.value.description}" />
+                        android:text="@={tempExercise.description}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -161,14 +162,42 @@
                     app:singleLine="false"
                     app:singleSelection="false" />
 
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_vlink"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="@string/youtube_link"
+                    app:errorEnabled="true"
+                    app:layout_constraintBottom_toTopOf="@+id/saveButton">
+
+
+                    <!--suppress AndroidUnknownAttribute -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_vlink"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:afterTextChanged="@{() -> sModel.clearErrors(tilVlink)}"
+                        android:inputType="textUri" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/addVideoLinks"
+                    android:id="@+id/addLinkButton"
                     style="?attr/materialButtonStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:onClick="@{() -> sModel.navigate(@id/action_createExerciseFragment_to_addVideoLinksFragment)}"
-                    android:text="Add video links" />
+                    android:layout_marginBottom="10dp"
+                    android:onClick="@{() -> vModel.addVideoLink(etVlink,tilVlink)}"
+                    android:text="Add video link" />
+
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/cgVideos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:videolinks="@{tempExercise.videoLinks}"
+                    app:vModel="@{vModel}" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/saveButton"
