@@ -86,7 +86,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         view.findNavController().navigate(R.id.action_myRoutinesFragment_to_manageRoutineFragment)
     }
     fun setSelectedRoutine(routine: Routine){
-        _selectedExercise.value = routine
+        _selectedRoutine.value = routine
     }
 
     fun deleteRoutine(routine: Routine){

@@ -2,10 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.CreateExerciseFragment">
+    tools:context=".view.CreateRoutineFragment">
 
     <data>
         <import type="android.view.View" />
+        <import type="es.ucm.fdi.workitout.utils.TimeUtilsKt"/>
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
     </data>
@@ -126,7 +127,7 @@
                         android:layout_height="match_parent"
                         android:inputType="textPersonName"
                         android:enabled="false"
-                        android:text="@{routine.dayOfWeekScheduled}" />
+                        android:text="@{@stringArray/week_days[routine.dayOfWeekScheduled]}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,7 +147,7 @@
                         android:layout_height="match_parent"
                         android:inputType="textPersonName"
                         android:enabled="false"
-                        android:text="@{routine.timeTimestampScheduled}" />
+                        android:text="@{TimeUtilsKt.timeString(routine.timeTimestampScheduled)}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

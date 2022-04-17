@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import es.ucm.fdi.workitout.databinding.FragmentViewRoutineBinding
+import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class ViewRoutineFragment : Fragment() {
@@ -20,7 +22,7 @@ class ViewRoutineFragment : Fragment() {
         _binding = FragmentViewRoutineBinding.inflate(inflater, container, false)
 
         binding.sModel = mainSharedViewModel
-        binding.exercise = mainSharedViewModel.selectedExercise.value
+        binding.routine = mainSharedViewModel.selectedRoutine.value
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupCollectors()
