@@ -16,7 +16,6 @@ import es.ucm.fdi.workitout.model.DatabaseResult
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
-import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.ExercisesRepository
 import es.ucm.fdi.workitout.repository.UserDataStore

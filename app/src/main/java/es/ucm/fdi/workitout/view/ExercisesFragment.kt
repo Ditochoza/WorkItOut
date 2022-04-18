@@ -6,8 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.Navigation.findNavController
+//import androidx.navigation.Navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.navigation.NavigationView
 import es.ucm.fdi.workitout.R
+import androidx.navigation.findNavController
+//import androidx.navigation.fragment.findNavController
+//import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import es.ucm.fdi.workitout.databinding.FragmentExercisesBinding
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.utils.collectLatestFlow
@@ -29,6 +35,7 @@ class ExercisesFragment : Fragment() {
         binding.user = mainSharedViewModel.user.value
         binding.exercises = mainSharedViewModel.exercises.value
         binding.loading = mainSharedViewModel.loading.value
+        binding.activity = activity as MainActivity?
         binding.fragment = this
 
         setupCollectors()

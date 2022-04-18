@@ -38,8 +38,6 @@
     <string name="delete_account">Delete Account</string>
     <string name="change_password_var">changePassword</string>
     <string name="delete_account_var">deleteAccount</string>
-    <string name="cancel">Cancel</string>
-    <string name="confirm">Confirm</string>
     <string name="validate_password">Validate Password</string>
     <string name="new_password">New Password</string>
     <string name="current_password">Current Password</string>
