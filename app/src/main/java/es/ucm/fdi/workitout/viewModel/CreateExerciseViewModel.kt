@@ -37,6 +37,8 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
     }
 
     fun getVideoData(){
+        //Vaciamos la lista de links
+        _videoList.value = emptyList<Video>()
         viewModelScope.launch {
             tempExercise.value.videoLinks.forEach { vlink ->
                 val videoResult = yotubeAPI.getVideoInfo(vlink)

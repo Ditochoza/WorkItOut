@@ -54,8 +54,11 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     val videoList: StateFlow<List<Video>> = _videoList.asStateFlow()
     private val yotubeAPI = YoutubeAPI()
 
-    fun setSelectedExercise(view:View,exercise: Exercise){
-        _selectedExercise.value = exercise
+
+    fun getVideoData(exercise: Exercise){
+        //Vaciamos la lista de links
+        _videoList.value = emptyList<Video>()
+
         viewModelScope.launch {
             exercise.videoLinks.forEach { vlink ->
                 val videoResult = yotubeAPI.getVideoInfo(vlink)
@@ -74,28 +77,16 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             }
 
         }
+    }
+
+    fun setSelectedExercise(view:View,exercise: Exercise){
+        _selectedExercise.value = exercise
+        getVideoData(selectedExercise.value)
         view.findNavController().navigate(R.id.action_myExercisesFragment_to_manageExerciseFragment)
     }
     fun setSelectedExercise(exercise: Exercise){
         _selectedExercise.value = exercise
-        viewModelScope.launch {
-            exercise.videoLinks.forEach { vlink ->
-                val videoResult = yotubeAPI.getVideoInfo(vlink)
-                if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
-
-                    var videoData = _videoList.value.toMutableList()
-                    videoData.add(video)
-                    _videoList.value = videoData
-
-                }else{
-                    var videoOffline = Video(url=vlink,title=vlink)
-                    var videoData = _videoList.value.toMutableList()
-                    videoData.add(videoOffline)
-                    _videoList.value = videoData
-                }
-            }
-
-        }
+        getVideoData(selectedExercise.value)
     }
 
     fun deleteExercise(exercise: Exercise){
@@ -145,6 +136,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+
         }
     }
 
