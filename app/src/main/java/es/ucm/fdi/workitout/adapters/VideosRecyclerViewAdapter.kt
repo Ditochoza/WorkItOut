@@ -6,12 +6,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.ucm.fdi.workitout.databinding.VideoItemBinding
 import es.ucm.fdi.workitout.model.Video
+import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
 class VideosRecyclerViewAdapter(
     private var videosArrayList: ArrayList<Video>,
     private val mainSharedViewModel: MainSharedViewModel,
+    private val viewModel: CreateExerciseViewModel?
 ): RecyclerView.Adapter<VideosRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,6 +27,14 @@ class VideosRecyclerViewAdapter(
         holder.binding.root.setOnClickListener {
             mainSharedViewModel.goToVideoLink(it,videosArrayList[position].url)
         }
+
+        viewModel?.let {
+            holder.binding.root.setOnLongClickListener {
+                viewModel.onLongClickExerciseVideo(it,videosArrayList[position].url)
+
+            }
+        }
+
     }
 
     override fun getItemCount() = videosArrayList.size

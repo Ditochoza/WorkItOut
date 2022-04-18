@@ -44,9 +44,14 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _logout = MutableSharedFlow<Boolean>()
     val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
 
-    // Videos
+    // Videos ------------------------
     private val yotubeAPI = YoutubeAPI()
-    val listaLinks : List<String> = listOf("https://www.youtube.com/watch?v=uRwQKikomtE","https://www.youtube.com/watch?v=aQP-mUGWh1U")
+    //Esta lista de links se obtendria de firebase recogiendo los links de los ejercicios
+    // que estan en una categoria de rutina igual a las rutinas que ha crado el usuario,
+    //es decir serian los videos recomemdados. Si no ha creato todavia ninguna rutina,
+    //pues que le salgan alguno videos random , ¿o que pueda filtar videos por categoria de rutina?
+    val listaLinks : List<String> = listOf("https://www.youtube.com/watch?v=aQP-mUGWh1U",
+    "https://www.youtube.com/watch?v=L3pM5YuxYp4")
 
     var videoList =  ArrayList<Video>()
 
@@ -55,14 +60,14 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         val intent = Intent(Intent.ACTION_VIEW, urlUri)
         view.context.startActivity(intent)
     }
-    // ---------------
+
+
+    // ------------------------------
 
     //Obtiene un valor del usuario de DataStore instantáneamente
     suspend fun getStringUserDataStore(key: String): String {
         return userDataStore.getStringUserDataStoreOrEmpty(key)
     }
-
-
 
 
     fun fetchAll(email: String = user.value.email) {

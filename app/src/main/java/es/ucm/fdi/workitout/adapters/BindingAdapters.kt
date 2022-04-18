@@ -113,12 +113,13 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
     }
 }
 
-@BindingAdapter("sModel","videos", requireAll = true)
-fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: ArrayList<Video>) {
+@BindingAdapter("sModel","videos","viewModel", requireAll = false)
+fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: List<Video>,viewModel:CreateExerciseViewModel?) {
 
+    var videoArrayList = ArrayList(videos)
 
     if (this.adapter == null)
-        this.adapter = VideosRecyclerViewAdapter(sModel.videoList, sModel)
+        this.adapter = VideosRecyclerViewAdapter(videoArrayList, sModel,viewModel)
     else
-        (adapter as VideosRecyclerViewAdapter).updateList(sModel.videoList)
+        (adapter as VideosRecyclerViewAdapter).updateList(videoArrayList)
 }
