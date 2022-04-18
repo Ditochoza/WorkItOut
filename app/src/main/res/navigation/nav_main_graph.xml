@@ -9,35 +9,36 @@
         android:name="es.ucm.fdi.workitout.view.HomeFragment"
         android:label="HomeFragment" >
         <action
-            android:id="@+id/action_homeFragment_to_myExercisesFragment"
-            app:destination="@id/myExercisesFragment" />
+            android:id="@+id/action_homeFragment_to_exercisesFragment"
+            app:destination="@id/exercisesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/myExercisesFragment"
-        android:name="es.ucm.fdi.workitout.view.MyExercisesFragment"
-        android:label="MyExercisesFragment" >
+        android:id="@+id/exercisesFragment"
+        android:name="es.ucm.fdi.workitout.view.ExercisesFragment"
+        android:label="ExercisesFragment">
         <action
-            android:id="@+id/action_myExercisesFragment_to_manageExerciseFragment"
-            app:destination="@id/manageExerciseFragment" />
+            android:id="@+id/action_exercisesFragment_to_createExerciseFragment"
+            app:destination="@id/createExerciseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_myExercisesFragment_to_createExerciseFragment"
-            app:destination="@id/createExerciseFragment" />
+            android:id="@+id/action_exercisesFragment_to_viewExerciseFragment"
+            app:destination="@id/viewExerciseFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/manageExerciseFragment"
-        android:name="es.ucm.fdi.workitout.view.ViewExerciseFragment"
-        android:label="ManageExerciseFragment" />
     <fragment
         android:id="@+id/createExerciseFragment"
         android:name="es.ucm.fdi.workitout.view.CreateExerciseFragment"
         android:label="fragment_create_exercise"
         tools:layout="@layout/fragment_create_exercise" >
-        <action
-            android:id="@+id/action_createExerciseFragment_to_addVideoLinksFragment"
-            app:destination="@id/addVideoLinksFragment" />
     </fragment>
     <fragment
-        android:id="@+id/addVideoLinksFragment"
-        android:name="es.ucm.fdi.workitout.view.AddVideoLinksFragment"
-        android:label="AddVideoLinksFragment" />
+        android:id="@+id/viewExerciseFragment"
+        android:name="es.ucm.fdi.workitout.view.ViewExerciseFragment"
+        android:label="ViewExerciseFragment" />
 </navigation>

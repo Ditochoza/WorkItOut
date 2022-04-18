@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
-                app:title="Exercise"
+                app:title="@{exercise.name}"
                 app:titleCentered="true"
                 app:navigationIcon="@drawable/ic_round_arrow_back_24">
 
@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="24dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="26dp"
+                    android:layout_marginBottom="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -69,86 +69,38 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_name"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/name"
-                    android:enabled="false"
-                    android:layout_marginBottom="8dp">
-
-                    <!--suppress AndroidUnknownAttribute -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textPersonName"
-                        android:enabled="false"
-                        android:text="@{exercise.name}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_description"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/description"
-                    android:enabled="false"
-                    android:layout_marginBottom="16dp">
-
-                    <!--suppress AndroidUnknownAttribute -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="start|top"
-                        android:lines="3"
-                        android:inputType="textMultiLine"
-                        android:enabled="false"
-                        android:text="@{exercise.description}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textview.MaterialTextView
-                    style="?attr/textAppearanceTitleLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:text="@string/muscles" />
-
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/cgMuscles"
+                    android:id="@+id/cg_muscles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:muscles="@{exercise.muscles}"
-                    app:sModel="@{sModel}"/>
-
+                    android:layout_marginBottom="12dp"
+                    app:muscles="@{exercise.muscles}"/>
 
                 <com.google.android.material.textview.MaterialTextView
-                    style="?attr/textAppearanceTitleLarge"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/tv_description"
+                    style="?attr/textAppearanceBodyLarge"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:text="@string/video_links" />
+                    android:text="@{exercise.description}" />
 
-
-
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/video_links + ':'}"
+                    android:layout_marginTop="12dp"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_my_exercises"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:paddingBottom="70dp"
+                    android:paddingBottom="25dp"
                     android:clipToPadding="false"
                     android:scrollbars="none"
                     app:layoutManager="LinearLayoutManager"
                     app:sModel="@{sModel}"
                     app:videos="@{videoList}"/>
-
-
 
             </LinearLayout>
 

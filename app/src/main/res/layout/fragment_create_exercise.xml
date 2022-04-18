@@ -155,7 +155,7 @@
                     android:visibility="gone" />
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/cgMuscles"
+                    android:id="@+id/cg_muscles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:muscles="@{@stringArray/muscles}"

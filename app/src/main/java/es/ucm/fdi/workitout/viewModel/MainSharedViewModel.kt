@@ -3,7 +3,6 @@ package es.ucm.fdi.workitout.viewModel
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
@@ -13,6 +12,7 @@ import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.*
+import es.ucm.fdi.workitout.repository.ExercisesRepository
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
 import es.ucm.fdi.workitout.repository.YoutubeAPI
@@ -24,10 +24,17 @@ import kotlinx.coroutines.launch
 
 class MainSharedViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application)  {
     private val userRepository = UserRepository()
+    private val exercisesRepository = ExercisesRepository()
     private val userDataStore by lazy { UserDataStore(application) }
 
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
+
+    private val _exercises = MutableStateFlow<ArrayList<Exercise>>(savedStateHandle.get(::exercises.name) ?: ArrayList())
+    val exercises: StateFlow<ArrayList<Exercise>> = _exercises.asStateFlow()
+
+    private val _selectedExercise = MutableStateFlow(savedStateHandle.get(::selectedExercise.name) ?: Exercise())
+    val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
 
     //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
     private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
@@ -46,10 +53,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _logout = MutableSharedFlow<Boolean>()
     val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
 
-    // Lista de ejericicos
-
-    private var _selectedExercise = MutableStateFlow(Exercise())
-    val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
     private val _videoList = MutableStateFlow(emptyList<Video>())
     val videoList: StateFlow<List<Video>> = _videoList.asStateFlow()
     private val yotubeAPI = YoutubeAPI()
@@ -82,7 +85,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun setSelectedExercise(view:View,exercise: Exercise){
         _selectedExercise.value = exercise
         getVideoData(selectedExercise.value)
-        view.findNavController().navigate(R.id.action_myExercisesFragment_to_manageExerciseFragment)
+        view.findNavController().navigate(R.id.action_exercisesFragment_to_viewExerciseFragment)
     }
     fun setSelectedExercise(exercise: Exercise){
         _selectedExercise.value = exercise
@@ -92,17 +95,17 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun deleteExercise(exercise: Exercise){
 
         viewModelScope.launch {
+            _loading.emit(true)
+            val resultUser = userRepository.deleteExercise(exercise, user.value.email)
+            _loading.emit(false)
 
-            val resultUser = userRepository.deleteExercise(exercise.id)
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
-
-            }else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
 
         }
     }
-    ///
 
     fun goToVideoLink (view: View, url:String){
         val urlUri = Uri.parse(url)
@@ -120,11 +123,26 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             _loading.emit(true)
 
             listOf(
-                async { fetchUserByEmail(email) }
+                async { fetchUserByEmail(email) },
+                async { fetchExercises() }
             ).awaitAll()
 
             _loading.emit(false)
         }
+    }
+
+    private suspend fun fetchExercises() {
+        val resultExercises = exercisesRepository.fetchExercises()
+        if (resultExercises is DatabaseResult.Success) {
+            _exercises.value = resultExercises.data
+            _selectedExercise.value =
+                user.value.exercises.firstOrNull { it.id == selectedExercise.value.id } ?:
+                exercises.value.firstOrNull { it.id == selectedExercise.value.id } ?:
+                Exercise()
+            savedStateHandle.set(::exercises.name, exercises.value)
+            savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
+        }
+        else if (resultExercises is DatabaseResult.Failed) _shortToastRes.emit(resultExercises.resMessage)
     }
 
     private suspend fun fetchUserByEmail(email: String) {
@@ -176,6 +194,17 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             userDataStore.deleteUserDataStore()
             _logout.emit(true)
         }
+    }
+
+    fun <T> navigateAndSet(something: T, navActionRes: Int) {
+        when (something) {
+            is Exercise -> {
+                _selectedExercise.value = something
+                savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
+            }
+        }
+
+        navigate(navActionRes)
     }
 
     fun clearErrors(til: TextInputLayout) { til.error = "" }

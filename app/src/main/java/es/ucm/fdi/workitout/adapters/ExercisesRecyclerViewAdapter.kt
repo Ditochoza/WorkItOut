@@ -6,14 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.ucm.fdi.workitout.databinding.ExerciseItemBinding
 import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.view.MyExercisesFragment
+import es.ucm.fdi.workitout.view.ExercisesFragment
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
-import kotlin.math.absoluteValue
 
 class ExercisesRecyclerViewAdapter(
-    private var exercisesArrayList: ArrayList<Exercise>,
+    private var exercisesList: List<Exercise>,
     private val mainSharedViewModel: MainSharedViewModel,
-    private val myExercisesFragment: MyExercisesFragment
+    private val exercisesFragment: ExercisesFragment
 ): RecyclerView.Adapter<ExercisesRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -22,28 +21,21 @@ class ExercisesRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(exercisesArrayList[position])
+        holder.bind(exercisesList[position])
         holder.binding.executePendingBindings()
-        holder.binding.root.setOnClickListener {
-            mainSharedViewModel.setSelectedExercise(it,exercisesArrayList[position])
-        }
-        holder.binding.root.setOnLongClickListener {
-            myExercisesFragment.onLongClickExercise(it,exercisesArrayList[position])
-        }
-
-
     }
 
-    override fun getItemCount() = exercisesArrayList.size
+    override fun getItemCount() = exercisesList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(bookings: ArrayList<Exercise>) {
-        exercisesArrayList = bookings
+    fun updateList(exercises: List<Exercise>) {
+        exercisesList = exercises
         notifyDataSetChanged()
     }
     inner class ViewHolder(val binding: ExerciseItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
             binding.exercise = exercise
+            binding.fragment = exercisesFragment
             binding.sModel = mainSharedViewModel
         }
     }

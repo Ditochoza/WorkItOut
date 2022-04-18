@@ -2,7 +2,6 @@ package es.ucm.fdi.workitout.adapters
 
 import android.net.Uri
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.ImageView
@@ -18,7 +17,7 @@ import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
-import es.ucm.fdi.workitout.view.MyExercisesFragment
+import es.ucm.fdi.workitout.view.ExercisesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -42,8 +41,8 @@ fun MaterialToolbar.onClick(sModel: MainSharedViewModel) {
 
 //BindingAdapter para colocar los músculos para seleccionar en el ChipGroup de CreateExercise
 //También se le añade un listener para actualizar los músculos seleccionados
-@BindingAdapter("muscles", "vModel")
-fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExerciseViewModel) {
+@BindingAdapter("muscles", "vModel", requireAll = true)
+fun ChipGroup.adapterChipsMusclesSelect(muscles: Array<String>, vModel: CreateExerciseViewModel) {
     muscles.forEach {
         addView(Chip(context).apply {
             text = it
@@ -64,8 +63,8 @@ fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExercise
     }
 }
 //Para ViewExerciseFragment
-@BindingAdapter("muscles","sModel")
-fun ChipGroup.adapterChipsMuscles(muscles: List<String>, sModel: MainSharedViewModel) {
+@BindingAdapter("muscles")
+fun ChipGroup.adapterChipsMuscles(muscles: List<String>) {
     muscles.forEach {
         addView(Chip(context).apply {
             text = it
@@ -122,7 +121,7 @@ fun ImageView.loadImage(imageUrl: String) {
 
 //BindingAdapter para mostrar los chips con los músculos de las rutinas
 @BindingAdapter("exercises")
-fun ChipGroup.adapterChipsMuscles(exercises: List<Exercise>) {
+fun ChipGroup.adapterChipsExercises(exercises: List<Exercise>) {
     val muscles = exercises.flatMap { it.muscles }.distinct()
     muscles.forEach {
         val chip = LayoutInflater.from(context).inflate(R.layout.muscle_chip, this, false) as Chip
@@ -157,15 +156,12 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
     }
 }
 
-@BindingAdapter("sModel","exercises","myExercises", requireAll = true)
-fun RecyclerView.adapterExercises(sModel: MainSharedViewModel,exercises:List<Exercise>,myExercises:MyExercisesFragment) {
-
-    val exercisesArrayList = ArrayList(exercises)
-
+@BindingAdapter("sModel", "exercises", "myExercises", "fragment", requireAll = true)
+fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<Exercise>, myExercises: List<Exercise>, fragment: ExercisesFragment) {
     if (this.adapter == null)
-        this.adapter = ExercisesRecyclerViewAdapter(exercisesArrayList, sModel, myExercises)
+        this.adapter = ExercisesRecyclerViewAdapter(exercises + myExercises, sModel, fragment)
     else
-        (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesArrayList)
+        (adapter as ExercisesRecyclerViewAdapter).updateList(exercises + myExercises)
 }
 
 @BindingAdapter("sModel","videos","viewModel", requireAll = false)

@@ -3,14 +3,9 @@ package es.ucm.fdi.workitout.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.VideoItemBinding
 import es.ucm.fdi.workitout.model.Video
-import es.ucm.fdi.workitout.view.MyExercisesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -45,8 +40,8 @@ class VideosRecyclerViewAdapter(
     override fun getItemCount() = videosArrayList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(bookings: ArrayList<Video>) {
-        videosArrayList = bookings
+    fun updateList(videos: ArrayList<Video>) {
+        videosArrayList = videos
         notifyDataSetChanged()
     }
     inner class ViewHolder(val binding: VideoItemBinding) : RecyclerView.ViewHolder(binding.root) {
