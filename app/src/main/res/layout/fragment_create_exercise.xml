@@ -11,6 +11,8 @@
         <variable name="mainActivity" type="es.ucm.fdi.workitout.view.MainActivity" />
         <variable name="loading" type="Boolean" />
         <variable name="tempImageUri" type="android.net.Uri" />
+        <variable name="tempExercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="videoList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Video>" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -30,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
-                app:title="@{vModel.tempExercise.value.id.isEmpty() ? @string/new_exercise : @string/update_exercise}"
+                app:title="@{sModel.selectedExercise.value.id.isEmpty() ? @string/new_exercise : @string/update_exercise}"
                 app:titleCentered="true"
                 app:navigationIcon="@drawable/ic_round_arrow_back_24">
 
@@ -66,7 +68,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="170dp"
                         android:scaleType="centerCrop"
-                        app:imageUrl="@{vModel.tempExercise.value.imageUrl}"
+                        app:imageUrl="@{tempExercise.imageUrl}"
                         app:tempImageUri="@{tempImageUri}"
                         android:translationZ="2dp"
                         android:contentDescription="@string/exercise_image" />
@@ -109,7 +111,7 @@
                         android:layout_height="match_parent"
                         android:afterTextChanged="@{() -> sModel.clearErrors(tilName)}"
                         android:inputType="textPersonName"
-                        android:text="@={vModel.tempExercise.value.name}" />
+                        android:text="@={tempExercise.name}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -131,7 +133,7 @@
                         android:gravity="start|top"
                         android:lines="3"
                         android:inputType="textMultiLine"
-                        android:text="@={vModel.tempExercise.value.description}" />
+                        android:text="@={tempExercise.description}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -153,26 +155,80 @@
                     android:visibility="gone" />
 
                 <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/cgMuscles"
+                    android:id="@+id/cg_muscles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:muscles="@{@stringArray/muscles}"
                     app:vModel="@{vModel}"
                     app:singleLine="false"
                     app:singleSelection="false" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="Videos (Optional):" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/til_vlink"
+                    style="?attr/textInputFilledStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:hint="@string/youtube_link"
+                    app:errorEnabled="true"
+                    app:layout_constraintBottom_toTopOf="@+id/saveButton">
+
+
+                    <!--suppress AndroidUnknownAttribute -->
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/et_vlink"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:afterTextChanged="@{() -> sModel.clearErrors(tilVlink)}"
+                        android:inputType="textUri" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/addLinkButton"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:onClick="@{() -> vModel.addVideoLink(etVlink,tilVlink)}"
+                    android:text="Add video link" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_my_exercises"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="70dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none"
+                    app:layoutManager="LinearLayoutManager"
+                    app:sModel="@{sModel}"
+                    app:videos="@{videoList}"
+                    app:viewModel="@{vModel}"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveButton"
+                    style="?attr/materialButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="20dp"
+                    android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMuscleError,sModel)}"
+                    android:text="@string/save" />
+
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/saveButton"
-            style="?attr/materialButtonStyle"
-            android:layout_gravity="bottom"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMuscleError,sModel)}"
-            android:text="@string/save" />
+
 
         <ProgressBar
             android:id="@+id/pBar"

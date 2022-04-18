@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                 //Se lanza la pantalla de login (Y registro)
                 launchStartActivity()
             } else { //Hay un usuario con sesión iniciada
+
                 mainSharedViewModel.fetchAll(email)
                 Collections.emptyList<String>()
                 setContentView(R.layout.activity_main)
@@ -42,6 +43,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun setupCollectors() {
         //Collector para mostrar Toast cortos

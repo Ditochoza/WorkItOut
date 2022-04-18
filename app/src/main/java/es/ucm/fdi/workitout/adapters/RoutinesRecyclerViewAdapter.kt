@@ -26,8 +26,8 @@ class RoutinesRecyclerViewAdapter(
     override fun getItemCount() = routinesArrayList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(bookings: ArrayList<Routine>) {
-        routinesArrayList = bookings
+    fun updateList(routines: ArrayList<Routine>) {
+        routinesArrayList = routines
         notifyDataSetChanged()
     }
     inner class ViewHolder(val binding: RoutineItemBinding) : RecyclerView.ViewHolder(binding.root) {

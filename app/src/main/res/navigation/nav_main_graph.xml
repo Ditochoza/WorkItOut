@@ -15,7 +15,39 @@
             app:exitAnim="@anim/slide_out_top"
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom" />
+        <action
+            android:id="@+id/action_homeFragment_to_exercisesFragment"
+            app:destination="@id/exercisesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
+    <fragment
+        android:id="@+id/exercisesFragment"
+        android:name="es.ucm.fdi.workitout.view.ExercisesFragment"
+        android:label="ExercisesFragment">
+        <action
+            android:id="@+id/action_exercisesFragment_to_createExerciseFragment"
+            app:destination="@id/createExerciseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_exercisesFragment_to_viewExerciseFragment"
+            app:destination="@id/viewExerciseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/createExerciseFragment"
+        android:name="es.ucm.fdi.workitout.view.CreateExerciseFragment"
+        android:label="fragment_create_exercise"
+        tools:layout="@layout/fragment_create_exercise" >
+    </fragment>
+    <fragment
+        android:id="@+id/viewExerciseFragment"
+        android:name="es.ucm.fdi.workitout.view.ViewExerciseFragment"
+        android:label="ViewExerciseFragment" />
     <fragment
         android:id="@+id/settingsFragment"
         android:name="es.ucm.fdi.workitout.view.SettingsFragment"

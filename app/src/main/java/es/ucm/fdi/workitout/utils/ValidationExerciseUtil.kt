@@ -58,7 +58,7 @@ object ValidationExerciseUtil {
         return result
     }
 
-    /*fun validateVideoLink(videoLink: Pair<String,TextInputLayout>): Boolean{
+    fun validateVideoLink(videoLink: Pair<String,TextInputLayout>): Boolean{
         var error: Boolean = false
 
         if(videoLink.first.isNotEmpty() && !videoLink.first.contains("https://www.youtube.com/watch?v=", ignoreCase = true)){
@@ -67,6 +67,6 @@ object ValidationExerciseUtil {
         }
 
         return error
-    }*/
+    }
 
 }

@@ -16,7 +16,9 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
+import es.ucm.fdi.workitout.view.ExercisesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -40,8 +42,8 @@ fun MaterialToolbar.onClick(sModel: MainSharedViewModel, navActionResToSettings:
 
 //BindingAdapter para colocar los músculos para seleccionar en el ChipGroup de CreateExercise
 //También se le añade un listener para actualizar los músculos seleccionados
-@BindingAdapter("muscles", "vModel")
-fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExerciseViewModel) {
+@BindingAdapter("muscles", "vModel", requireAll = true)
+fun ChipGroup.adapterChipsMusclesSelect(muscles: Array<String>, vModel: CreateExerciseViewModel) {
     muscles.forEach {
         addView(Chip(context).apply {
             text = it
@@ -61,7 +63,50 @@ fun ChipGroup.adapterChipsMuscles(muscles: Array<String>, vModel: CreateExercise
         vModel.updateMuscles(newMuscles)
     }
 }
+//Para ViewExerciseFragment
+@BindingAdapter("muscles")
+fun ChipGroup.adapterChipsMuscles(muscles: List<String>) {
+    muscles.forEach {
+        addView(Chip(context).apply {
+            text = it
+        })
+    }
 
+}
+
+//Para AddVideoLinks : videolinks
+@BindingAdapter("videolinks","vModel")
+fun ChipGroup.adapterChipsVideolinks(videolinks:List<String>,vModel: CreateExerciseViewModel) {
+
+
+    /*setOnCheckedStateChangeListener { group, checkedIds ->
+        val deletedVideos = ArrayList<String>()
+        checkedIds.forEach { chipId ->
+            val chip = findViewById<Chip>(chipId)
+            deletedVideos.add(chip.text.toString())
+            group.removeView(chip)
+        }
+        vModel.updateVideoLinks(deletedVideos)
+    }*/
+
+    videolinks.forEach { link ->
+        addView(Chip(context).apply {
+            text = link
+            isClickable = true
+            setChipDrawable(ChipDrawable.createFromAttributes(context,
+                null,
+                0,
+                R.style.Widget_Material3_Chip_Input
+            ))
+            setOnClickListener {
+                removeView(it)
+                vModel.updateVideoLinks(link)
+            }
+        })
+    }
+
+
+}
 //BindingAdapter para colocar una imagen en el ImageView a partir de su URL (HTTP) o Uri de imagen elegida
 @BindingAdapter("imageUrl", "tempImageUri")
 fun ImageView.loadImage(imageUrl: String, tempImageUri: Uri) {
@@ -77,7 +122,7 @@ fun ImageView.loadImage(imageUrl: String) {
 
 //BindingAdapter para mostrar los chips con los músculos de las rutinas
 @BindingAdapter("exercises")
-fun ChipGroup.adapterChipsMuscles(exercises: List<Exercise>) {
+fun ChipGroup.adapterChipsExercises(exercises: List<Exercise>) {
     val muscles = exercises.flatMap { it.muscles }.distinct()
     muscles.forEach {
         val chip = LayoutInflater.from(context).inflate(R.layout.muscle_chip, this, false) as Chip
@@ -115,4 +160,23 @@ fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: Create
 @BindingAdapter("checkedItem")
 fun NavigationView.adapterNavigationView(checkedItem: Int) {
     setCheckedItem(checkedItem)
+}
+
+@BindingAdapter("sModel", "exercises", "myExercises", "fragment", requireAll = true)
+fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<Exercise>, myExercises: List<Exercise>, fragment: ExercisesFragment) {
+    if (this.adapter == null)
+        this.adapter = ExercisesRecyclerViewAdapter(exercises + myExercises, sModel, fragment)
+    else
+        (adapter as ExercisesRecyclerViewAdapter).updateList(exercises + myExercises)
+}
+
+@BindingAdapter("sModel","videos","viewModel", requireAll = false)
+fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: List<Video>,viewModel:CreateExerciseViewModel?) {
+
+    var videoArrayList = ArrayList(videos)
+
+    if (this.adapter == null)
+        this.adapter = VideosRecyclerViewAdapter(videoArrayList, sModel,viewModel)
+    else
+        (adapter as VideosRecyclerViewAdapter).updateList(videoArrayList)
 }

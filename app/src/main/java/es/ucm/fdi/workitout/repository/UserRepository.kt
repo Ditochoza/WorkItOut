@@ -12,6 +12,10 @@ import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.utils.DbConstants
+import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_EXERCISES
+import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_USERS
+import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_EXERCISES
+import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_ROUTINES
 import es.ucm.fdi.workitout.utils.getByteArray
 import es.ucm.fdi.workitout.utils.getImageRef
 import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
@@ -22,8 +26,9 @@ class UserRepository {
 
     private val auth = FirebaseAuth.getInstance()
     private val storage = FirebaseStorage.getInstance()
-    private val dbUsers = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_USERS)
-    private val dbExercises = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_EXERCISES)
+    private val db = FirebaseFirestore.getInstance()
+    private val dbUsers = db.collection(COLLECTION_USERS)
+    private val dbExercises = db.collection(COLLECTION_EXERCISES)
 
     private val currentUser: FirebaseUser?
         get() = auth.currentUser
@@ -72,25 +77,26 @@ class UserRepository {
                 var user: User? = User()
                 var routines: List<Routine> = emptyList()
                 var routinesScheduled: List<Routine> = emptyList()
+                var exercises: List<Exercise> = emptyList()
                 listOf(
                     async { //Obtenemos el usuario de la sesión
                         user = dbUsers.document(email).get().await().toObject(User::class.java)
                     },
-                    async { //Obtenemos las rutinas del usuario (Subcollections)
+                    async { //Obtenemos los ejercicios del usuario (Subcollection)
+                        exercises = dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
+                            .get().await().toObjects(Exercise::class.java)
+                    },
+                    async { //Obtenemos las rutinas del usuario (Subcollection)
                         routines = dbUsers.document(email)
-                            .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+                            .collection(USER_COLLECTION_ROUTINES).get().await()
                             .toObjects(Routine::class.java).map { routine ->
-                                var exercises = emptyList<Exercise>()
-                                if (routine.exercisesIds.isNotEmpty()) {
-                                    val qsExercises = dbExercises.whereIn(
-                                        FieldPath.documentId(),
-                                        routine.exercisesIds
-                                    ).get().await()
-                                    exercises = qsExercises.toObjects(Exercise::class.java)
-                                }
+                                val exercisesRoutine = db.collectionGroup(COLLECTION_EXERCISES).whereIn(
+                                    FieldPath.documentId(),
+                                    routine.exercisesIds
+                                ).get().await().toObjects(Exercise::class.java)
 
                                 routine.copy(
-                                    exercises = exercises
+                                    exercises = exercisesRoutine
                                 )
                             }
                         routinesScheduled =
@@ -100,7 +106,8 @@ class UserRepository {
                 DatabaseResult.success(
                     user?.copy(
                         routines = routines,
-                        routinesScheduled = routinesScheduled
+                        routinesScheduled = routinesScheduled,
+                        exercises = exercises
                     )
                 )
             } else {
@@ -109,12 +116,30 @@ class UserRepository {
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
     }
 
+    suspend fun deleteExercise(exercise: Exercise, email: String): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            listOf(
+                async { //Eliminamos el ejercicio
+                    dbUsers.document(email).collection(USER_COLLECTION_EXERCISES).document(exercise.id).delete()
+                },
+                async { //Eliminamos la imagen del ejercicio
+                    if (exercise.imageUrl.isNotEmpty()) {
+                        storage.getReferenceFromUrl(exercise.imageUrl).delete().await()
+                    }
+                },
+            ).awaitAll()
+
+            fetchUserByEmail(email)
+       } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
+    }
+
+
     suspend fun uploadExerciseAndImage(email: String, newExercise: Exercise, ivExercise: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {
             val deferreds = ArrayList<Deferred<Any>>()
             if (isNewImageUploaded && ivExercise != null) { //Si hay nueva imagen se actualiza y se borra la anterior
                 val byteArray = ivExercise.getByteArray(75)
-                val imageRef = storage.getImageRef(DbConstants.COLLECTION_EXERCISES, newExercise.name)
+                val imageRef = storage.getImageRef(COLLECTION_EXERCISES, newExercise.name)
 
                 if (newExercise.imageUrl.isNotEmpty())
                     deferreds.add( //Si se está actualizando la imagen se elimina la anterior
@@ -133,10 +158,10 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir el ejercicio
 
             if (newExercise.id.isNotEmpty()) { //Actualizamos ejercicio
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES)
+                dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
                     .document(newExercise.id).set(newExercise).await()
             } else //Creamos ejercicio
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES)
+                dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
                     .add(newExercise).await()
 
             fetchUserByEmail(email)
@@ -167,10 +192,10 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir la rutina
 
             if (newRoutine.id.isNotEmpty()) { //Actualizamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .document(newRoutine.id).set(newRoutine).await()
             } else //Creamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .add(newRoutine).await()
 
             fetchUserByEmail(email)

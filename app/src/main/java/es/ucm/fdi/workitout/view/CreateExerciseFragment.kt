@@ -15,7 +15,7 @@ import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class CreateExerciseFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
-    private val viewModel: CreateExerciseViewModel by viewModels()
+    private val viewModel: CreateExerciseViewModel by activityViewModels()
 
     private var _binding: FragmentCreateExerciseBinding? = null
     private val binding get() = _binding!!
@@ -24,12 +24,19 @@ class CreateExerciseFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateExerciseBinding.inflate(inflater, container, false)
 
+        if(mainSharedViewModel.selectedExercise.value.id.isNotEmpty()){
+            viewModel.editExercise(mainSharedViewModel.selectedExercise.value)
+        }
+
         binding.sModel = mainSharedViewModel
         binding.vModel = viewModel
         binding.loading = mainSharedViewModel.loading.value
         binding.tempImageUri = mainSharedViewModel.tempImageUri.value
         binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
+
+        binding.tempExercise = viewModel.tempExercise.value
+        binding.videoList = viewModel.videoList.value
 
         setupCollectors()
 
@@ -39,6 +46,8 @@ class CreateExerciseFragment : Fragment() {
     private fun setupCollectors() {
         mainSharedViewModel.tempImageUri.collectLatestFlow(this) { binding.tempImageUri = it }
         mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
+
+        viewModel.videoList.collectLatestFlow(this) { binding.videoList = it }
     }
 
     override fun onDestroyView() {
