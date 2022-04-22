@@ -3,6 +3,7 @@ package es.ucm.fdi.workitout.viewModel
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
@@ -68,16 +69,18 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         _videoList.value = emptyList<Video>()
 
         viewModelScope.launch {
-            exercise.videoLinks.forEach { vlink ->
-                val videoResult = yotubeAPI.getVideoInfo(vlink)
+            exercise.videoLinks.forEach { vlinkObj ->
+                val vUrl = vlinkObj.videoUrl
+                val videoResult = yotubeAPI.getVideoInfo(vUrl)
                 if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
 
                     var videoData = _videoList.value.toMutableList()
+                    video.videoLink = vlinkObj
                     videoData.add(video)
                     _videoList.value = videoData
 
                 }else{
-                    var videoOffline = Video(url=vlink,title=vlink)
+                    var videoOffline = Video(url=vUrl,title=vUrl)
                     var videoData = _videoList.value.toMutableList()
                     videoData.add(videoOffline)
                     _videoList.value = videoData
@@ -87,15 +90,19 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
-    fun setSelectedExercise(view:View,exercise: Exercise){
-        _selectedExercise.value = exercise
-        getVideoData(selectedExercise.value)
-        view.findNavController().navigate(R.id.action_exercisesFragment_to_viewExerciseFragment)
+    fun deleteVideoFromExercise(videoLink: VideoLink){
+        var exercise:Exercise = selectedExercise.value
+        viewModelScope.launch {
+            val resultUser = userRepository.deleteExerciseVideo(exercise, videoLink)
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+
+        }
     }
-    fun setSelectedExercise(exercise: Exercise){
-        _selectedExercise.value = exercise
-        getVideoData(selectedExercise.value)
-    }
+
+
 
     fun deleteExercise(exercise: Exercise){
 
@@ -155,6 +162,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             val resultUser = userRepository.fetchUserByEmail(email)
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
+                Log.i("HomeFragment","user Data: $newUser")
                 savedStateHandle.set(::user.name, user.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
@@ -228,6 +236,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         when (something) {
             is Exercise -> {
                 _selectedExercise.value = something
+                getVideoData(selectedExercise.value)
                 savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
             }
         }

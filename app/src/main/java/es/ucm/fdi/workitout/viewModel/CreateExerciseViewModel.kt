@@ -11,10 +11,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.ValidationResult
-import es.ucm.fdi.workitout.model.Video
+import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.YoutubeAPI
 import es.ucm.fdi.workitout.utils.ValidationExerciseUtil
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,8 +37,9 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
         //Vaciamos la lista de links
         _videoList.value = emptyList<Video>()
         viewModelScope.launch {
-            tempExercise.value.videoLinks.forEach { vlink ->
-                val videoResult = yotubeAPI.getVideoInfo(vlink)
+            tempExercise.value.videoLinks.forEach { vlinkObj ->
+                val vUrl = vlinkObj.videoUrl
+                val videoResult = yotubeAPI.getVideoInfo(vUrl)
                 if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
 
                     var videoData = _videoList.value.toMutableList()
@@ -49,7 +47,7 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
                     _videoList.value = videoData
 
                 }else{
-                    var videoOffline = Video(url=vlink,title=vlink)
+                    var videoOffline = Video(url=vUrl,title=vUrl)
                     var videoData = _videoList.value.toMutableList()
                     videoData.add(videoOffline)
                     _videoList.value = videoData
@@ -106,7 +104,7 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
                     _videoList.value = videoData
 
                     var videoLinks = tempExercise.value.videoLinks.toMutableList()
-                    videoLinks.add(vlink)
+                    videoLinks.add(video.videoLink)
                     _tempExercise.value.videoLinks = videoLinks
 
                     Toast.makeText(tilVideolink.context.applicationContext,"Video succesfully added!",Toast.LENGTH_SHORT).show()
@@ -151,8 +149,8 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
         }
         _videoList.value = newVideoData
 
-        var newVideoList:List<String> = tempExercise.value.videoLinks.filter {
-            it != deletedVideo
+        var newVideoList: List<VideoLink> = tempExercise.value.videoLinks.filter {
+            it.videoUrl != deletedVideo
         }
         _tempExercise.value.videoLinks = newVideoList
     }

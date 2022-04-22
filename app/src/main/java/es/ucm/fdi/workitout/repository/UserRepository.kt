@@ -1,16 +1,14 @@
 package es.ucm.fdi.workitout.repository
 
 import android.widget.ImageView
+import android.widget.Toast
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_EXERCISES
 import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_USERS
@@ -111,7 +109,7 @@ class UserRepository {
                     )
                 )
             } else {
-                DatabaseResult.failed(R.string.error_fetch_user)
+                DatabaseResult.failed(R.string.error_no_email_found)
             }
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
     }
@@ -131,6 +129,27 @@ class UserRepository {
 
             fetchUserByEmail(email)
        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
+    }
+
+    suspend fun deleteExerciseVideo(exercise: Exercise, videoLink: VideoLink): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+
+            var newVideoLinks = exercise.videoLinks.filter { vlinkObjct ->
+                vlinkObjct != videoLink
+            }
+
+            val newExercise = exercise.copy(videoLinks = newVideoLinks)
+
+            if(exercise.idUser.isEmpty()){ //Actualizamos un ejercicio general
+                dbExercises.document(exercise.id).set(newExercise).await()
+
+            }else{ //Actualizamos un ejercicio creado por el usuario
+                dbUsers.document(exercise.idUser).collection(USER_COLLECTION_EXERCISES).document(exercise.id).set(newExercise).await()
+            }
+
+            fetchUserByEmail(videoLink.idUser)
+
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
     }
 
 

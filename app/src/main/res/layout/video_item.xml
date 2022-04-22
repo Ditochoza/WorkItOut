@@ -48,6 +48,15 @@
                 android:textSize="12dp"
                 android:textAppearance="?attr/textAppearanceHeadlineMedium"
                 android:text="@{video.title}"/>
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:icon="@drawable/ic_round_delete_outline_24"
+                android:text="@string/delete"
+                android:visibility="@{sModel.user.value.email == video.videoLink.idUser ? View.VISIBLE : View.GONE, default=gone}"
+                style="@style/Widget.Material3.Button.Icon"
+                android:onClick="@{ () -> sModel.deleteVideoFromExercise(video.videoLink)}"/>
 
 
         </LinearLayout>

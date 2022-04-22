@@ -6,5 +6,6 @@ data class Video(
     var url: String = "",
     var title: String = "",
     var description: String = "",
-    var thumbnail: String = ""
+    var thumbnail: String = "",
+    var videoLink: VideoLink = VideoLink()
 )
