@@ -3,14 +3,12 @@ package es.ucm.fdi.workitout.viewModel
 import android.app.Application
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.findNavController
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
@@ -41,6 +39,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     private val _selectedExercise = MutableStateFlow(savedStateHandle.get(::selectedExercise.name) ?: Exercise())
     val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
+
+    private val _routines = MutableStateFlow<ArrayList<Routine>>(savedStateHandle.get(::routines.name) ?: ArrayList())
+    val routines: StateFlow<ArrayList<Routine>> = _routines.asStateFlow()
+
+    private val _selectedRoutine = MutableStateFlow(savedStateHandle.get(::selectedRoutine.name) ?: Routine())
+    val selectedRoutine: StateFlow<Routine> = _selectedRoutine.asStateFlow()
 
     //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
     private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
@@ -162,7 +166,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             val resultUser = userRepository.fetchUserByEmail(email)
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
-                Log.i("HomeFragment","user Data: $newUser")
                 savedStateHandle.set(::user.name, user.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
@@ -181,6 +184,19 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 savedStateHandle.set(::user.name, user.value)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+        }
+    }
+
+    fun deleteRoutine(routine: Routine){
+        viewModelScope.launch {
+            _loading.emit(true)
+            val resultUser = userRepository.deleteRoutine(routine, user.value.email)
+            _loading.emit(false)
+
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
     }
 

@@ -1,7 +1,6 @@
 package es.ucm.fdi.workitout.repository
 
 import android.widget.ImageView
-import android.widget.Toast
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.firestore.FieldPath
@@ -187,6 +186,23 @@ class UserRepository {
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_exercise) }
     }
 
+    suspend fun deleteRoutine(routine: Routine, email: String): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            listOf(
+                async { //Eliminamos la rutina
+                    dbUsers.document(email).collection(USER_COLLECTION_ROUTINES).document(routine.id).delete().await()
+                },
+                async { //Eliminamos la imagen de la rutina
+                    if (routine.imageUrl.isNotEmpty()) {
+                        storage.getReferenceFromUrl(routine.imageUrl).delete().await()
+                    }
+                },
+            ).awaitAll()
+
+            fetchUserByEmail(email)
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.routine_could_not_be_deleted) }
+    }
+
     suspend fun uploadRoutineAndImage(email: String, newRoutine: Routine, ivRoutine: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {
             val deferreds = ArrayList<Deferred<Any>>()
@@ -211,10 +227,10 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir la rutina
 
             if (newRoutine.id.isNotEmpty()) { //Actualizamos rutina
-                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
                     .document(newRoutine.id).set(newRoutine).await()
             } else //Creamos rutina
-                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
                     .add(newRoutine).await()
 
             fetchUserByEmail(email)

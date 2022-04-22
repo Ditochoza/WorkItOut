@@ -19,6 +19,7 @@ import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.view.ExercisesFragment
+import es.ucm.fdi.workitout.view.MyRoutinesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -147,4 +148,12 @@ fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: List<Video>,v
         this.adapter = VideosRecyclerViewAdapter(videoArrayList, sModel,viewModel)
     else
         (adapter as VideosRecyclerViewAdapter).updateList(videoArrayList)
+}
+
+@BindingAdapter("sModel", "myRoutines", "fragment", requireAll = true)
+fun RecyclerView.adapterMyRoutines(sModel: MainSharedViewModel, myRoutines: List<Routine>, fragment: MyRoutinesFragment) {
+    if (this.adapter == null)
+        this.adapter = MyRoutinesRecyclerViewAdapter(myRoutines, sModel, fragment)
+    else
+        (adapter as MyRoutinesRecyclerViewAdapter).updateList(myRoutines)
 }
