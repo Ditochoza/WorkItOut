@@ -37,6 +37,7 @@ class ExercisesRecyclerViewAdapter(
             binding.exercise = exercise
             binding.fragment = exercisesFragment
             binding.sModel = mainSharedViewModel
+            binding.muscles = exercise.muscles.joinToString(", ")
         }
     }
 }

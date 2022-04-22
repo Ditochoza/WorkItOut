@@ -6,12 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipDrawable
-import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentAddVideoLinksBinding
-import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 

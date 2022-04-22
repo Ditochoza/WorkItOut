@@ -1,7 +1,6 @@
 package es.ucm.fdi.workitout.view
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

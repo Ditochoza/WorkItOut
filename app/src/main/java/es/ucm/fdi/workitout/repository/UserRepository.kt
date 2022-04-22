@@ -227,10 +227,10 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir la rutina
 
             if (newRoutine.id.isNotEmpty()) { //Actualizamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .document(newRoutine.id).set(newRoutine).await()
             } else //Creamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .add(newRoutine).await()
 
             fetchUserByEmail(email)

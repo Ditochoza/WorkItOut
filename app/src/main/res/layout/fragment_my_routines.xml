@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
@@ -11,6 +10,7 @@
         <variable name="fragment" type="es.ucm.fdi.workitout.view.MyRoutinesFragment" />
         <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
         <variable name="user" type="es.ucm.fdi.workitout.model.User" />
+        <variable name="emptyRoutine" type="es.ucm.fdi.workitout.model.Routine" />
         <variable name="loading" type="Boolean" />
     </data>
 
@@ -35,8 +35,8 @@
                 app:navigationOnClickListener="@{() -> activity.openDrawer()}"
                 app:titleTextAppearance="?attr/textAppearanceHeadlineMedium"
                 app:titleCentered="true"
-                app:menu="@menu/menu_main"
                 app:navigationIcon="@drawable/ic_round_menu_24"
+                app:menu="@menu/menu_main"
                 app:sModel="@{sModel}"
                 app:navActionResToSettings="@{@id/action_myRoutinesFragment_to_settingsFragment}">
 
@@ -78,6 +78,17 @@
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/btn_add_routine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:contentDescription="@string/create_routine"
+            android:text="@string/create_routine"
+            app:icon="@drawable/ic_round_add_24"
+            android:layout_gravity="bottom|end"
+            android:onClick="@{() -> sModel.navigateAndSet(emptyRoutine, @id/action_myRoutinesFragment_to_createRoutineFragment)}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

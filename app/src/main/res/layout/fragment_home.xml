@@ -11,6 +11,7 @@
         <variable name="user" type="es.ucm.fdi.workitout.model.User" />
         <variable name="loading" type="Boolean" />
         <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.HomeFragment" />
         <variable name="emptyList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Exercise&gt;" />
     </data>
 
@@ -76,12 +77,15 @@
                     android:visibility="@{user.routinesScheduled.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
                     android:text="@string/upcoming_routine"/>
 
+                <!--suppress AndroidUnknownAttribute -->
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
+                    android:onClick="@{() -> sModel.navigateAndSet(user.routinesScheduled.get(0), @id/action_homeFragment_to_viewRoutineFragment)}"
+                    android:onLongClick="@{() -> fragment.onLongClickRoutine(user.routinesScheduled.get(0))}"
                     android:layout_marginHorizontal="16dp"
                     android:visibility="@{user.routinesScheduled.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"
                     app:cardCornerRadius="24dp"
@@ -227,7 +231,8 @@
                     app:layoutManager="LinearLayoutManager"
                     app:routines="@{user.routinesScheduled}"
                     app:sModel="@{sModel}"
-                    app:scheduled="@{true}"/>
+                    app:scheduled="@{true}"
+                    app:fragment="@{fragment}"/>
 
             </LinearLayout>
 

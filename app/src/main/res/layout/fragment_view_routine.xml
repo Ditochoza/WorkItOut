@@ -2,7 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.CreateRoutineFragment">
+    tools:context=".view.ViewRoutineFragment">
 
     <data>
         <import type="android.view.View" />
@@ -81,29 +81,42 @@
                     android:visibility="@{routine.dayOfWeekScheduled == -1 ? View.VISIBLE : View.GONE, default=visible}"
                     app:iconGravity="textStart" />
 
-                <LinearLayout
+                <com.google.android.material.card.MaterialCardView
+                    style="?attr/materialCardViewFilledStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:cardCornerRadius="36dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="12dp"
                     android:visibility="@{routine.dayOfWeekScheduled == -1 ? View.GONE : View.VISIBLE, default=gone}"
-                    android:orientation="vertical">
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <com.google.android.material.textview.MaterialTextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:layout_marginBottom="8dp"
-                        android:text="@{routine.dayOfWeekScheduled != -1 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[routine.dayOfWeekScheduled], TimeUtilsKt.timeString(routine.timeTimestampScheduled)) : @string/empty}"
-                        style="?attr/textAppearanceBodyLarge"/>
+                        android:layout_margin="8dp"
+                        android:orientation="vertical">
 
-                    <com.google.android.material.button.MaterialButton
-                        style="@style/Widget.Material3.Button.OutlinedButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginBottom="6dp"
-                        android:text="@string/de_schedule_routine" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginBottom="8dp"
+                            android:text="@{routine.dayOfWeekScheduled != -1 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[routine.dayOfWeekScheduled], TimeUtilsKt.timeString(routine.timeTimestampScheduled)) : @string/empty}"
+                            style="?attr/textAppearanceBodyLarge"/>
 
-                </LinearLayout>
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/de_schedule_routine" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tv_description"

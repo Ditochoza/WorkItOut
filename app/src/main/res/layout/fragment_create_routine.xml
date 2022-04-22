@@ -6,6 +6,7 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="es.ucm.fdi.workitout.utils.TimeUtilsKt" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="vModel" type="es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel" />
         <variable name="mainActivity" type="es.ucm.fdi.workitout.view.MainActivity" />
@@ -170,7 +171,8 @@
                             android:focusable="false"
                             android:longClickable="false"
                             android:cursorVisible="false"
-                            android:inputType="time" />
+                            android:inputType="time"
+                            android:text="@{vModel.tempRoutine.value.dayOfWeekScheduled != -1 ? TimeUtilsKt.timeString(vModel.tempRoutine.value.timeTimestampScheduled) : @string/empty}"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 

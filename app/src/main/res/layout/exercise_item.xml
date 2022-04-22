@@ -7,6 +7,7 @@
         <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="fragment" type="es.ucm.fdi.workitout.view.ExercisesFragment" />
+        <variable name="muscles" type="String" />
     </data>
 
     <!--suppress AndroidUnknownAttribute -->
@@ -81,10 +82,11 @@
                 android:layout_height="0dp"
                 android:layout_width="0dp"
                 android:id="@+id/textView"
-                android:text="@{exercise.description}"
+                android:text="@{muscles}"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="16dp"
                 android:ellipsize="end"
+                android:maxLines="1"
                 android:textAppearance="?attr/textAppearanceBodyLarge"
                 app:layout_constraintTop_toBottomOf="@+id/tv_exercise_name"
                 app:layout_constraintBottom_toBottomOf="parent"

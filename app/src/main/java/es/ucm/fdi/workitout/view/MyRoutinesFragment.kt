@@ -11,6 +11,7 @@ import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentMyRoutinesBinding
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.collectLatestFlow
+import es.ucm.fdi.workitout.utils.createAlertDialog
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class MyRoutinesFragment : Fragment() {
@@ -26,7 +27,9 @@ class MyRoutinesFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.user = mainSharedViewModel.user.value
+        binding.emptyRoutine = Routine()
         binding.fragment = this
+        binding.activity = activity as MainActivity?
         binding.loading = mainSharedViewModel.loading.value
         binding.lifecycleOwner = viewLifecycleOwner
 
@@ -43,19 +46,14 @@ class MyRoutinesFragment : Fragment() {
     fun onLongClickRoutine (routine: Routine):Boolean {
         activity?.let { activity ->
             MaterialAlertDialogBuilder(activity)
-                .setItems(R.array.array_options_routine) { _, i ->
+                .setItems(R.array.array_options_exercise_routine) { _, i ->
                     when (i) {
                         0 -> { //Editar  rutina
-                            mainSharedViewModel.navigateAndSet(
-                                routine,
-                                R.id.action_routinesFragment_to_createRoutineFragment
-                            )
+                            mainSharedViewModel.navigateAndSet(routine,
+                                R.id.action_myRoutinesFragment_to_createRoutineFragment)
                         }
                         1 -> { //Eliminar rutina
-                            context?.createAlertDialog(getString(
-                                R.string.delete_routine,
-                                routine.name
-                            ),
+                            context?.createAlertDialog(getString(R.string.delete_routine, routine.name),
                                 message = R.string.delete_routine_confirmation_message,
                                 icon = R.drawable.ic_round_delete_outline_24,
                                 ok = R.string.confirm to { mainSharedViewModel.deleteRoutine(routine) },

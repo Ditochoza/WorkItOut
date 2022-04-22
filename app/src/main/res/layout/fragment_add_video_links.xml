@@ -77,11 +77,12 @@
                     android:onClick="@{() -> vModel.addVideoLink(etVlink,tilVlink)}"
                     android:text="Add" />
 
+                <!--
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/cgVideos"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:vModel="@{vModel}" />
+                    app:vModel="@{vModel}" />-->
 
             </LinearLayout>
 

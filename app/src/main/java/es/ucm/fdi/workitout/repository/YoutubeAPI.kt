@@ -1,19 +1,12 @@
 package es.ucm.fdi.workitout.repository
 
-import android.util.Log
-import com.google.firebase.firestore.FieldPath
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.*
-import es.ucm.fdi.workitout.utils.DbConstants
-import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
+import es.ucm.fdi.workitout.model.DatabaseResult
+import es.ucm.fdi.workitout.model.Video
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.internal.wait
 import org.json.JSONObject
 import java.io.IOException
 

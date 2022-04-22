@@ -19,6 +19,7 @@ import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.view.ExercisesFragment
+import es.ucm.fdi.workitout.view.HomeFragment
 import es.ucm.fdi.workitout.view.MyRoutinesFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
@@ -103,8 +104,8 @@ fun ChipGroup.adapterChipsExercises(exercises: List<Exercise>) {
 }
 
 //BindingAdapter para configurar el adaptador del RecyclerView de rutinas programadas
-@BindingAdapter("routines", "sModel", "scheduled", requireAll = true)
-fun RecyclerView.adapterRoutines(routines: List<Routine>, sModel: MainSharedViewModel, scheduled: Boolean) {
+@BindingAdapter("routines", "sModel", "scheduled", "fragment", requireAll = true)
+fun RecyclerView.adapterScheduledRoutines(routines: List<Routine>, sModel: MainSharedViewModel, scheduled: Boolean, fragment: HomeFragment) {
     val routinesArrayList = if (scheduled && routines.size > 1) { //Sólo las rutinas programadas (A partir de la 1)
         ArrayList(routines.subList(1, routines.size))
     } else { //Todas las rutinas
@@ -112,14 +113,16 @@ fun RecyclerView.adapterRoutines(routines: List<Routine>, sModel: MainSharedView
     }
 
     if (this.adapter == null)
-        this.adapter = RoutinesRecyclerViewAdapter(routinesArrayList, sModel)
+        this.adapter = ScheduledRoutinesRecyclerViewAdapter(routinesArrayList, sModel, fragment)
     else
-        (adapter as RoutinesRecyclerViewAdapter).updateList(routinesArrayList)
+        (adapter as ScheduledRoutinesRecyclerViewAdapter).updateList(routinesArrayList)
 }
 
 @BindingAdapter("weekDays","vModel","til", requireAll = true)
 fun AutoCompleteTextView.adapterWeekDays(weekDays: Array<String>, vModel: CreateRoutineViewModel, til: TextInputLayout) {
     setAdapter(ArrayAdapter(context, R.layout.support_simple_spinner_dropdown_item, weekDays))
+    if (vModel.tempRoutine.value.dayOfWeekScheduled != -1)
+        setText(weekDays[vModel.tempRoutine.value.dayOfWeekScheduled])
     setOnItemClickListener { _, _, i, _ ->
         vModel.updateWeekDay(i)
         til.error = ""

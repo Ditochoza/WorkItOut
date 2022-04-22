@@ -97,4 +97,7 @@
     <string name="delete_routine_confirmation_message">Are you sure you want to delete this routine? All its data will be deleted forever from the database</string>
     <string name="schedule_routine">Schedule Routine</string>
     <string name="de_schedule_routine">De-Schedule Routine</string>
+    <string name="create_routine">Create Routine</string>
+    <string name="create_exercise">Create Custom Exercise</string>
+    <string name="routine_not_scheduled">Routine not scheduled</string>
 </resources>

@@ -11,10 +11,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.ExercisesRepository
 import es.ucm.fdi.workitout.repository.UserDataStore
@@ -182,6 +178,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
+                _navigateActionRes.emit(0)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
@@ -234,6 +231,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
+                _navigateActionRes.emit(0)
             } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
     }
@@ -252,8 +250,14 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         when (something) {
             is Exercise -> {
                 _selectedExercise.value = something
+                _tempImageUri.value = Uri.EMPTY
                 getVideoData(selectedExercise.value)
                 savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
+            }
+            is Routine -> {
+                _selectedRoutine.value = something
+                _tempImageUri.value = Uri.EMPTY
+                savedStateHandle.set(::selectedRoutine.name, selectedRoutine.value)
             }
         }
 

@@ -1,11 +1,11 @@
 package es.ucm.fdi.workitout.utils
 
 import android.content.Context
-import android.widget.EditText
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.text.format.DateFormat
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.widget.doAfterTextChanged

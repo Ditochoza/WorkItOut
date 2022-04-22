@@ -8,7 +8,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
-import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.ValidationResult
 import es.ucm.fdi.workitout.utils.ValidationRoutineUtil

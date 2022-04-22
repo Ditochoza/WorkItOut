@@ -2,16 +2,12 @@ package es.ucm.fdi.workitout.view
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
 import com.google.android.material.color.DynamicColors
-import com.google.android.material.navigation.NavigationView
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.ActivityMainBinding
 import es.ucm.fdi.workitout.utils.DbConstants
@@ -19,8 +15,6 @@ import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.utils.currentFragment
 import es.ucm.fdi.workitout.utils.getNavController
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
@@ -62,24 +56,41 @@ class MainActivity : AppCompatActivity() {
         binding.mainNavigationDrawer.setCheckedItem(R.id.home_nav_drawer_menu_item)
         binding.mainNavigationDrawer.setNavigationItemSelectedListener { item ->
             lifecycleScope.launchWhenStarted {
-                when (item.itemId) {
-                    R.id.home_nav_drawer_menu_item -> {
-                        when (supportFragmentManager.currentFragment) {
-                            is ExercisesFragment ->
-                                mainSharedViewModel.navigate(R.id.action_exercisesFragment_to_homeFragment)
+                when (supportFragmentManager.currentFragment) {
+                    is HomeFragment -> {
+                        when (item.itemId) {
+                            R.id.home_nav_drawer_menu_item ->
+                                closeDrawer()
+                            R.id.exercises_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_homeFragment_to_exercisesFragment)
+                            R.id.routines_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_homeFragment_to_myRoutinesFragment)
                         }
                     }
-                    R.id.exercises_nav_drawer_menu_item ->
-                        when (supportFragmentManager.currentFragment) {
-                            is HomeFragment ->
-                                mainSharedViewModel.navigate(R.id.action_homeFragment_to_exercisesFragment)
+                    is ExercisesFragment -> {
+                        when (item.itemId) {
+                            R.id.home_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_exercisesFragment_to_homeFragment)
+                            R.id.exercises_nav_drawer_menu_item ->
+                                closeDrawer()
+                            R.id.routines_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_exercisesFragment_to_myRoutinesFragment)
                         }
-                    R.id.routines_nav_drawer_menu_item ->  {
-                        /*TODO Implementar navegación*/
+                    }
+                    is MyRoutinesFragment -> {
+                        when (item.itemId) {
+                            R.id.home_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_myRoutinesFragment_to_homeFragment)
+                            R.id.exercises_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_myRoutinesFragment_to_exercisesFragment)
+                            R.id.routines_nav_drawer_menu_item ->  {
+                                closeDrawer()
+                            }
+                        }
                     }
                 }
                 delay(100L)
-                binding.mainDrawerLayout.close()
+                closeDrawer()
             }
             true
         }
@@ -128,6 +139,10 @@ class MainActivity : AppCompatActivity() {
 
     fun openDrawer() {
         binding.mainDrawerLayout.open()
+    }
+
+    private fun closeDrawer() {
+        binding.mainDrawerLayout.close()
     }
 
     //Guardamos el estado del ViewModel cuando la app pasa a segundo plano

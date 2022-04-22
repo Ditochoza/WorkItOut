@@ -1,19 +1,16 @@
 package es.ucm.fdi.workitout.view
 
+//import androidx.navigation.Navigation.findNavController
+//import androidx.navigation.fragment.findNavController
+//import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.Navigation.findNavController
-//import androidx.navigation.Navigation.findNavController
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.navigation.NavigationView
 import es.ucm.fdi.workitout.R
-import androidx.navigation.findNavController
-//import androidx.navigation.fragment.findNavController
-//import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import es.ucm.fdi.workitout.databinding.FragmentExercisesBinding
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.utils.collectLatestFlow
@@ -32,6 +29,7 @@ class ExercisesFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.lifecycleOwner = viewLifecycleOwner
+        binding.emptyExercise = Exercise()
         binding.user = mainSharedViewModel.user.value
         binding.exercises = mainSharedViewModel.exercises.value
         binding.loading = mainSharedViewModel.loading.value
@@ -47,7 +45,7 @@ class ExercisesFragment : Fragment() {
         if (exercise.idUser == mainSharedViewModel.user.value.email) {
             activity?.let { activity ->
                 MaterialAlertDialogBuilder(activity)
-                    .setItems(R.array.array_options_exercise) { _, i ->
+                    .setItems(R.array.array_options_exercise_routine) { _, i ->
                         when (i) {
                             0 -> { //Editar  ejercicio
                                 mainSharedViewModel.navigateAndSet(exercise,
