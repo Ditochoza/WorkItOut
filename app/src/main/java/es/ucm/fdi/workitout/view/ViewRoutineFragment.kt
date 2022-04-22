@@ -23,6 +23,8 @@ class ViewRoutineFragment : Fragment() {
 
         binding.sModel = mainSharedViewModel
         binding.routine = mainSharedViewModel.selectedRoutine.value
+        binding.fragment = this
+        binding.loading = mainSharedViewModel.loading.value
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupCollectors()
@@ -32,6 +34,7 @@ class ViewRoutineFragment : Fragment() {
 
     private fun setupCollectors() {
         mainSharedViewModel.selectedRoutine.collectLatestFlow(this) { binding.routine = it }
+        mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
     }
 
     override fun onDestroyView() {

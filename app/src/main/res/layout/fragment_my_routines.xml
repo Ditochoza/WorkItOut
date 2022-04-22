@@ -6,8 +6,12 @@
 
     <data>
         <import type="android.view.View" />
+        <import type="es.ucm.fdi.workitout.model.Routine" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
-        <variable name="myRoutines" type="es.ucm.fdi.workitout.view.MyRoutinesFragment" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.MyRoutinesFragment" />
+        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
+        <variable name="user" type="es.ucm.fdi.workitout.model.User" />
+        <variable name="loading" type="Boolean" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -26,11 +30,26 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="My Routines"
+                app:title="@string/my_routines"
                 app:titleTextColor="?attr/colorPrimary"
+                app:navigationOnClickListener="@{() -> activity.openDrawer()}"
                 app:titleTextAppearance="?attr/textAppearanceHeadlineMedium"
                 app:titleCentered="true"
-                app:navigationIcon="@drawable/ic_round_menu_24">
+                app:menu="@menu/menu_main"
+                app:navigationIcon="@drawable/ic_round_menu_24"
+                app:sModel="@{sModel}"
+                app:navActionResToSettings="@{@id/action_myRoutinesFragment_to_settingsFragment}">
+
+                <ProgressBar
+                    android:id="@+id/pBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_gravity="center"
+                    android:indeterminate="true"
+                    android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
+
             </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -54,7 +73,8 @@
                     android:scrollbars="none"
                     app:layoutManager="LinearLayoutManager"
                     app:sModel="@{sModel}"
-                    app:myRoutines="@{myRoutines}"/>
+                    app:myRoutines="@{user.routines}"
+                    app:fragment="@{fragment}"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

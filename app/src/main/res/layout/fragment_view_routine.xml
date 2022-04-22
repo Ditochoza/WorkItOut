@@ -8,6 +8,8 @@
         <import type="android.view.View" />
         <import type="es.ucm.fdi.workitout.utils.TimeUtilsKt"/>
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+        <variable name="loading" type="Boolean" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.ViewRoutineFragment" />
         <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
     </data>
 
@@ -28,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
-                app:title="Routine"
+                app:title="@{routine.name}"
                 app:titleCentered="true"
                 app:navigationIcon="@drawable/ic_round_arrow_back_24">
 
@@ -53,7 +55,7 @@
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="24dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="26dp"
+                    android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -69,91 +71,59 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_name"
-                    style="?attr/textInputFilledStyle"
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.Material3.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/name"
-                    android:enabled="false"
-                    android:layout_marginBottom="8dp">
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/schedule_routine"
+                    app:icon="@drawable/ic_round_schedule_24"
+                    android:visibility="@{routine.dayOfWeekScheduled == -1 ? View.VISIBLE : View.GONE, default=visible}"
+                    app:iconGravity="textStart" />
 
-                    <!--suppress AndroidUnknownAttribute -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textPersonName"
-                        android:enabled="false"
-                        android:text="@{routine.name}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_description"
-                    style="?attr/textInputFilledStyle"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/description"
-                    android:enabled="false"
-                    android:layout_marginBottom="16dp">
+                    android:visibility="@{routine.dayOfWeekScheduled == -1 ? View.GONE : View.VISIBLE, default=gone}"
+                    android:orientation="vertical">
 
-                    <!--suppress AndroidUnknownAttribute -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_description"
+                    <com.google.android.material.textview.MaterialTextView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="start|top"
-                        android:lines="3"
-                        android:inputType="textMultiLine"
-                        android:enabled="false"
-                        android:text="@{routine.description}" />
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginBottom="8dp"
+                        android:text="@{routine.dayOfWeekScheduled != -1 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[routine.dayOfWeekScheduled], TimeUtilsKt.timeString(routine.timeTimestampScheduled)) : @string/empty}"
+                        style="?attr/textAppearanceBodyLarge"/>
 
-                </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="6dp"
+                        android:text="@string/de_schedule_routine" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_week_day"
-                    style="?attr/textInputFilledStyle"
+                </LinearLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tv_description"
+                    style="?attr/textAppearanceBodyLarge"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/day_of_week"
-                    android:enabled="false"
-                    android:layout_marginBottom="8dp">
-
-                    <!--suppress AndroidUnknownAttribute -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_week_day"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textPersonName"
-                        android:enabled="false"
-                        android:text="@{@stringArray/week_days[routine.dayOfWeekScheduled]}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/til_hour"
-                    style="?attr/textInputFilledStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/hour"
-                    android:enabled="false"
-                    android:layout_marginBottom="8dp">
-
-                    <!--suppress AndroidUnknownAttribute -->
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/et_hour"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:inputType="textPersonName"
-                        android:enabled="false"
-                        android:text="@{TimeUtilsKt.timeString(routine.timeTimestampScheduled)}" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:text="@{routine.description}" />
 
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

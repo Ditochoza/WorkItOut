@@ -12,6 +12,7 @@ import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.model.User
 import es.ucm.fdi.workitout.utils.DbConstants
+import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_ROUTINES
 import es.ucm.fdi.workitout.utils.getByteArray
 import es.ucm.fdi.workitout.utils.getImageRef
 import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
@@ -78,7 +79,7 @@ class UserRepository {
                     },
                     async { //Obtenemos las rutinas del usuario (Subcollections)
                         routines = dbUsers.document(email)
-                            .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+                            .collection(USER_COLLECTION_ROUTINES).get().await()
                             .toObjects(Routine::class.java).map { routine ->
                                 var exercises = emptyList<Exercise>()
                                 if (routine.exercisesIds.isNotEmpty()) {
@@ -168,7 +169,7 @@ class UserRepository {
     suspend fun fetchRoutines(email: String): DatabaseResult<ArrayList<Routine>> {
         return try { withContext(Dispatchers.IO) {
 
-            val routines = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+            val routines = dbUsers.document(email).collection(USER_COLLECTION_ROUTINES).get().await()
                 .toObjects(Routine::class.java)
 
             DatabaseResult.success(ArrayList(routines))
@@ -176,13 +177,30 @@ class UserRepository {
         } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.error_login) }
     }
 
-    suspend fun deleteRoutine(routineId: String): DatabaseResult<String> {
+    /*suspend fun deleteRoutine(routineId: String): DatabaseResult<String> {
 
         return try { withContext(Dispatchers.IO) {
             val email:String = currentUser!!.email!!
             val routine = dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES).document(routineId).delete()
             DatabaseResult.success("Routine deleted")
 
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.routine_could_not_be_deleted) }
+    }*/
+
+    suspend fun deleteRoutine(routine: Routine, email: String): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            listOf(
+                async { //Eliminamos la rutina
+                    dbUsers.document(email).collection(USER_COLLECTION_ROUTINES).document(routine.id).delete().await()
+                },
+                async { //Eliminamos la imagen de la rutina
+                    if (routine.imageUrl.isNotEmpty()) {
+                        storage.getReferenceFromUrl(routine.imageUrl).delete().await()
+                    }
+                },
+            ).awaitAll()
+
+            fetchUserByEmail(email)
         } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.routine_could_not_be_deleted) }
     }
 
@@ -210,10 +228,10 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir la rutina
 
             if (newRoutine.id.isNotEmpty()) { //Actualizamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .document(newRoutine.id).set(newRoutine).await()
             } else //Creamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .add(newRoutine).await()
 
             fetchUserByEmail(email)

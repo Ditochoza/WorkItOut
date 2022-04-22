@@ -168,14 +168,11 @@ fun RecyclerView.adapterExercises(sModel: MainSharedViewModel,myExercises:MyExer
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesArrayList)
 }
 
-@BindingAdapter("sModel","myRoutines", requireAll = true)
-fun RecyclerView.adapterRoutines(sModel: MainSharedViewModel,myRoutines:MyRoutinesFragment) {
-
-    val routinesArrayList = ArrayList(sModel.routinesList)
-
+@BindingAdapter("sModel", "myRoutines", "fragment", requireAll = true)
+fun RecyclerView.adapterMyRoutines(sModel: MainSharedViewModel, myRoutines: List<Routine>, fragment: MyRoutinesFragment) {
     if (this.adapter == null)
-        this.adapter = MyRoutinesRecyclerViewAdapter(routinesArrayList, sModel, myRoutines)
+        this.adapter = MyRoutinesRecyclerViewAdapter(myRoutines, sModel, fragment)
     else
-        (adapter as MyRoutinesRecyclerViewAdapter).updateList(routinesArrayList)
+        (adapter as MyRoutinesRecyclerViewAdapter).updateList(myRoutines)
 }
 

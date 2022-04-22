@@ -4,14 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.findNavController
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentMyRoutinesBinding
 import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class MyRoutinesFragment : Fragment() {
@@ -26,37 +25,47 @@ class MyRoutinesFragment : Fragment() {
         _binding = FragmentMyRoutinesBinding.inflate(inflater, container, false)
 
         binding.sModel = mainSharedViewModel
+        binding.user = mainSharedViewModel.user.value
+        binding.fragment = this
+        binding.loading = mainSharedViewModel.loading.value
         binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.myRoutines = this
+        setupCollectors()
 
         return binding.root
     }
 
-    fun onLongClickRoutine (view: View, routine: Routine):Boolean {
-        //val applicationContext = this.activity!!.applicationContext
-        val applicationContext = view.context
-        val items = arrayOf("Edit","Delete")
-        val builder = AlertDialog.Builder(applicationContext)
+    private fun setupCollectors() {
+        mainSharedViewModel.user.collectLatestFlow(this) { binding.user = it }
+        mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
+    }
 
-        with(builder)
-        {
-            setTitle("Manage Routine")
-            setItems(items) { dialog, which ->
-                if(items[which] == "Edit"){
-                    mainSharedViewModel.setSelectedRoutine(routine)
-                    view.findNavController().navigate(R.id.action_myRoutinesFragment_to_createRoutineFragment)
-                }else if(items[which] == "Delete") {
-                    mainSharedViewModel.deleteRoutine(routine)
-                    Toast.makeText(applicationContext, "Routine deleted", Toast.LENGTH_SHORT).show()
+    fun onLongClickRoutine (routine: Routine):Boolean {
+        activity?.let { activity ->
+            MaterialAlertDialogBuilder(activity)
+                .setItems(R.array.array_options_routine) { _, i ->
+                    when (i) {
+                        0 -> { //Editar  rutina
+                            mainSharedViewModel.navigateAndSet(
+                                routine,
+                                R.id.action_routinesFragment_to_createRoutineFragment
+                            )
+                        }
+                        1 -> { //Eliminar rutina
+                            context?.createAlertDialog(getString(
+                                R.string.delete_routine,
+                                routine.name
+                            ),
+                                message = R.string.delete_routine_confirmation_message,
+                                icon = R.drawable.ic_round_delete_outline_24,
+                                ok = R.string.confirm to { mainSharedViewModel.deleteRoutine(routine) },
+                                cancel = R.string.cancel to {}
+                            )?.show()
+                        }
+                    }
                 }
-
-            }
-
-            setPositiveButton("Cancel", null)
-            show()
+                .setTitle(routine.name).show()
         }
-
         return true
     }
 

@@ -5,14 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import es.ucm.fdi.workitout.databinding.MyRoutineItemBinding
-import es.ucm.fdi.workitout.databinding.RoutineItemBinding
 import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.view.MyExercisesFragment
 import es.ucm.fdi.workitout.view.MyRoutinesFragment
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class MyRoutinesRecyclerViewAdapter(
-    private var routinesArrayList: ArrayList<Routine>,
+    private var routinesArrayList: List<Routine>,
     private val mainSharedViewModel: MainSharedViewModel,
     private val myRoutinesFragment: MyRoutinesFragment
 ): RecyclerView.Adapter<MyRoutinesRecyclerViewAdapter.ViewHolder>() {
@@ -24,24 +22,19 @@ class MyRoutinesRecyclerViewAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(routinesArrayList[position])
         holder.binding.executePendingBindings()
-        holder.binding.root.setOnClickListener {
-            mainSharedViewModel.setSelectedRoutine(it,routinesArrayList[position])
-        }
-        holder.binding.root.setOnLongClickListener {
-            myRoutinesFragment.onLongClickRoutine(it,routinesArrayList[position])
-        }
     }
 
     override fun getItemCount() = routinesArrayList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(bookings: ArrayList<Routine>) {
-        routinesArrayList = bookings
+    fun updateList(routines: List<Routine>) {
+        routinesArrayList = routines
         notifyDataSetChanged()
     }
     inner class ViewHolder(val binding: MyRoutineItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(routine: Routine) {
             binding.routine = routine
+            binding.fragment = myRoutinesFragment
             binding.sModel = mainSharedViewModel
         }
     }

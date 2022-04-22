@@ -7,6 +7,7 @@
         <import type="android.view.View" />
         <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.MyRoutinesFragment" />
     </data>
 
     <!--suppress AndroidUnknownAttribute -->
@@ -16,7 +17,9 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        app:cardCornerRadius="12dp"
+        app:cardCornerRadius="18dp"
+        android:onClick="@{() -> sModel.navigateAndSet(routine, @id/action_myRoutinesFragment_to_viewRoutineFragment)}"
+        android:onLongClick="@{() -> fragment.onLongClickRoutine(routine)}"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="12dp"
@@ -27,51 +30,50 @@
             android:layout_height="match_parent">
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/roundImage"
+                android:id="@+id/cv_routine_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_margin="16dp"
                 app:cardCornerRadius="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <ImageView
-                    android:id="@+id/imageView"
-                    android:layout_width="108dp"
-                    android:layout_height="108dp"
-                    android:padding="2px"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
                     android:scaleType="centerCrop"
-                    app:imageUrl="@{routine.imageUrl}"/>
+                    app:imageUrl="@{routine.imageUrl}"
+                    android:contentDescription="@{routine.name}" />
 
             </com.google.android.material.card.MaterialCardView>
 
-
-            <TextView
-                android:layout_width="230dp"
-                android:layout_height="25dp"
-                android:layout_marginEnd="8dp"
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_routine_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text="@{routine.name}"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/textView"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.892"
-                app:layout_constraintStart_toEndOf="@+id/roundImage"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.727" />
+                app:layout_constraintStart_toEndOf="@+id/cv_routine_item"
+                app:layout_constraintTop_toTopOf="@+id/cv_routine_item" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_height="0dp"
+                android:layout_width="0dp"
                 android:id="@+id/textView"
-                android:layout_width="233dp"
-                android:layout_height="55dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
                 android:text="@{routine.description}"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:ellipsize="end"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintTop_toBottomOf="@+id/tv_routine_name"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toEndOf="@+id/roundImage" />
+                app:layout_constraintStart_toEndOf="@+id/cv_routine_item" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

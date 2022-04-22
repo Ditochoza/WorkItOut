@@ -2,7 +2,6 @@ package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
 import android.net.Uri
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.lifecycle.AndroidViewModel
@@ -29,6 +28,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     private val _user = MutableStateFlow(savedStateHandle.get(::user.name) ?: User())
     val user: StateFlow<User> = _user.asStateFlow()
+
+    private val _routines = MutableStateFlow<ArrayList<Routine>>(savedStateHandle.get(::routines.name) ?: ArrayList())
+    val routines: StateFlow<ArrayList<Routine>> = _routines.asStateFlow()
+
+    private val _selectedRoutine = MutableStateFlow(savedStateHandle.get(::selectedRoutine.name) ?: Routine())
+    val selectedRoutine: StateFlow<Routine> = _selectedRoutine.asStateFlow()
 
     //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
     private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
@@ -73,35 +78,19 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             ).awaitAll()
         }
     }
-    ///
-
-    // Lista de rutinas
-    var routinesList = ArrayList<Routine>()
-
-    private var _selectedRoutine = MutableStateFlow(Routine())
-    val selectedRoutine: StateFlow<Routine> = _selectedRoutine.asStateFlow()
-
-    fun setSelectedRoutine(view:View,routine: Routine){
-        _selectedRoutine.value = routine
-        view.findNavController().navigate(R.id.action_myRoutinesFragment_to_manageRoutineFragment)
-    }
-    fun setSelectedRoutine(routine: Routine){
-        _selectedRoutine.value = routine
-    }
 
     fun deleteRoutine(routine: Routine){
-
         viewModelScope.launch {
-            listOf(
-                async {
-                    val result = userRepository.deleteRoutine(routine.id)
-                    if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
-                }
-            ).awaitAll()
+            _loading.emit(true)
+            val resultUser = userRepository.deleteRoutine(routine, user.value.email)
+            _loading.emit(false)
+
+            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+                _user.value = newUser
+                savedStateHandle.set(::user.name, user.value)
+            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
     }
-
-    ///
 
     //Obtiene un valor del usuario de DataStore instantáneamente
     suspend fun getStringUserDataStore(key: String): String {
@@ -127,18 +116,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
-
-                //Obtener rutinas del usuario
-                val resultRoutines = userRepository.fetchRoutines(email)
-                if (resultRoutines is DatabaseResult.Success) resultRoutines.data?.let { routines ->
-                    routinesList = routines
-                }else if (resultRoutines is DatabaseResult.Failed) _shortToastRes.emit(resultRoutines.resMessage)
-
-                //Obtener ejercicios del usuario
-                val resultExercises = userRepository.fetchExercises(email)
-                if (resultExercises is DatabaseResult.Success) resultExercises.data?.let { exercises ->
-                    exercisesList = exercises
-                }else if (resultExercises is DatabaseResult.Failed) _shortToastRes.emit(resultExercises.resMessage)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
         }
