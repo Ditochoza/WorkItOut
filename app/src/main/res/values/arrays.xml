@@ -19,4 +19,8 @@
         <item>Saturday</item>
         <item>Sunday</item>
     </string-array>
+    <string-array name="array_options_exercise_routine" >
+        <item>Edit</item>
+        <item>Delete</item>
+    </string-array>
 </resources>

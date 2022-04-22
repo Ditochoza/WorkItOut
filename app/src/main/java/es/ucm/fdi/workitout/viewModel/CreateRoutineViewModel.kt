@@ -57,6 +57,10 @@ class CreateRoutineViewModel(private var savedStateHandle: SavedStateHandle): Vi
         savedStateHandle.set(::tempRoutine.name, tempRoutine.value)
     }
 
+    fun editRoutine(routine: Routine){
+        _tempRoutine.value = routine
+    }
+
     fun saveStateHandle() {
         savedStateHandle.set(::tempRoutine.name, tempRoutine.value)
     }

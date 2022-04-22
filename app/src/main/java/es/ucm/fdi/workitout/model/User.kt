@@ -13,4 +13,5 @@ data class User (
     @get: Exclude var tempPasswordValidate: String = "",
     @get: Exclude var routines: List<Routine> = emptyList(),
     @get: Exclude var routinesScheduled: List<Routine> = emptyList(),
+    @get: Exclude var exercises: List<Exercise> = emptyList(),
 ) : Parcelable

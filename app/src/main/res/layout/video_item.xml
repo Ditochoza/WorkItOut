@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="video" type="es.ucm.fdi.workitout.model.Video" />
+        <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_marginHorizontal="16dp"
+        app:cardCornerRadius="24dp"
+        style="?attr/materialCardViewFilledStyle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                app:cardCornerRadius="24dp"
+                style="?attr/materialCardViewFilledStyle">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:contentDescription="@{video.title}"
+                    app:imageUrl="@{video.thumbnail}"
+                    android:scaleType="centerCrop"/>
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="6dp"
+                android:textSize="12dp"
+                android:textAppearance="?attr/textAppearanceHeadlineMedium"
+                android:text="@{video.title}"/>
+            <com.google.android.material.button.MaterialButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                app:icon="@drawable/ic_round_delete_outline_24"
+                android:text="@string/delete"
+                android:visibility="@{sModel.user.value.email == video.videoLink.idUser ? View.VISIBLE : View.GONE, default=gone}"
+                style="@style/Widget.Material3.Button.Icon"
+                android:onClick="@{ () -> sModel.deleteVideoFromExercise(video.videoLink)}"/>
+
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+</layout>

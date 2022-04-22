@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/main_navigation_drawer"
+        android:title="@string/navigation">
+        <menu>
+            <item
+                android:id="@+id/home_nav_drawer_menu_item"
+                android:icon="@drawable/ic_round_home_24"
+                android:title="@string/home_menu"
+                android:checkable="true"/>
+            <item
+                android:id="@+id/exercises_nav_drawer_menu_item"
+                android:icon="@drawable/ic_round_exercises_24"
+                android:title="@string/exercises_menu"
+                android:checkable="true"/>
+            <item
+                android:id="@+id/routines_nav_drawer_menu_item"
+                android:icon="@drawable/ic_round_routines_24"
+                android:title="@string/routines_menu"
+                android:checkable="true"/>
+        </menu>
+    </item>
+</menu>

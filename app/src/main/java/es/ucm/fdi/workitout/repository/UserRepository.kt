@@ -7,11 +7,12 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.DatabaseResult
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.User
+import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.utils.DbConstants
+import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_EXERCISES
+import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_USERS
+import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_EXERCISES
+import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_ROUTINES
 import es.ucm.fdi.workitout.utils.getByteArray
 import es.ucm.fdi.workitout.utils.getImageRef
 import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
@@ -22,8 +23,9 @@ class UserRepository {
 
     private val auth = FirebaseAuth.getInstance()
     private val storage = FirebaseStorage.getInstance()
-    private val dbUsers = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_USERS)
-    private val dbExercises = FirebaseFirestore.getInstance().collection(DbConstants.COLLECTION_EXERCISES)
+    private val db = FirebaseFirestore.getInstance()
+    private val dbUsers = db.collection(COLLECTION_USERS)
+    private val dbExercises = db.collection(COLLECTION_EXERCISES)
 
     private val currentUser: FirebaseUser?
         get() = auth.currentUser
@@ -72,25 +74,26 @@ class UserRepository {
                 var user: User? = User()
                 var routines: List<Routine> = emptyList()
                 var routinesScheduled: List<Routine> = emptyList()
+                var exercises: List<Exercise> = emptyList()
                 listOf(
                     async { //Obtenemos el usuario de la sesión
                         user = dbUsers.document(email).get().await().toObject(User::class.java)
                     },
-                    async { //Obtenemos las rutinas del usuario (Subcollections)
+                    async { //Obtenemos los ejercicios del usuario (Subcollection)
+                        exercises = dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
+                            .get().await().toObjects(Exercise::class.java)
+                    },
+                    async { //Obtenemos las rutinas del usuario (Subcollection)
                         routines = dbUsers.document(email)
-                            .collection(DbConstants.USER_COLLECTION_ROUTINES).get().await()
+                            .collection(USER_COLLECTION_ROUTINES).get().await()
                             .toObjects(Routine::class.java).map { routine ->
-                                var exercises = emptyList<Exercise>()
-                                if (routine.exercisesIds.isNotEmpty()) {
-                                    val qsExercises = dbExercises.whereIn(
-                                        FieldPath.documentId(),
-                                        routine.exercisesIds
-                                    ).get().await()
-                                    exercises = qsExercises.toObjects(Exercise::class.java)
-                                }
+                                val exercisesRoutine = db.collectionGroup(COLLECTION_EXERCISES).whereIn(
+                                    FieldPath.documentId(),
+                                    routine.exercisesIds
+                                ).get().await().toObjects(Exercise::class.java)
 
                                 routine.copy(
-                                    exercises = exercises
+                                    exercises = exercisesRoutine
                                 )
                             }
                         routinesScheduled =
@@ -100,21 +103,61 @@ class UserRepository {
                 DatabaseResult.success(
                     user?.copy(
                         routines = routines,
-                        routinesScheduled = routinesScheduled
+                        routinesScheduled = routinesScheduled,
+                        exercises = exercises
                     )
                 )
             } else {
-                DatabaseResult.failed(R.string.error_fetch_user)
+                DatabaseResult.failed(R.string.error_no_email_found)
             }
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
     }
+
+    suspend fun deleteExercise(exercise: Exercise, email: String): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            listOf(
+                async { //Eliminamos el ejercicio
+                    dbUsers.document(email).collection(USER_COLLECTION_EXERCISES).document(exercise.id).delete()
+                },
+                async { //Eliminamos la imagen del ejercicio
+                    if (exercise.imageUrl.isNotEmpty()) {
+                        storage.getReferenceFromUrl(exercise.imageUrl).delete().await()
+                    }
+                },
+            ).awaitAll()
+
+            fetchUserByEmail(email)
+       } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
+    }
+
+    suspend fun deleteExerciseVideo(exercise: Exercise, videoLink: VideoLink): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+
+            var newVideoLinks = exercise.videoLinks.filter { vlinkObjct ->
+                vlinkObjct != videoLink
+            }
+
+            val newExercise = exercise.copy(videoLinks = newVideoLinks)
+
+            if(exercise.idUser.isEmpty()){ //Actualizamos un ejercicio general
+                dbExercises.document(exercise.id).set(newExercise).await()
+
+            }else{ //Actualizamos un ejercicio creado por el usuario
+                dbUsers.document(exercise.idUser).collection(USER_COLLECTION_EXERCISES).document(exercise.id).set(newExercise).await()
+            }
+
+            fetchUserByEmail(videoLink.idUser)
+
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
+    }
+
 
     suspend fun uploadExerciseAndImage(email: String, newExercise: Exercise, ivExercise: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {
             val deferreds = ArrayList<Deferred<Any>>()
             if (isNewImageUploaded && ivExercise != null) { //Si hay nueva imagen se actualiza y se borra la anterior
                 val byteArray = ivExercise.getByteArray(75)
-                val imageRef = storage.getImageRef(DbConstants.COLLECTION_EXERCISES, newExercise.name)
+                val imageRef = storage.getImageRef(COLLECTION_EXERCISES, newExercise.name)
 
                 if (newExercise.imageUrl.isNotEmpty())
                     deferreds.add( //Si se está actualizando la imagen se elimina la anterior
@@ -133,14 +176,31 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir el ejercicio
 
             if (newExercise.id.isNotEmpty()) { //Actualizamos ejercicio
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES)
+                dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
                     .document(newExercise.id).set(newExercise).await()
             } else //Creamos ejercicio
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_EXERCISES)
+                dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
                     .add(newExercise).await()
 
             fetchUserByEmail(email)
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_exercise) }
+    }
+
+    suspend fun deleteRoutine(routine: Routine, email: String): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            listOf(
+                async { //Eliminamos la rutina
+                    dbUsers.document(email).collection(USER_COLLECTION_ROUTINES).document(routine.id).delete().await()
+                },
+                async { //Eliminamos la imagen de la rutina
+                    if (routine.imageUrl.isNotEmpty()) {
+                        storage.getReferenceFromUrl(routine.imageUrl).delete().await()
+                    }
+                },
+            ).awaitAll()
+
+            fetchUserByEmail(email)
+        } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.routine_could_not_be_deleted) }
     }
 
     suspend fun uploadRoutineAndImage(email: String, newRoutine: Routine, ivRoutine: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
@@ -167,15 +227,54 @@ class UserRepository {
             deferreds.awaitAll() //Esperamos a que se complete la subida de imagen para subir la rutina
 
             if (newRoutine.id.isNotEmpty()) { //Actualizamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .document(newRoutine.id).set(newRoutine).await()
             } else //Creamos rutina
-                dbUsers.document(email).collection(DbConstants.USER_COLLECTION_ROUTINES)
+                dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .add(newRoutine).await()
 
             fetchUserByEmail(email)
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_routine) }
     }
+
+    suspend fun checkAndUpdatePassword(currentPassword: String, newPassword: String): DatabaseResult<Unit> =
+        try { withContext(Dispatchers.IO) {
+            val user = currentUser
+            val email = user?.email
+            val credential = email?.let { EmailAuthProvider.getCredential(it, currentPassword) }
+            if (user != null && email != null && credential != null) {
+                user.reauthenticate(credential).await()
+                user.updatePassword(newPassword)
+                DatabaseResult.success(Unit)
+            } else {
+                DatabaseResult.failed(R.string.error_update_password)
+            }
+        } } catch (e: FirebaseTooManyRequestsException) { //Cuenta bloqueada por demasiados intentos fallidos
+            DatabaseResult.failed(R.string.too_many_attempts_try_again_later_exception)
+        } catch (e: FirebaseAuthInvalidCredentialsException) { //La contraseña introducida no es correcta
+            DatabaseResult.failed(R.string.invalid_password_exception)
+        } catch (e: Exception) { DatabaseResult.failed(R.string.error_update_password) }
+
+    suspend fun checkPasswordAndDeleteAccount(password: String): DatabaseResult<Unit> =
+        try { withContext(Dispatchers.IO) {
+            val user = currentUser
+            val email = user?.email
+            val credential = email?.let { EmailAuthProvider.getCredential(it, password) }
+            if (user != null && email != null && credential != null) {
+                user.reauthenticate(credential).await()
+                user.delete().await()
+                dbUsers.document(email).delete().await()
+                //TODO Eliminar rutinas y ejercicios del usuario
+
+                DatabaseResult.success(Unit)
+            } else {
+                DatabaseResult.failed(R.string.error_delete_user)
+            }
+        } } catch (e: FirebaseTooManyRequestsException) { //Cuenta bloqueada por demasiados intentos fallidos
+            DatabaseResult.failed(R.string.too_many_attempts_try_again_later_exception)
+        } catch (e: FirebaseAuthInvalidCredentialsException) { //La contraseña introducida no es correcta
+            DatabaseResult.failed(R.string.invalid_password_exception)
+        } catch (e: Exception) { DatabaseResult.failed(R.string.error_delete_user) }
 
     //Se cierra sesión en Firebase Authentication
     fun logout() {

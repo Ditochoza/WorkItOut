@@ -9,19 +9,26 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.color.DynamicColors
 import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.databinding.ActivityMainBinding
 import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.collectLatestFlow
+import es.ucm.fdi.workitout.utils.currentFragment
 import es.ucm.fdi.workitout.utils.getNavController
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val mainSharedViewModel: MainSharedViewModel by viewModels()
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DynamicColors.applyToActivityIfAvailable(this)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
         val emailIntent = intent.getStringExtra(DbConstants.USER_EMAIL)
 
@@ -34,14 +41,61 @@ class MainActivity : AppCompatActivity() {
                 //Se lanza la pantalla de login (Y registro)
                 launchStartActivity()
             } else { //Hay un usuario con sesión iniciada
+
                 mainSharedViewModel.fetchAll(email)
                 Collections.emptyList<String>()
-                setContentView(R.layout.activity_main)
+                setContentView(binding.root)
 
+                setupNavigationDrawerItemListener()
                 setupCollectors()
             }
         }
     }
+
+    private fun setupNavigationDrawerItemListener() {
+        binding.mainNavigationDrawer.setCheckedItem(R.id.home_nav_drawer_menu_item)
+        binding.mainNavigationDrawer.setNavigationItemSelectedListener { item ->
+            lifecycleScope.launchWhenStarted {
+                when (supportFragmentManager.currentFragment) {
+                    is HomeFragment -> {
+                        when (item.itemId) {
+                            R.id.home_nav_drawer_menu_item ->
+                                closeDrawer()
+                            R.id.exercises_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_homeFragment_to_exercisesFragment)
+                            R.id.routines_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_homeFragment_to_myRoutinesFragment)
+                        }
+                    }
+                    is ExercisesFragment -> {
+                        when (item.itemId) {
+                            R.id.home_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_exercisesFragment_to_homeFragment)
+                            R.id.exercises_nav_drawer_menu_item ->
+                                closeDrawer()
+                            R.id.routines_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_exercisesFragment_to_myRoutinesFragment)
+                        }
+                    }
+                    is MyRoutinesFragment -> {
+                        when (item.itemId) {
+                            R.id.home_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_myRoutinesFragment_to_homeFragment)
+                            R.id.exercises_nav_drawer_menu_item ->
+                                mainSharedViewModel.navigate(R.id.action_myRoutinesFragment_to_exercisesFragment)
+                            R.id.routines_nav_drawer_menu_item ->  {
+                                closeDrawer()
+                            }
+                        }
+                    }
+                }
+                delay(100L)
+                closeDrawer()
+            }
+            true
+        }
+    }
+
 
     private fun setupCollectors() {
         //Collector para mostrar Toast cortos
@@ -54,7 +108,7 @@ class MainActivity : AppCompatActivity() {
             if (navActionRes == 0) {
                 onBackPressed()
             } else {
-                val navController = supportFragmentManager.getNavController(R.id.fc_main_activity)
+                val navController = supportFragmentManager.getNavController(binding.fcMainActivity.id)
                 navController?.navigate(navActionRes)
             }
         }
@@ -82,6 +136,14 @@ class MainActivity : AppCompatActivity() {
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let { mainSharedViewModel.setTempImage(uri) }
         }
+
+    fun openDrawer() {
+        binding.mainDrawerLayout.open()
+    }
+
+    private fun closeDrawer() {
+        binding.mainDrawerLayout.close()
+    }
 
     //Guardamos el estado del ViewModel cuando la app pasa a segundo plano
     override fun onPause() {

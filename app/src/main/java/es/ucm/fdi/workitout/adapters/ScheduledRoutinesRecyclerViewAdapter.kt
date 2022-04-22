@@ -4,17 +4,19 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import es.ucm.fdi.workitout.databinding.RoutineItemBinding
+import es.ucm.fdi.workitout.databinding.ScheduledRoutineItemBinding
 import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.view.HomeFragment
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
-class RoutinesRecyclerViewAdapter(
+class ScheduledRoutinesRecyclerViewAdapter(
     private var routinesArrayList: ArrayList<Routine>,
-    private val mainSharedViewModel: MainSharedViewModel
-): RecyclerView.Adapter<RoutinesRecyclerViewAdapter.ViewHolder>() {
+    private val mainSharedViewModel: MainSharedViewModel,
+    private val homeFragment: HomeFragment
+): RecyclerView.Adapter<ScheduledRoutinesRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = RoutineItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ScheduledRoutineItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -26,14 +28,15 @@ class RoutinesRecyclerViewAdapter(
     override fun getItemCount() = routinesArrayList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(bookings: ArrayList<Routine>) {
-        routinesArrayList = bookings
+    fun updateList(routines: ArrayList<Routine>) {
+        routinesArrayList = routines
         notifyDataSetChanged()
     }
-    inner class ViewHolder(val binding: RoutineItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: ScheduledRoutineItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(routine: Routine) {
             binding.routine = routine
             binding.sModel = mainSharedViewModel
+            binding.fragment = homeFragment
         }
     }
 }

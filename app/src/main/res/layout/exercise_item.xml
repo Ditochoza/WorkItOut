@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.ExercisesFragment" />
+        <variable name="muscles" type="String" />
+    </data>
+
+    <!--suppress AndroidUnknownAttribute -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="18dp"
+        android:onClick="@{() -> sModel.navigateAndSet(exercise, @id/action_exercisesFragment_to_viewExerciseFragment)}"
+        android:onLongClick="@{() -> fragment.onLongClickExercise(exercise)}"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
+        style="?attr/materialCardViewFilledStyle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_exercise_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{exercise.imageUrl}"
+                    android:contentDescription="@{exercise.name}" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/tv_exercise_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cv_exercise_item"
+                app:layout_constraintTop_toTopOf="@+id/cv_exercise_item" >
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:layout_weight="1"
+                    android:text="@{exercise.name}"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"/>
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="@{exercise.idUser.isEmpty() ? View.GONE : View.VISIBLE, default=gone}"
+                    android:tint="?attr/colorAccent"
+                    app:srcCompat="@drawable/ic_round_person_24"
+                    android:contentDescription="@{exercise.name}" />
+
+            </LinearLayout>
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_height="0dp"
+                android:layout_width="0dp"
+                android:id="@+id/textView"
+                android:text="@{muscles}"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="?attr/textAppearanceBodyLarge"
+                app:layout_constraintTop_toBottomOf="@+id/tv_exercise_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cv_exercise_item" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

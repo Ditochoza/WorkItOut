@@ -1,5 +1,6 @@
 package es.ucm.fdi.workitout.utils
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.text.format.DateFormat
@@ -19,9 +20,11 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.coroutines.flow.Flow
@@ -80,6 +83,25 @@ fun TextView.tvError(conditionError: Boolean): Boolean {
         false
     }
 }
+
+fun Context.createAlertDialog(title: Any? = null, message: Int? = null, icon: Int? = null,
+                              ok: Pair<Int,()->Unit>, cancel: Pair<Int,()->Unit>? = null,
+                              neutral: Pair<Int, ()->Unit>? = null): MaterialAlertDialogBuilder {
+    val builder = MaterialAlertDialogBuilder(this)
+        .setPositiveButton(getString(ok.first)) { _,_ -> ok.second() }
+
+    title?.let {
+        if (it is Int) builder.setTitle(getString(it))
+        if (it is String) builder.setTitle(it)
+    }
+    message?.let { builder.setMessage(getString(it)) }
+    icon?.let { builder.setIcon(it) }
+    neutral?.let { builder.setNeutralButton(getString(it.first)) { _, _ -> it.second() } }
+    cancel?.let { builder.setNegativeButton(getString(it.first)) { _, _ -> it.second() } }
+
+    return builder
+}
+
 fun FragmentActivity.createEditTextTimePicker(et: EditText, til: TextInputLayout, time: String,
                                               titleRes: Int, setDateTimePicked: (LocalDateTime) -> Unit) {
     et.setText(time)
@@ -116,6 +138,10 @@ fun FragmentActivity.createEditTextTimePicker(et: EditText, til: TextInputLayout
 
 val EditText.string: String
     get() = text.toString()
+
+fun <E> List<E>.toArrayList(): ArrayList<E> = this.toCollection(ArrayList())
+
+fun <T> QuerySnapshot.toObjectsArrayList(java: Class<T>) = toObjects(java).toArrayList()
 
 //Se devuelve el color del atributo
 /*@ColorInt

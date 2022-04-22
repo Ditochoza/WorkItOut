@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <import type="es.ucm.fdi.workitout.utils.TimeUtilsKt"/>
+        <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
+        <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.MyRoutinesFragment" />
+    </data>
+
+    <!--suppress AndroidUnknownAttribute -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        app:cardCornerRadius="18dp"
+        android:onClick="@{() -> sModel.navigateAndSet(routine, @id/action_myRoutinesFragment_to_viewRoutineFragment)}"
+        android:onLongClick="@{() -> fragment.onLongClickRoutine(routine)}"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
+        style="?attr/materialCardViewFilledStyle">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_routine_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:scaleType="centerCrop"
+                    app:imageUrl="@{routine.imageUrl}"
+                    android:contentDescription="@{routine.name}" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_routine_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{routine.name}"
+                android:textAppearance="?attr/textAppearanceTitleLarge"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cv_routine_item"
+                app:layout_constraintTop_toTopOf="@+id/cv_routine_item" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:lines="1"
+                android:ellipsize="end"
+                android:text="@{routine.dayOfWeekScheduled != -1 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[routine.dayOfWeekScheduled], TimeUtilsKt.timeString(routine.timeTimestampScheduled)) : @string/routine_not_scheduled}"
+                app:layout_constraintTop_toBottomOf="@+id/tv_routine_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/cv_routine_item"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>

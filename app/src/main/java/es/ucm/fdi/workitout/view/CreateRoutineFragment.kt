@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentCreateRoutineBinding
 import es.ucm.fdi.workitout.utils.collectLatestFlow
@@ -18,13 +17,17 @@ import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class CreateRoutineFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
-    private val viewModel: CreateRoutineViewModel by viewModels()
+    private val viewModel: CreateRoutineViewModel by activityViewModels()
 
     private var _binding: FragmentCreateRoutineBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateRoutineBinding.inflate(inflater, container, false)
+
+        if(mainSharedViewModel.selectedRoutine.value.id.isNotEmpty()){
+            viewModel.editRoutine(mainSharedViewModel.selectedRoutine.value)
+        }
 
         binding.sModel = mainSharedViewModel
         binding.vModel = viewModel
