@@ -10,3 +10,14 @@
 - Pantalla de creación/modificación de rutinas.
 - Subida de ejercicios/rutinas a Firebase.
 - Botón de cierre de sesión de usuario.
+
+## [v0.8] [Unreleased]  - 22/04/2022
+### Nuevo
+- Pantalla con listado de ejercicios (De app y de usuario).
+- Pantalla con listado de rutinas del usuario.
+- Pantalla de visualización de ejercicio.
+- Pantalla de visualización de rutina.
+- Menú de navegación lateral.
+- Pantalla de ajustes:
+-- Dar de baja usuario.
+-- Cambiar contraseña de usuario.
