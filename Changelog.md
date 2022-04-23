@@ -21,3 +21,7 @@
 - Pantalla de ajustes:
 -- Dar de baja usuario.
 -- Cambiar contraseña de usuario.
+
+## [v0.85] [Unreleased]  - 23/04/2022
+### Nuevo
+- Videos recomendados en cada ejercicio
