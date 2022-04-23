@@ -1,9 +1,7 @@
 package es.ucm.fdi.workitout.viewModel
 
 import android.app.Application
-import android.content.Intent
 import android.net.Uri
-import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.AndroidViewModel
@@ -15,7 +13,6 @@ import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.ExercisesRepository
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
-import es.ucm.fdi.workitout.repository.YoutubeAPI
 import es.ucm.fdi.workitout.utils.DbConstants
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -42,7 +39,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _selectedRoutine = MutableStateFlow(savedStateHandle.get(::selectedRoutine.name) ?: Routine())
     val selectedRoutine: StateFlow<Routine> = _selectedRoutine.asStateFlow()
 
-    //TODO Poner a empty al lanzar el fragment para un nuevo ejercicio
     private val _tempImageUri = MutableStateFlow(savedStateHandle.get(::tempImageUri.name) ?: Uri.EMPTY)
     val tempImageUri: StateFlow<Uri> = _tempImageUri.asStateFlow()
 
@@ -59,53 +55,39 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private val _logout = MutableSharedFlow<Boolean>()
     val logout: SharedFlow<Boolean> = _logout.asSharedFlow()
 
-    private val _videoList = MutableStateFlow(emptyList<Video>())
-    val videoList: StateFlow<List<Video>> = _videoList.asStateFlow()
-    private val yotubeAPI = YoutubeAPI()
+    fun addVideoToExercise(videoLink: String, exercise: Exercise) {
+        val newVideoLinks = exercise.videoLinks.toMutableList()
+        newVideoLinks.add(VideoLink(user.value.email, videoLink))
+        val newExercise = exercise.copy(videoLinks = newVideoLinks)
 
-
-    fun getVideoData(exercise: Exercise){
-        //Vaciamos la lista de links
-        _videoList.value = emptyList<Video>()
-
-        viewModelScope.launch {
-            exercise.videoLinks.forEach { vlinkObj ->
-                val vUrl = vlinkObj.videoUrl
-                val videoResult = yotubeAPI.getVideoInfo(vUrl)
-                if (videoResult is DatabaseResult.Success) videoResult.data?.let { video ->
-
-                    var videoData = _videoList.value.toMutableList()
-                    video.videoLink = vlinkObj
-                    videoData.add(video)
-                    _videoList.value = videoData
-
-                }else{
-                    var videoOffline = Video(url=vUrl,title=vUrl)
-                    var videoData = _videoList.value.toMutableList()
-                    videoData.add(videoOffline)
-                    _videoList.value = videoData
-                }
-            }
-
-        }
+        updateExercise(newExercise)
     }
 
-    fun deleteVideoFromExercise(videoLink: VideoLink){
-        var exercise:Exercise = selectedExercise.value
-        viewModelScope.launch {
-            val resultUser = userRepository.deleteExerciseVideo(exercise, videoLink)
-            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
-                _user.value = newUser
-                savedStateHandle.set(::user.name, user.value)
-            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+    fun deleteVideoFromExercise(video: Video, exercise: Exercise) {
+        val newVideoLinks = exercise.videoLinks.toMutableList()
+        newVideoLinks.removeIf { it.videoUrl == video.url }
+        val newExercise = exercise.copy(videoLinks = newVideoLinks)
 
-        }
+        updateExercise(newExercise)
     }
 
+    private fun updateExercise(newExercise: Exercise) {
+        viewModelScope.launch {
+            _loading.emit(true)
+            val result =
+                if (newExercise.idUser == user.value.email)
+                    userRepository.uploadExerciseAndImage(user.value.email, newExercise, isNewImageUploaded = false)
+                else exercisesRepository.updateExercise(newExercise)
+            _loading.emit(false)
 
+            if (result is DatabaseResult.Success) {
+                fetchAll(user.value.email)
+                _shortToastRes.emit(R.string.videos_updated)
+            } else if(result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+        }
+    }
 
     fun deleteExercise(exercise: Exercise){
-
         viewModelScope.launch {
             _loading.emit(true)
             val resultUser = userRepository.deleteExercise(exercise, user.value.email)
@@ -115,14 +97,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 _user.value = newUser
                 savedStateHandle.set(::user.name, user.value)
             } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
-
         }
-    }
-
-    fun goToVideoLink (view: View, url:String){
-        val urlUri = Uri.parse(url)
-        val intent = Intent(Intent.ACTION_VIEW, urlUri)
-        view.context.startActivity(intent)
     }
 
     //Obtiene un valor del usuario de DataStore instantáneamente
@@ -162,7 +137,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             val resultUser = userRepository.fetchUserByEmail(email)
             if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
                 _user.value = newUser
+                _selectedExercise.value =
+                    user.value.exercises.firstOrNull { it.id == selectedExercise.value.id } ?:
+                    exercises.value.firstOrNull { it.id == selectedExercise.value.id } ?:
+                    Exercise()
                 savedStateHandle.set(::user.name, user.value)
+                savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
                 userDataStore.putString(DbConstants.USER_EMAIL, newUser.email)
             }
             else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
@@ -251,7 +231,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             is Exercise -> {
                 _selectedExercise.value = something
                 _tempImageUri.value = Uri.EMPTY
-                getVideoData(selectedExercise.value)
                 savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
             }
             is Routine -> {
@@ -271,4 +250,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
 
     fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
+
+    fun showToast(resMessage: Int) { viewModelScope.launch { _shortToastRes.emit(resMessage) } }
 }

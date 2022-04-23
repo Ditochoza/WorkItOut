@@ -24,6 +24,7 @@ class UserRepository {
     private val auth = FirebaseAuth.getInstance()
     private val storage = FirebaseStorage.getInstance()
     private val db = FirebaseFirestore.getInstance()
+    private val youtubeAPI = YoutubeAPI()
     private val dbUsers = db.collection(COLLECTION_USERS)
     private val dbExercises = db.collection(COLLECTION_EXERCISES)
 
@@ -81,7 +82,13 @@ class UserRepository {
                     },
                     async { //Obtenemos los ejercicios del usuario (Subcollection)
                         exercises = dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
-                            .get().await().toObjects(Exercise::class.java)
+                            .get().await().toObjects(Exercise::class.java).map { exercise ->
+                                val videos = ArrayList<Video>()
+                                exercise.videoLinks.forEach { videoLink ->
+                                    videos.add(youtubeAPI.fetchVideo(videoLink.videoUrl).copy(videoLink = videoLink))
+                                }
+                                exercise.copy(videos = videos)
+                            }
                     },
                     async { //Obtenemos las rutinas del usuario (Subcollection)
                         routines = dbUsers.document(email)
@@ -127,30 +134,8 @@ class UserRepository {
             ).awaitAll()
 
             fetchUserByEmail(email)
-       } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
-    }
-
-    suspend fun deleteExerciseVideo(exercise: Exercise, videoLink: VideoLink): DatabaseResult<User?> {
-        return try { withContext(Dispatchers.IO) {
-
-            var newVideoLinks = exercise.videoLinks.filter { vlinkObjct ->
-                vlinkObjct != videoLink
-            }
-
-            val newExercise = exercise.copy(videoLinks = newVideoLinks)
-
-            if(exercise.idUser.isEmpty()){ //Actualizamos un ejercicio general
-                dbExercises.document(exercise.id).set(newExercise).await()
-
-            }else{ //Actualizamos un ejercicio creado por el usuario
-                dbUsers.document(exercise.idUser).collection(USER_COLLECTION_EXERCISES).document(exercise.id).set(newExercise).await()
-            }
-
-            fetchUserByEmail(videoLink.idUser)
-
         } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
     }
-
 
     suspend fun uploadExerciseAndImage(email: String, newExercise: Exercise, ivExercise: ImageView? = null, isNewImageUploaded: Boolean): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {

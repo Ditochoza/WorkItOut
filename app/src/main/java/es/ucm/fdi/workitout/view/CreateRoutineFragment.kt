@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentCreateRoutineBinding
 import es.ucm.fdi.workitout.utils.collectLatestFlow
@@ -17,7 +18,7 @@ import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class CreateRoutineFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
-    private val viewModel: CreateRoutineViewModel by activityViewModels()
+    private val viewModel: CreateRoutineViewModel by viewModels()
 
     private var _binding: FragmentCreateRoutineBinding? = null
     private val binding get() = _binding!!

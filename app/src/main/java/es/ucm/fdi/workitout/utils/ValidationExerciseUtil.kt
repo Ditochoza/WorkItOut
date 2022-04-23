@@ -4,6 +4,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.ValidationResult
 
 object ValidationExerciseUtil {
@@ -58,15 +59,26 @@ object ValidationExerciseUtil {
         return result
     }
 
-    fun validateVideoLink(videoLink: Pair<String,TextInputLayout>): Boolean{
-        var error: Boolean = false
+    fun validateVideo(
+        videoLink: Pair<String, TextInputLayout>,
+        exercise: Exercise
+    ): ValidationResult {
+        var result: ValidationResult = ValidationResult.success()
 
-        if(videoLink.first.isNotEmpty() && !videoLink.first.contains("https://www.youtube.com/watch?v=", ignoreCase = true)){
-            error = true
-            videoLink.second.error = "video url is malformed"
-        }
+        if (videoLink.second.tilError( /** Error si el link de video está vacío */
+                videoLink.first.isEmpty(),
+                resError = R.string.empty
+        )) result = ValidationResult.failed()
+        else if (videoLink.second.tilError( /** Error si el link del vídeo no contiene el https... */
+                !videoLink.first.contains("https://www.youtube.com/watch?v=", ignoreCase = true),
+                resError = R.string.start_by_youtube_link
+        )) result = ValidationResult.failed()
 
-        return error
+        if (result is ValidationResult.Success)
+            if (exercise.videoLinks.map { it.videoUrl }.contains(videoLink.first))
+                return ValidationResult.failedToast(R.string.existing_video_link)
+
+        return result
     }
 
 }

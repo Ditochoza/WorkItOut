@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.databinding.FragmentCreateExerciseBinding
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
@@ -14,7 +15,7 @@ import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class CreateExerciseFragment : Fragment() {
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
-    private val viewModel: CreateExerciseViewModel by activityViewModels()
+    private val viewModel: CreateExerciseViewModel by viewModels()
 
     private var _binding: FragmentCreateExerciseBinding? = null
     private val binding get() = _binding!!
@@ -33,9 +34,7 @@ class CreateExerciseFragment : Fragment() {
         binding.tempImageUri = mainSharedViewModel.tempImageUri.value
         binding.mainActivity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
-
         binding.tempExercise = viewModel.tempExercise.value
-        binding.videoList = viewModel.videoList.value
 
         setupCollectors()
 
@@ -45,8 +44,6 @@ class CreateExerciseFragment : Fragment() {
     private fun setupCollectors() {
         mainSharedViewModel.tempImageUri.collectLatestFlow(this) { binding.tempImageUri = it }
         mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
-
-        viewModel.videoList.collectLatestFlow(this) { binding.videoList = it }
     }
 
     override fun onDestroyView() {
