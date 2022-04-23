@@ -49,7 +49,7 @@ class MyRoutinesFragment : Fragment() {
                 .setItems(R.array.array_options_exercise_routine) { _, i ->
                     when (i) {
                         0 -> { //Editar  rutina
-                            mainSharedViewModel.navigateAndSet(routine,
+                            mainSharedViewModel.setAndNavigate(routine,
                                 R.id.action_myRoutinesFragment_to_createRoutineFragment)
                         }
                         1 -> { //Eliminar rutina

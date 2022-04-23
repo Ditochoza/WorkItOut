@@ -146,7 +146,7 @@
 
                 <com.google.android.material.textview.MaterialTextView
                     style="?attr/textAppearanceBodyLarge"
-                    android:id="@+id/tv_muscle_error"
+                    android:id="@+id/tv_muscles_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="6dp"
@@ -166,7 +166,15 @@
 
         </androidx.core.widget.NestedScrollView>
 
-
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/saveButton"
+            style="?attr/materialButtonStyle"
+            android:layout_gravity="bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMusclesError,sModel)}"
+            android:text="@string/save" />
 
         <ProgressBar
             android:id="@+id/pBar"

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import es.ucm.fdi.workitout.databinding.FragmentViewRoutineBinding
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -25,6 +26,8 @@ class ViewRoutineFragment : Fragment() {
         binding.routine = mainSharedViewModel.selectedRoutine.value
         binding.fragment = this
         binding.loading = mainSharedViewModel.loading.value
+        binding.emptyList = emptyList<Exercise>()
+        binding.activity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupCollectors()

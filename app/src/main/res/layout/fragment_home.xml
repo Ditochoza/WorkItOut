@@ -84,7 +84,7 @@
                     android:foreground="?android:attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="@{() -> sModel.navigateAndSet(user.routinesScheduled.get(0), @id/action_homeFragment_to_viewRoutineFragment)}"
+                    android:onClick="@{() -> sModel.setAndNavigate(user.routinesScheduled.get(0), @id/action_homeFragment_to_viewRoutineFragment)}"
                     android:onLongClick="@{() -> fragment.onLongClickRoutine(user.routinesScheduled.get(0))}"
                     android:layout_marginHorizontal="16dp"
                     android:visibility="@{user.routinesScheduled.size() > 0 ? View.VISIBLE : View.GONE, default=gone}"

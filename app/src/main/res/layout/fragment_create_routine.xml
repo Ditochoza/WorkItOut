@@ -9,7 +9,8 @@
         <import type="es.ucm.fdi.workitout.utils.TimeUtilsKt" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="vModel" type="es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel" />
-        <variable name="mainActivity" type="es.ucm.fdi.workitout.view.MainActivity" />
+        <variable name="emptyList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Exercise&gt;" />
+        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
         <variable name="loading" type="Boolean" />
         <variable name="tempImageUri" type="android.net.Uri" />
     </data>
@@ -57,7 +58,7 @@
                     app:cardCornerRadius="24dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginBottom="26dp"
-                    android:onClick="@{() -> mainActivity.selectImageFromGallery()}"
+                    android:onClick="@{() -> activity.selectImageFromGallery()}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
@@ -216,6 +217,32 @@
                     android:layout_marginBottom="6dp"
                     android:layout_marginTop="12dp"
                     android:text="@string/exercises" />
+
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/choose_exercise"
+                    android:onClick="@{() -> sModel.navigate(@id/action_createRoutineFragment_to_selectExercisesFragment)}"
+                    app:icon="@drawable/ic_round_add_check_24"
+                    app:iconGravity="textStart" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_my_exercises"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="70dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none"
+                    app:layoutManager="LinearLayoutManager"
+                    app:sModel="@{sModel}"
+                    app:myExercises="@{emptyList}"
+                    app:exercises="@{vModel.tempRoutine.value.exercises}"
+                    app:activity="@{activity}"
+                    app:navActionResToEdit="@{@id/action_createRoutineFragment_to_createExerciseFragment}"
+                    app:navActionResToView="@{@id/action_createRoutineFragment_to_viewExerciseFragment}"/>
 
             </LinearLayout>
 

@@ -4,21 +4,23 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import es.ucm.fdi.workitout.databinding.ExerciseItemBinding
+import es.ucm.fdi.workitout.databinding.SelectExerciseItemBinding
 import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.view.MainActivity
+import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.view.SelectExercisesFragment
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
-class ExercisesRecyclerViewAdapter(
+class SelectExercisesRecyclerViewAdapter(
     private var exercisesList: List<Exercise>,
+    private var selectedRoutine: Routine,
     private val mainSharedViewModel: MainSharedViewModel,
-    private val mainActivity: MainActivity,
-    private val navActionResToEdit: Int,
-    private val navActionResToView: Int
-): RecyclerView.Adapter<ExercisesRecyclerViewAdapter.ViewHolder>() {
+    private val selectExercisesFragment: SelectExercisesFragment,
+    private val colorDefault: Int,
+    private val colorSelected: Int
+): RecyclerView.Adapter<SelectExercisesRecyclerViewAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ExerciseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = SelectExerciseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
@@ -30,17 +32,20 @@ class ExercisesRecyclerViewAdapter(
     override fun getItemCount() = exercisesList.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateList(exercises: List<Exercise>) {
+    fun updateList(exercises: List<Exercise>, routine: Routine) {
         exercisesList = exercises
+        selectedRoutine = routine
         notifyDataSetChanged()
     }
-    inner class ViewHolder(val binding: ExerciseItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(val binding: SelectExerciseItemBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(exercise: Exercise) {
             binding.exercise = exercise
-            binding.activity = mainActivity
+            binding.routine = selectedRoutine
+            binding.selected = selectedRoutine.exercises.map { it.id }.contains(exercise.id)
+            binding.fragment = selectExercisesFragment
             binding.sModel = mainSharedViewModel
-            binding.navActionResToEdit = navActionResToEdit
-            binding.navActionResToView = navActionResToView
+            binding.colorDefault = colorDefault
+            binding.colorSelected = colorSelected
             binding.muscles = exercise.muscles.joinToString(", ")
         }
     }

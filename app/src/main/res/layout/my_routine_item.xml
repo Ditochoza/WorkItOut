@@ -18,7 +18,7 @@
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="18dp"
-        android:onClick="@{() -> sModel.navigateAndSet(routine, @id/action_myRoutinesFragment_to_viewRoutineFragment)}"
+        android:onClick="@{() -> sModel.setAndNavigate(routine, @id/action_myRoutinesFragment_to_viewRoutineFragment)}"
         android:onLongClick="@{() -> fragment.onLongClickRoutine(routine)}"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="6dp"

@@ -5,11 +5,13 @@
     <data>
         <import type="android.view.View" />
         <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
+        <variable name="selected" type="Boolean" />
+        <variable name="colorSelected" type="int" />
+        <variable name="colorDefault" type="int" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
-        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.SelectExercisesFragment" />
         <variable name="muscles" type="String" />
-        <variable name="navActionResToEdit" type="int" />
-        <variable name="navActionResToView" type="int" />
     </data>
 
     <!--suppress AndroidUnknownAttribute -->
@@ -20,8 +22,10 @@
         android:clickable="true"
         android:focusable="true"
         app:cardCornerRadius="18dp"
-        android:onClick="@{() -> sModel.setAndNavigate(exercise, navActionResToView)}"
-        android:onLongClick="@{() -> activity.onLongClickExercise(exercise, navActionResToEdit)}"
+        android:backgroundTint="@{selected ? colorSelected : colorDefault}"
+        android:onClick="@{() -> sModel.setAndNavigate(exercise, @id/action_selectExercisesFragment_to_viewExerciseFragment)}"
+        android:onLongClick="@{() -> fragment.selectExercise(exercise, routine, selected)}"
+        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="12dp"
         style="?attr/materialCardViewFilledStyle">
@@ -75,6 +79,15 @@
                     android:tint="?attr/colorAccent"
                     app:srcCompat="@drawable/ic_round_person_24"
                     android:contentDescription="@{exercise.name}" />
+
+                <ImageView
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="@{selected ? View.VISIBLE : View.GONE, default=gone}"
+                    android:tint="?attr/colorOnTertiaryContainer"
+                    app:srcCompat="@drawable/ic_round_check_24"
+                    android:contentDescription="@string/selected" />
 
             </LinearLayout>
 

@@ -8,6 +8,8 @@ import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -144,13 +146,13 @@ fun <E> List<E>.toArrayList(): ArrayList<E> = this.toCollection(ArrayList())
 fun <T> QuerySnapshot.toObjectsArrayList(java: Class<T>) = toObjects(java).toArrayList()
 
 //Se devuelve el color del atributo
-/*@ColorInt
+@ColorInt
 fun Context.getColorFromAttr(@AttrRes attrColor: Int): Int {
     val typedArray = theme.obtainStyledAttributes(intArrayOf(attrColor))
     val textColor = typedArray.getColor(0, 0)
     typedArray.recycle()
     return textColor
-}*/
+}
 
 //Collector para SharedFlow
 inline fun <T> Flow<T>.collectFlow(owner: LifecycleOwner, crossinline onCollect: suspend (T) -> Unit) =

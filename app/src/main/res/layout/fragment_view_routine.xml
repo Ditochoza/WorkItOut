@@ -9,6 +9,8 @@
         <import type="es.ucm.fdi.workitout.utils.TimeUtilsKt"/>
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="loading" type="Boolean" />
+        <variable name="emptyList" type="java.util.List&lt;es.ucm.fdi.workitout.model.Exercise&gt;" />
+        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
         <variable name="fragment" type="es.ucm.fdi.workitout.view.ViewRoutineFragment" />
         <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
     </data>
@@ -32,7 +34,11 @@
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
                 app:title="@{routine.name}"
                 app:titleCentered="true"
-                app:navigationIcon="@drawable/ic_round_arrow_back_24">
+                app:navigationIcon="@drawable/ic_round_arrow_back_24"
+                app:menu="@menu/menu_edit"
+                app:sModel="@{sModel}"
+                app:navActionResToEdit="@{@id/action_viewRoutineFragment_to_createRoutineFragment}"
+                app:exerciseOrRoutine="@{routine}">
 
             </com.google.android.material.appbar.MaterialToolbar>
 
@@ -71,50 +77,25 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.button.MaterialButton
-                    style="@style/Widget.Material3.Button.Icon"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="6dp"
-                    android:text="@string/schedule_routine"
-                    app:icon="@drawable/ic_round_schedule_24"
-                    android:visibility="@{routine.dayOfWeekScheduled == -1 ? View.VISIBLE : View.GONE, default=visible}"
-                    app:iconGravity="textStart" />
-
                 <com.google.android.material.card.MaterialCardView
-                    style="?attr/materialCardViewFilledStyle"
-                    android:layout_width="match_parent"
+                    style="?attr/materialCardViewElevatedStyle"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     app:cardCornerRadius="36dp"
-                    android:layout_marginTop="4dp"
                     android:layout_marginBottom="12dp"
                     android:visibility="@{routine.dayOfWeekScheduled == -1 ? View.GONE : View.VISIBLE, default=gone}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:layout_marginBottom="8dp"
-                            android:text="@{routine.dayOfWeekScheduled != -1 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[routine.dayOfWeekScheduled], TimeUtilsKt.timeString(routine.timeTimestampScheduled)) : @string/empty}"
-                            style="?attr/textAppearanceBodyLarge"/>
-
-                        <com.google.android.material.button.MaterialButton
-                            style="@style/Widget.Material3.Button.OutlinedButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="@string/de_schedule_routine" />
-
-                    </LinearLayout>
+                        android:textAlignment="center"
+                        android:layout_margin="16dp"
+                        android:text="@{routine.dayOfWeekScheduled != -1 ? @string/scheduled_routine_week_day_time(@stringArray/week_days[routine.dayOfWeekScheduled], TimeUtilsKt.timeString(routine.timeTimestampScheduled)) : @string/empty}"
+                        style="?attr/textAppearanceBodyLarge"/>
 
                 </com.google.android.material.card.MaterialCardView>
 
@@ -124,6 +105,29 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{routine.description}" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/exercises"
+                    android:layout_marginTop="16dp"
+                    android:textAppearance="?attr/textAppearanceHeadlineMedium"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_my_exercises"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:paddingBottom="70dp"
+                    android:clipToPadding="false"
+                    android:scrollbars="none"
+                    app:layoutManager="LinearLayoutManager"
+                    app:sModel="@{sModel}"
+                    app:myExercises="@{emptyList}"
+                    app:exercises="@{routine.exercises}"
+                    app:activity="@{activity}"
+                    app:navActionResToEdit="@{@id/action_viewRoutineFragment_to_createExerciseFragment}"
+                    app:navActionResToView="@{@id/action_viewRoutineFragment_to_viewExerciseFragment}"/>
 
             </LinearLayout>
 

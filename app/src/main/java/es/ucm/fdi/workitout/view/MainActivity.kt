@@ -8,12 +8,11 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.color.DynamicColors
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.ActivityMainBinding
-import es.ucm.fdi.workitout.utils.DbConstants
-import es.ucm.fdi.workitout.utils.collectLatestFlow
-import es.ucm.fdi.workitout.utils.currentFragment
-import es.ucm.fdi.workitout.utils.getNavController
+import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.utils.*
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -107,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         mainSharedViewModel.navigateActionRes.collectLatestFlow(this) { navActionRes ->
             if (navActionRes == 0) {
                 onBackPressed()
-            } else {
+            } else if (navActionRes != -1) {
                 val navController = supportFragmentManager.getNavController(binding.fcMainActivity.id)
                 navController?.navigate(navActionRes)
             }
@@ -120,6 +119,29 @@ class MainActivity : AppCompatActivity() {
                 launchStartActivity()
             }
         }
+    }
+
+    fun onLongClickExercise (exercise: Exercise, navActionRes: Int):Boolean {
+        if (exercise.idUser == mainSharedViewModel.user.value.email) {
+            MaterialAlertDialogBuilder(this)
+                .setItems(R.array.array_options_exercise_routine) { _, i ->
+                    when (i) {
+                        0 -> { //Editar  ejercicio
+                            mainSharedViewModel.setAndNavigate(exercise, navActionRes)
+                        }
+                        1 -> { //Eliminar ejercicio
+                            createAlertDialog(getString(R.string.delete_exercise, exercise.name),
+                                message = R.string.delete_exercise_confirmation_message,
+                                icon = R.drawable.ic_round_delete_outline_24,
+                                ok = R.string.confirm to { mainSharedViewModel.deleteExercise(exercise) },
+                                cancel = R.string.cancel to {}
+                            ).show()
+                        }
+                    }
+                }
+                .setTitle(exercise.name).show()
+            return true
+        } else return false
     }
 
     private fun launchStartActivity() {

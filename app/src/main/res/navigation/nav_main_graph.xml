@@ -34,7 +34,11 @@
             app:popExitAnim="@anim/slide_out_right"  />
         <action
             android:id="@+id/action_homeFragment_to_createRoutineFragment"
-            app:destination="@id/createRoutineFragment" />
+            app:destination="@id/createRoutineFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out" />
     </fragment>
     <fragment
         android:id="@+id/exercisesFragment"
@@ -42,7 +46,11 @@
         android:label="ExercisesFragment">
         <action
             android:id="@+id/action_exercisesFragment_to_createExerciseFragment"
-            app:destination="@id/createExerciseFragment" />
+            app:destination="@id/createExerciseFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out" />
         <action
             android:id="@+id/action_exercisesFragment_to_viewExerciseFragment"
             app:destination="@id/viewExerciseFragment"
@@ -77,7 +85,15 @@
     <fragment
         android:id="@+id/viewExerciseFragment"
         android:name="es.ucm.fdi.workitout.view.ViewExerciseFragment"
-        android:label="ViewExerciseFragment" />
+        android:label="ViewExerciseFragment" >
+        <action
+            android:id="@+id/action_viewExerciseFragment_to_createExerciseFragment"
+            app:destination="@id/createExerciseFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out"  />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="es.ucm.fdi.workitout.view.SettingsFragment"
@@ -113,15 +129,76 @@
             app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_myRoutinesFragment_to_createRoutineFragment"
-            app:destination="@id/createRoutineFragment" />
+            app:destination="@id/createRoutineFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out" />
     </fragment>
     <fragment
         android:id="@+id/viewRoutineFragment"
         android:name="es.ucm.fdi.workitout.view.ViewRoutineFragment"
-        android:label="ViewRoutineFragment" />
+        android:label="ViewRoutineFragment" >
+        <action
+            android:id="@+id/action_viewRoutineFragment_to_viewExerciseFragment"
+            app:destination="@id/viewExerciseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_viewRoutineFragment_to_createExerciseFragment"
+            app:destination="@id/createExerciseFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out" />
+        <action
+            android:id="@+id/action_viewRoutineFragment_to_createRoutineFragment"
+            app:destination="@id/createRoutineFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out"  />
+    </fragment>
     <fragment
         android:id="@+id/createRoutineFragment"
         android:name="es.ucm.fdi.workitout.view.CreateRoutineFragment"
         android:label="fragment_view_routine"
-        tools:layout="@layout/fragment_view_routine" />
+        tools:layout="@layout/fragment_view_routine" >
+        <action
+            android:id="@+id/action_createRoutineFragment_to_selectExercisesFragment"
+            app:destination="@id/selectExercisesFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_createRoutineFragment_to_createExerciseFragment"
+            app:destination="@id/createExerciseFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out" />
+        <action
+            android:id="@+id/action_createRoutineFragment_to_viewExerciseFragment"
+            app:destination="@id/viewExerciseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectExercisesFragment"
+        android:name="es.ucm.fdi.workitout.view.SelectExercisesFragment"
+        android:label="fragment_select_exercises"
+        tools:layout="@layout/fragment_select_exercises" >
+        <action
+            android:id="@+id/action_selectExercisesFragment_to_viewExerciseFragment"
+            app:destination="@id/viewExerciseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 </navigation>

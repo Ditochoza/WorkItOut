@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentViewExerciseBinding
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -32,6 +33,10 @@ class ViewExerciseFragment : Fragment() {
         binding.vModel = viewModel
         binding.loading = mainSharedViewModel.loading.value
         binding.lifecycleOwner = viewLifecycleOwner
+
+        //Ocultamos el icono de editar ejercicio en caso de que el ejercicio no haya sido creado por el usuario
+        binding.toolbar.menu.findItem(R.id.item_edit_menu_edit).isVisible =
+            mainSharedViewModel.selectedExercise.value.idUser == mainSharedViewModel.user.value.email
 
         setupCollectors()
 
