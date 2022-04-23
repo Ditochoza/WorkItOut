@@ -16,11 +16,11 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.model.Video
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.view.ExercisesFragment
 import es.ucm.fdi.workitout.view.HomeFragment
 import es.ucm.fdi.workitout.view.MyRoutinesFragment
+import es.ucm.fdi.workitout.view.ViewExerciseFragment
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
@@ -46,6 +46,7 @@ fun MaterialToolbar.onClick(sModel: MainSharedViewModel, navActionResToSettings:
 //También se le añade un listener para actualizar los músculos seleccionados
 @BindingAdapter("muscles", "vModel", requireAll = true)
 fun ChipGroup.adapterChipsMusclesSelect(muscles: Array<String>, vModel: CreateExerciseViewModel) {
+    removeAllViews()
     muscles.forEach {
         addView(Chip(context).apply {
             text = it
@@ -68,6 +69,7 @@ fun ChipGroup.adapterChipsMusclesSelect(muscles: Array<String>, vModel: CreateEx
 //Para ViewExerciseFragment
 @BindingAdapter("muscles")
 fun ChipGroup.adapterChipsMuscles(muscles: List<String>) {
+    removeAllViews()
     muscles.forEach {
         addView(Chip(context).apply {
             text = it
@@ -142,15 +144,12 @@ fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<E
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercises + myExercises)
 }
 
-@BindingAdapter("sModel","videos","viewModel", requireAll = false)
-fun RecyclerView.adapterVideos(sModel: MainSharedViewModel,videos: List<Video>,viewModel:CreateExerciseViewModel?) {
-
-    var videoArrayList = ArrayList(videos)
-
+@BindingAdapter("sModel", "exercise", "fragment", requireAll = false)
+fun RecyclerView.adapterVideos(sModel: MainSharedViewModel, exercise: Exercise, fragment: ViewExerciseFragment) {
     if (this.adapter == null)
-        this.adapter = VideosRecyclerViewAdapter(videoArrayList, sModel,viewModel)
+        this.adapter = VideosRecyclerViewAdapter(exercise.videos, exercise, sModel, fragment)
     else
-        (adapter as VideosRecyclerViewAdapter).updateList(videoArrayList)
+        (adapter as VideosRecyclerViewAdapter).updateList(exercise.videos)
 }
 
 @BindingAdapter("sModel", "myRoutines", "fragment", requireAll = true)

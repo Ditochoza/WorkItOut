@@ -4,17 +4,21 @@
 
     <data>
         <import type="android.view.View" />
+        <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
         <variable name="video" type="es.ucm.fdi.workitout.model.Video" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.ViewExerciseFragment" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:layout_marginHorizontal="16dp"
+        android:onClick="@{() -> fragment.openVideo(video.url)}"
         app:cardCornerRadius="24dp"
         style="?attr/materialCardViewFilledStyle">
 
@@ -39,23 +43,38 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="12dp"
+                android:text="@{video.title}"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceTitleMedium"/>
 
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="6dp"
-                android:textSize="12dp"
-                android:textAppearance="?attr/textAppearanceHeadlineMedium"
-                android:text="@{video.title}"/>
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginBottom="12dp"
+                android:text="@{video.description}"
+                android:visibility="@{video.description.isEmpty() ? View.GONE : View.VISIBLE, default=gone}"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:textAppearance="?attr/textAppearanceBodyMedium"/>
+
             <com.google.android.material.button.MaterialButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="8dp"
                 app:icon="@drawable/ic_round_delete_outline_24"
                 android:text="@string/delete"
-                android:visibility="@{sModel.user.value.email == video.videoLink.idUser ? View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{sModel.user.value.email.equals(video.videoLink.idUser) ? View.VISIBLE : View.GONE, default=gone}"
                 style="@style/Widget.Material3.Button.Icon"
-                android:onClick="@{ () -> sModel.deleteVideoFromExercise(video.videoLink)}"/>
+                android:onClick="@{ () -> sModel.deleteVideoFromExercise(video, exercise)}"/>
 
 
         </LinearLayout>

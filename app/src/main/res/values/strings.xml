@@ -74,9 +74,8 @@
     <string name="error_upload_routine">Failed to upload routine</string>
     <string name="time_scheduled">Time Scheduled</string>
     <string name="exercise_could_not_be_deleted">Exercise could not be deleted</string>
-    <string name="video_links">Video links</string>
-    <string name="youtube_link">https://www.youtube.com/watch?v=</string>
-    <string name="yt_api_error">video doesn\'t exist !</string>
+    <string name="start_by_youtube_link">Field should start by https://www.youtube.com/watch?v=</string>
+    <string name="new_youtube_video_link">New Youtube Video (URL)</string>
     <string name="error_fetch_exercises">Failed to fetch exercises</string>
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
@@ -88,10 +87,7 @@
     <string name="routines_menu">Routines</string>
     <string name="exercises_menu">Exercises</string>
     <string name="delete">Delete</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="routine_could_not_be_deleted">Exercise could not be deleted</string>
-    <string name="day_of_week">Day of week</string>
-    <string name="hour">Hour</string>
     <string name="my_routines">My Routines</string>
     <string name="delete_routine">Delete %s</string>
     <string name="delete_routine_confirmation_message">Are you sure you want to delete this routine? All its data will be deleted forever from the database</string>
@@ -100,4 +96,8 @@
     <string name="create_routine">Create Routine</string>
     <string name="create_exercise">Create Custom Exercise</string>
     <string name="routine_not_scheduled">Routine not scheduled</string>
+    <string name="suggested_videos">Suggested Videos</string>
+    <string name="existing_video_link">This video has already been added</string>
+    <string name="add_video">Add Video</string>
+    <string name="videos_updated">Videos Updated</string>
 </resources>
