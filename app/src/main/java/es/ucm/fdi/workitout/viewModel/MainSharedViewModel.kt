@@ -226,7 +226,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
-    fun <T> navigateAndSet(something: T, navActionRes: Int) {
+    fun <T> setAndNavigate(something: T, navActionRes: Int? = null) {
         when (something) {
             is Exercise -> {
                 _selectedExercise.value = something
@@ -240,7 +240,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             }
         }
 
-        navigate(navActionRes)
+        navActionRes?.let { navigate(it) }
     }
 
     fun clearErrors(til: TextInputLayout) { til.error = "" }

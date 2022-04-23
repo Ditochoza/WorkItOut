@@ -32,7 +32,11 @@
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
                 app:title="@{exercise.name}"
                 app:titleCentered="true"
-                app:navigationIcon="@drawable/ic_round_arrow_back_24">
+                app:navigationIcon="@drawable/ic_round_arrow_back_24"
+                app:menu="@menu/menu_edit"
+                app:sModel="@{sModel}"
+                app:navActionResToEdit="@{@id/action_viewExerciseFragment_to_createExerciseFragment}"
+                app:exerciseOrRoutine="@{exercise}">
 
             </com.google.android.material.appbar.MaterialToolbar>
 

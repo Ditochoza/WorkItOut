@@ -88,7 +88,7 @@
             android:text="@string/create_routine"
             app:icon="@drawable/ic_round_add_24"
             android:layout_gravity="bottom|end"
-            android:onClick="@{() -> sModel.navigateAndSet(emptyRoutine, @id/action_myRoutinesFragment_to_createRoutineFragment)}"/>
+            android:onClick="@{() -> sModel.setAndNavigate(emptyRoutine, @id/action_myRoutinesFragment_to_createRoutineFragment)}"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

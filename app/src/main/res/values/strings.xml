@@ -95,9 +95,14 @@
     <string name="de_schedule_routine">De-Schedule Routine</string>
     <string name="create_routine">Create Routine</string>
     <string name="create_exercise">Create Custom Exercise</string>
-    <string name="routine_not_scheduled">Routine not scheduled</string>
+    <string name="routine_not_scheduled">Routine Not Scheduled</string>
     <string name="suggested_videos">Suggested Videos</string>
     <string name="existing_video_link">This video has already been added</string>
     <string name="add_video">Add Video</string>
     <string name="videos_updated">Videos Updated</string>
+    <string name="choose_exercise">Choose Exercises</string>
+    <string name="select_exercises">Select Exercises</string>
+    <string name="selected">Selected</string>
+    <string name="edit">Edit</string>
+    <string name="long_press_to_select">Long press to select</string>
 </resources>

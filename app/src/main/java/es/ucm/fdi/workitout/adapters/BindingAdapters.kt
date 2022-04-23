@@ -16,18 +16,16 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.utils.getColorFromAttr
 import es.ucm.fdi.workitout.utils.loadResource
-import es.ucm.fdi.workitout.view.ExercisesFragment
-import es.ucm.fdi.workitout.view.HomeFragment
-import es.ucm.fdi.workitout.view.MyRoutinesFragment
-import es.ucm.fdi.workitout.view.ViewExerciseFragment
+import es.ucm.fdi.workitout.view.*
 import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 //BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado
-@BindingAdapter("sModel", "navActionResToSettings")
-fun MaterialToolbar.onClick(sModel: MainSharedViewModel, navActionResToSettings: Int) {
+@BindingAdapter("sModel", "navActionResToSettings", requireAll = true)
+fun MaterialToolbar.onClickMainMenu(sModel: MainSharedViewModel, navActionResToSettings: Int) {
     this.menu.findItem(R.id.item_update_menu_main).setOnMenuItemClickListener {
         sModel.fetchAll()
         return@setOnMenuItemClickListener true
@@ -38,6 +36,15 @@ fun MaterialToolbar.onClick(sModel: MainSharedViewModel, navActionResToSettings:
     }
     this.menu.findItem(R.id.item_settings_menu_main).setOnMenuItemClickListener {
         sModel.navigate(navActionResToSettings)
+        return@setOnMenuItemClickListener true
+    }
+}
+
+//BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado
+@BindingAdapter("sModel", "navActionResToEdit", "exerciseOrRoutine", requireAll = true)
+fun MaterialToolbar.onClickEditMenu(sModel: MainSharedViewModel, navActionResToEdit: Int, exerciseOrRoutine: Any) {
+    this.menu.findItem(R.id.item_edit_menu_edit).setOnMenuItemClickListener {
+        sModel.setAndNavigate(exerciseOrRoutine, navActionResToEdit)
         return@setOnMenuItemClickListener true
     }
 }
@@ -58,6 +65,7 @@ fun ChipGroup.adapterChipsMusclesSelect(muscles: Array<String>, vModel: CreateEx
                 0,
                 R.style.Widget_Material3_Chip_Filter
             ))
+            isChecked = vModel.tempExercise.value.muscles.contains(it)
         })
     }
     setOnCheckedStateChangeListener { _, checkedIds ->
@@ -136,10 +144,25 @@ fun NavigationView.adapterNavigationView(checkedItem: Int) {
     setCheckedItem(checkedItem)
 }
 
-@BindingAdapter("sModel", "exercises", "myExercises", "fragment", requireAll = true)
-fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<Exercise>, myExercises: List<Exercise>, fragment: ExercisesFragment) {
+@BindingAdapter("sModel", "exercises", "myExercises", "routine", "fragment", requireAll = true)
+fun RecyclerView.adapterSelectExercises(sModel: MainSharedViewModel, exercises: List<Exercise>,
+                                        myExercises: List<Exercise>, routine: Routine,
+                                        fragment: SelectExercisesFragment) {
     if (this.adapter == null)
-        this.adapter = ExercisesRecyclerViewAdapter(exercises + myExercises, sModel, fragment)
+        this.adapter = SelectExercisesRecyclerViewAdapter(exercises + myExercises,
+            routine, sModel, fragment, context.getColorFromAttr(R.attr.colorSurfaceVariant),
+            context.getColorFromAttr(R.attr.colorTertiaryContainer))
+    else
+        (adapter as SelectExercisesRecyclerViewAdapter).updateList(exercises + myExercises, routine)
+}
+
+@BindingAdapter("sModel", "exercises", "myExercises", "activity", "navActionResToEdit", "navActionResToView", requireAll = true)
+fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<Exercise>,
+                                  myExercises: List<Exercise>, activity: MainActivity,
+                                  navActionResToEdit: Int, navActionResToView: Int) {
+    if (this.adapter == null)
+        this.adapter = ExercisesRecyclerViewAdapter(exercises + myExercises, sModel,
+            activity, navActionResToEdit, navActionResToView)
     else
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercises + myExercises)
 }

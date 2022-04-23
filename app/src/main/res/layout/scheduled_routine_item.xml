@@ -16,7 +16,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> sModel.navigateAndSet(routine, @id/action_homeFragment_to_viewRoutineFragment)}"
+        android:onClick="@{() -> sModel.setAndNavigate(routine, @id/action_homeFragment_to_viewRoutineFragment)}"
         android:onLongClick="@{() -> fragment.onLongClickRoutine(routine)}"
         app:cardCornerRadius="12dp"
         android:layout_marginHorizontal="16dp"

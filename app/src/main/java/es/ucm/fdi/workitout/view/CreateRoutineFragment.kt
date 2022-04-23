@@ -9,6 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentCreateRoutineBinding
+import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.utils.createEditTextTimePicker
 import es.ucm.fdi.workitout.utils.withTime
@@ -31,10 +32,11 @@ class CreateRoutineFragment : Fragment() {
         }
 
         binding.sModel = mainSharedViewModel
+        binding.emptyList = emptyList<Exercise>()
         binding.vModel = viewModel
         binding.loading = mainSharedViewModel.loading.value
         binding.tempImageUri = mainSharedViewModel.tempImageUri.value
-        binding.mainActivity = activity as MainActivity?
+        binding.activity = activity as MainActivity?
         binding.lifecycleOwner = viewLifecycleOwner
 
         setupTimePicker()
