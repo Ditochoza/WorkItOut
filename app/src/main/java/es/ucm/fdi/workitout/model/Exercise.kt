@@ -14,5 +14,9 @@ data class Exercise(
     var imageUrl: String = "",
     var idUser: String = "",
     var videoLinks: List<VideoLink>  = emptyList(),
+    var useReps: Boolean = false,
+    var measureByReps: Boolean = false,
+    var measureByTime: Boolean = false,
+    var measureByWeight: Boolean = false,
     @get: Exclude var videos: List<Video> = emptyList()
 ):Parcelable

@@ -18,13 +18,16 @@ class CreateExerciseViewModel(private var savedStateHandle: SavedStateHandle): V
     val tempExercise: StateFlow<Exercise> = _tempExercise.asStateFlow()
 
     fun createExercise(ivExercise: ImageView, tvImageError: TextView, tilName: TextInputLayout,
-                       tilDescription: TextInputLayout, tvMusclesError: TextView, sModel: MainSharedViewModel
+                       tilDescription: TextInputLayout, tvMusclesError: TextView,
+                       tvMeasureByError: TextView, sModel: MainSharedViewModel
     ) {
         val result = ValidationExerciseUtil.validateExercise(
             ivExercise to tvImageError,
             tempExercise.value.name to tilName,
             tempExercise.value.description to tilDescription,
-            tempExercise.value.muscles to tvMusclesError
+            tempExercise.value.muscles to tvMusclesError,
+            arrayListOf(tempExercise.value.measureByReps, tempExercise.value.measureByTime,
+                tempExercise.value.measureByWeight) to tvMeasureByError
         )
 
         if(result is ValidationResult.Success){
