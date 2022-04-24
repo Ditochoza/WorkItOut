@@ -41,7 +41,7 @@
     <string name="validate_password">Validate Password</string>
     <string name="new_password">New Password</string>
     <string name="current_password">Current Password</string>
-    <string name="settings_user_change_password">Chage Password</string>
+    <string name="settings_user_change_password">Change Password</string>
     <string name="new_password_equal_current_password">New password cannot be the same as your current password</string>
     <string name="error_update_password">Failed to update password</string>
     <string name="password_updated">Password updated</string>
