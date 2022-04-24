@@ -127,7 +127,8 @@
                     app:exercises="@{routine.exercises}"
                     app:activity="@{activity}"
                     app:navActionResToEdit="@{@id/action_viewRoutineFragment_to_createExerciseFragment}"
-                    app:navActionResToView="@{@id/action_viewRoutineFragment_to_viewExerciseFragment}"/>
+                    app:navActionResToView="@{@id/action_viewRoutineFragment_to_viewExerciseFragment}"
+                    app:routine="@{routine}"/>
 
             </LinearLayout>
 

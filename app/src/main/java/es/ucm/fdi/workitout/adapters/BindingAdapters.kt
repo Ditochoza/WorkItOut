@@ -2,9 +2,7 @@ package es.ucm.fdi.workitout.adapters
 
 import android.net.Uri
 import android.view.LayoutInflater
-import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
-import android.widget.ImageView
+import android.widget.*
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
@@ -15,6 +13,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.ExerciseSetsReps
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.getColorFromAttr
 import es.ucm.fdi.workitout.utils.loadResource
@@ -74,7 +73,7 @@ fun ChipGroup.adapterChipsMusclesSelect(muscles: Array<String>, vModel: CreateEx
         vModel.updateMuscles(newMuscles)
     }
 }
-//Para ViewExerciseFragment
+
 @BindingAdapter("muscles")
 fun ChipGroup.adapterChipsMuscles(muscles: List<String>) {
     removeAllViews()
@@ -103,6 +102,7 @@ fun ImageView.loadImage(imageUrl: String) {
 //BindingAdapter para mostrar los chips con los músculos de las rutinas
 @BindingAdapter("exercises")
 fun ChipGroup.adapterChipsExercises(exercises: List<Exercise>) {
+    removeAllViews()
     val muscles = exercises.flatMap { it.muscles }.distinct()
     muscles.forEach {
         val chip = LayoutInflater.from(context).inflate(R.layout.muscle_chip, this, false) as Chip
@@ -148,23 +148,47 @@ fun NavigationView.adapterNavigationView(checkedItem: Int) {
 fun RecyclerView.adapterSelectExercises(sModel: MainSharedViewModel, exercises: List<Exercise>,
                                         myExercises: List<Exercise>, routine: Routine,
                                         fragment: SelectExercisesFragment) {
+    var exercisesList = exercises + myExercises
+    if (routine != Routine()) {
+        exercisesList = exercisesList.map { exercise ->
+            val exerciseSetsReps = routine.exercisesSetsReps
+                .firstOrNull { it.idExercise.contains(exercise.id) } ?: ExerciseSetsReps()
+            exercise.copy(
+                tempExerciseRoutineSets = exerciseSetsReps.sets,
+                tempExerciseRoutineReps = exerciseSetsReps.reps
+            )
+        }
+    }
+
     if (this.adapter == null)
-        this.adapter = SelectExercisesRecyclerViewAdapter(exercises + myExercises,
+        this.adapter = SelectExercisesRecyclerViewAdapter(exercisesList.toList(),
             routine, sModel, fragment, context.getColorFromAttr(R.attr.colorSurfaceVariant),
             context.getColorFromAttr(R.attr.colorTertiaryContainer))
     else
-        (adapter as SelectExercisesRecyclerViewAdapter).updateList(exercises + myExercises, routine)
+        (adapter as SelectExercisesRecyclerViewAdapter).updateList(exercisesList.toList(), routine)
 }
 
-@BindingAdapter("sModel", "exercises", "myExercises", "activity", "navActionResToEdit", "navActionResToView", requireAll = true)
+@BindingAdapter("sModel", "exercises", "myExercises", "activity", "navActionResToEdit", "navActionResToView", "routine")
 fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<Exercise>,
                                   myExercises: List<Exercise>, activity: MainActivity,
-                                  navActionResToEdit: Int, navActionResToView: Int) {
+                                  navActionResToEdit: Int, navActionResToView: Int, routine: Routine) {
+    var exercisesList = exercises + myExercises
+    if (routine != Routine()) {
+        exercisesList = exercisesList.map { exercise ->
+            val exerciseSetsReps = routine.exercisesSetsReps
+                .firstOrNull { it.idExercise.contains(exercise.id) } ?: ExerciseSetsReps()
+            exercise.copy(
+                tempExerciseRoutineSets = exerciseSetsReps.sets,
+                tempExerciseRoutineReps = exerciseSetsReps.reps
+            )
+        }
+    }
+
     if (this.adapter == null)
-        this.adapter = ExercisesRecyclerViewAdapter(exercises + myExercises, sModel,
+        this.adapter = ExercisesRecyclerViewAdapter(exercisesList, sModel,
             activity, navActionResToEdit, navActionResToView)
     else
-        (adapter as ExercisesRecyclerViewAdapter).updateList(exercises + myExercises)
+        (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesList)
 }
 
 @BindingAdapter("sModel", "exercise", "fragment", requireAll = false)

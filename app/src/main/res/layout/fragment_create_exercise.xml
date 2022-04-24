@@ -50,6 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginHorizontal="16dp"
+                android:paddingBottom="70dp"
                 android:orientation="vertical">
 
                 <com.google.android.material.card.MaterialCardView
@@ -162,6 +163,88 @@
                     app:vModel="@{vModel}"
                     app:singleLine="false"
                     app:singleSelection="false" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:visibility="@{vModel.tempExercise.value.id.isEmpty() ? View.VISIBLE : View.GONE, default=gone}"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="?attr/textAppearanceTitleLarge"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{@string/use_reps+':'}" />
+
+                    <!--suppress AndroidUnknownAttribute -->
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/sw_use_reps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginHorizontal="16dp"
+                        android:onCheckedChanged="@{(switch, checked) -> checked ? cbReps.setChecked(!checked) != cbReps.setEnabled(!checked) : cbReps.setChecked(cbReps.isChecked()) != cbReps.setEnabled(!checked)}"
+                        android:checked="@={vModel.tempExercise.value.useReps}"/>
+
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="?attr/textAppearanceLabelMedium"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/use_reps_not_able_to_measure_by_reps" />
+
+                </LinearLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceTitleLarge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:visibility="@{vModel.tempExercise.value.id.isEmpty() ? View.VISIBLE : View.GONE, default=gone}"
+                    android:text="@{@string/measure_by+':'}" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="?attr/textAppearanceBodyLarge"
+                    android:id="@+id/tv_measure_by_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/you_must_select_at_least_one_measure"
+                    android:textColor="@color/md_theme_light_error"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="@{vModel.tempExercise.value.id.isEmpty() ? View.VISIBLE : View.GONE, default=gone}"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:id="@+id/cb_reps"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/reps"
+                        android:enabled="@{!swUseReps.isChecked()}"
+                        android:checked="@={vModel.tempExercise.value.measureByReps}"/>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:text="@string/time"
+                        android:checked="@={vModel.tempExercise.value.measureByTime}"/>
+
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/weight"
+                        android:checked="@={vModel.tempExercise.value.measureByWeight}"/>
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
@@ -173,7 +256,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMusclesError,sModel)}"
+            android:onClick="@{() -> vModel.createExercise(ivExercise,tvImageError,tilName,tilDescription,tvMusclesError,tvMeasureByError,sModel)}"
             android:text="@string/save" />
 
         <ProgressBar

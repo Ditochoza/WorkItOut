@@ -6,11 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import es.ucm.fdi.workitout.R
+import es.ucm.fdi.workitout.databinding.DialogSelectSetsRepsExerciseRoutineBinding
 import es.ucm.fdi.workitout.databinding.FragmentSelectExercisesBinding
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.ExerciseSetsReps
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.collectLatestFlow
+import es.ucm.fdi.workitout.utils.createAlertDialog
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
@@ -47,18 +51,47 @@ class SelectExercisesFragment : Fragment() {
 
     fun selectExercise(exercise: Exercise, routine: Routine, selected: Boolean): Boolean {
         val newExercises = routine.exercises.toMutableList()
-        val newExercisesIds = routine.exercisesIds.toMutableList()
+        val newExercisesSetsReps = routine.exercisesSetsReps.toMutableList()
         if (selected) {
             newExercises.removeIf { it.id == exercise.id }
-            newExercisesIds.removeIf { it.contains(exercise.id) }
+            newExercisesSetsReps.removeIf { it.idExercise.contains(exercise.id) }
+            mainSharedViewModel.setAndNavigate(routine.copy(exercises = newExercises, exercisesSetsReps = newExercisesSetsReps))
         } else {
-            newExercises.add(exercise)
-            if (exercise.idUser == mainSharedViewModel.user.value.email) //Si es un ejercicio creado por el usuario
-                newExercisesIds.add("${DbConstants.COLLECTION_USERS}/${exercise.idUser}/${DbConstants.USER_COLLECTION_EXERCISES}/${exercise.id}")
-            else //Si es un ejercicio de la app
-                newExercisesIds.add("${DbConstants.COLLECTION_EXERCISES}/${exercise.id}")
+            activity?.let { activity ->
+                val binding = DialogSelectSetsRepsExerciseRoutineBinding.inflate(activity.layoutInflater)
+                binding.npSets.minValue = 1
+                binding.npSets.maxValue = 30
+                if (exercise.useReps) {
+                    binding.llReps.visibility = View.VISIBLE
+                    binding.npReps.minValue = 1
+                    binding.npReps.maxValue = 30
+                    binding.npReps.value = 1
+                }
+                activity.createAlertDialog(exercise.name,
+                    ok = R.string.add to {
+                        val idExercise =
+                            if (exercise.idUser == mainSharedViewModel.user.value.email) //Si es un ejercicio creado por el usuario
+                                "${DbConstants.COLLECTION_USERS}/${exercise.idUser}/${DbConstants.USER_COLLECTION_EXERCISES}/${exercise.id}"
+                            else //Si es un ejercicio de la app
+                                "${DbConstants.COLLECTION_EXERCISES}/${exercise.id}"
+
+                        newExercisesSetsReps.add(ExerciseSetsReps(
+                            idExercise, binding.npSets.value, binding.npReps.value
+                        ))
+                        newExercises.add(exercise.copy(
+                            tempExerciseRoutineSets = binding.npSets.value,
+                            tempExerciseRoutineReps = binding.npReps.value
+                        ))
+
+                        mainSharedViewModel.setAndNavigate(routine.copy(
+                            exercises = newExercises,
+                            exercisesSetsReps = newExercisesSetsReps)
+                        )
+                    },
+                    cancel = R.string.cancel to {}
+                ).setView(binding.root).create().show()
+            }
         }
-        mainSharedViewModel.setAndNavigate(routine.copy(exercises = newExercises, exercisesIds = newExercisesIds))
         return true
     }
 

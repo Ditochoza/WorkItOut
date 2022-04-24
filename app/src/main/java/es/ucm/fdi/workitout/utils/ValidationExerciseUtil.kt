@@ -13,7 +13,8 @@ object ValidationExerciseUtil {
         image: Pair<ImageView, TextView>,
         name: Pair<String, TextInputLayout>,
         description: Pair<String, TextInputLayout>,
-        muscles: Pair<List<String>,TextView>
+        muscles: Pair<List<String>, TextView>,
+        measureBy: Pair<ArrayList<Boolean>, TextView>
     ) : ValidationResult {
         var result: ValidationResult = ValidationResult.success()
 
@@ -55,6 +56,9 @@ object ValidationExerciseUtil {
                 muscles.first.isEmpty()
         )) result = ValidationResult.failed()
 
+        if (measureBy.second.tvError( /** Error si no se ha seleccionado ningún método para medir el ejercicio */
+                (measureBy.first.count { it } == 0)
+            )) result = ValidationResult.failed()
 
         return result
     }

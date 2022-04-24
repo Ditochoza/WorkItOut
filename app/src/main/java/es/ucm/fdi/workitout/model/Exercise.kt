@@ -14,5 +14,11 @@ data class Exercise(
     var imageUrl: String = "",
     var idUser: String = "",
     var videoLinks: List<VideoLink>  = emptyList(),
-    @get: Exclude var videos: List<Video> = emptyList()
+    var useReps: Boolean = false,
+    var measureByReps: Boolean = false,
+    var measureByTime: Boolean = false,
+    var measureByWeight: Boolean = false,
+    @get: Exclude var videos: List<Video> = emptyList(),
+    @get: Exclude var tempExerciseRoutineSets: Int = 0, //Se setea sólo al crear el RecyclerView en rutina
+    @get: Exclude var tempExerciseRoutineReps: Int = 0, //Se setea sólo al crear el RecyclerView en rutina
 ):Parcelable
