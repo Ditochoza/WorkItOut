@@ -1,5 +1,16 @@
 # Changelog
 
+## [v0.8.9] [Unreleased]  - 24/04/2022
+### Nuevo
+- Selección de sets y reps en selección de ejercicios de rutinas.
+- Opción de usar reps (No para medir) en un ejercicio al crearlo.
+- Opción de elegir el método de medida de un ejercicio al crearlo.
+- Texto de sets y/o reps de ejercicios dentro de rutinas.
+
+### Arreglos
+- Padding arreglado en pantallas de creación/modificación de ejercicio/rutina
+- Arreglo en chips de músculos en lista de rutinas en pantalla de inicio.
+
 ## [v0.8.8] [Unreleased]  - 24/04/2022
 ### Nuevo
 - Selección de ejercicios en las rutinas.
