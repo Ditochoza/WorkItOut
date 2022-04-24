@@ -242,7 +242,8 @@
                     app:exercises="@{vModel.tempRoutine.value.exercises}"
                     app:activity="@{activity}"
                     app:navActionResToEdit="@{@id/action_createRoutineFragment_to_createExerciseFragment}"
-                    app:navActionResToView="@{@id/action_createRoutineFragment_to_viewExerciseFragment}"/>
+                    app:navActionResToView="@{@id/action_createRoutineFragment_to_viewExerciseFragment}"
+                    app:routine="@{vModel.tempRoutine.value}"/>
 
             </LinearLayout>
 

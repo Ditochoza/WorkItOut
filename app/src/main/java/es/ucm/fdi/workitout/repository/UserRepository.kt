@@ -94,10 +94,22 @@ class UserRepository {
                         routines = dbUsers.document(email)
                             .collection(USER_COLLECTION_ROUTINES).get().await()
                             .toObjects(Routine::class.java).map { routine ->
-                                val exercisesRoutine = db.collectionGroup(COLLECTION_EXERCISES).whereIn(
-                                    FieldPath.documentId(),
-                                    routine.exercisesIds
-                                ).get().await().toObjects(Exercise::class.java)
+                                var exercisesRoutine = emptyList<Exercise>()
+
+                                if (routine.exercisesSetsReps.isNotEmpty())
+                                    exercisesRoutine =
+                                        db.collectionGroup(COLLECTION_EXERCISES).whereIn(
+                                        FieldPath.documentId(),
+                                        routine.exercisesSetsReps.map { it.idExercise }
+                                    ).get().await().toObjects(Exercise::class.java).map { exercise ->
+                                            val exerciseSetsReps = routine.exercisesSetsReps
+                                                .firstOrNull { it.idExercise.contains(exercise.id) }
+                                                ?: ExerciseSetsReps()
+                                            exercise.copy(
+                                                tempExerciseRoutineSets = exerciseSetsReps.sets,
+                                                tempExerciseRoutineReps = exerciseSetsReps.reps
+                                            )
+                                        }
 
                                 routine.copy(
                                     exercises = exercisesRoutine
@@ -117,7 +129,9 @@ class UserRepository {
             } else {
                 DatabaseResult.failed(R.string.error_no_email_found)
             }
-        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
+        } } catch (e: Exception) {
+            print(e.message)
+            DatabaseResult.failed(R.string.error_fetch_user) }
     }
 
     suspend fun deleteExercise(exercise: Exercise, email: String): DatabaseResult<User?> {

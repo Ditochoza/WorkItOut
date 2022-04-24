@@ -14,6 +14,7 @@
         <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
         <variable name="user" type="es.ucm.fdi.workitout.model.User" />
         <variable name="emptyExercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="emptyRoutine" type="es.ucm.fdi.workitout.model.Routine" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -82,7 +83,8 @@
                     app:exercises="@{exercises}"
                     app:activity="@{activity}"
                     app:navActionResToEdit="@{@id/action_exercisesFragment_to_createExerciseFragment}"
-                    app:navActionResToView="@{@id/action_exercisesFragment_to_viewExerciseFragment}"/>
+                    app:navActionResToView="@{@id/action_exercisesFragment_to_viewExerciseFragment}"
+                    app:routine="@{emptyRoutine}"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

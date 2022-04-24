@@ -13,7 +13,7 @@ data class Routine(
     var name: String = "",
     var description: String = "",
     var imageUrl: String = "",
-    var exercisesIds: List<String> = emptyList(),
+    var exercisesSetsReps: List<ExerciseSetsReps> = emptyList(),
     var dayOfWeekScheduled: Int = -1,
     var timeTimestampScheduled: Timestamp = zeroTimestamp(),
     @get: Exclude var exercises: List<Exercise> = emptyList(),

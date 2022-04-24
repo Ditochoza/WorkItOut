@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import es.ucm.fdi.workitout.databinding.FragmentExercisesBinding
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
@@ -27,6 +28,7 @@ class ExercisesFragment : Fragment() {
         binding.user = mainSharedViewModel.user.value
         binding.exercises = mainSharedViewModel.exercises.value
         binding.loading = mainSharedViewModel.loading.value
+        binding.emptyRoutine = Routine()
         binding.activity = activity as MainActivity?
 
         setupCollectors()
