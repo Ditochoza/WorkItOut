@@ -15,12 +15,10 @@ import es.ucm.fdi.workitout.utils.createAlertDialog
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class MyRoutinesFragment : Fragment() {
-
     private val mainSharedViewModel: MainSharedViewModel by activityViewModels()
 
     private var _binding: FragmentMyRoutinesBinding? = null
     private val binding get() = _binding!!
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentMyRoutinesBinding.inflate(inflater, container, false)
