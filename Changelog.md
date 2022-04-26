@@ -1,5 +1,17 @@
 # Changelog
 
+## [v0.9.0] [Unreleased]  - 27/04/2022
+### Nuevo
+- El usuario puede iniciar un entrenamiento y guardar nuevos valores.
+- Subida de entrenamiento registrado a la base de datos.
+- Botón a información de ejercicio dentro de cada ejercicio en un entrenamiento.
+
+### Arreglos
+- Arreglado error por el que en algunas situaciones el orden de las rutinas programadas no era el correcto.
+
+### Cambios
+- Lista de músculos de ejercicio de la app actualizados (Grupos musculares).
+
 ## [v0.8.9] [Unreleased]  - 24/04/2022
 ### Nuevo
 - Selección de sets y reps en selección de ejercicios de rutinas.
