@@ -3,7 +3,6 @@ package es.ucm.fdi.workitout.repository
 import android.widget.ImageView
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
-import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import es.ucm.fdi.workitout.R
@@ -12,10 +11,10 @@ import es.ucm.fdi.workitout.utils.DbConstants
 import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_EXERCISES
 import es.ucm.fdi.workitout.utils.DbConstants.COLLECTION_USERS
 import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_EXERCISES
+import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_RECORDS
 import es.ucm.fdi.workitout.utils.DbConstants.USER_COLLECTION_ROUTINES
 import es.ucm.fdi.workitout.utils.getByteArray
 import es.ucm.fdi.workitout.utils.getImageRef
-import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 
@@ -38,7 +37,7 @@ class UserRepository {
                 auth.signOut()
                 auth.createUserWithEmailAndPassword(email, password).await()
                 dbUsers.document(email).set(User(name = name)).await()
-                DatabaseResult.success(auth.currentUser)
+                DatabaseResult.successData(auth.currentUser)
             }
         } catch (e: FirebaseAuthUserCollisionException) { //Ya existe un usuario con ese correo electrónico
             DatabaseResult.failed(R.string.existing_user_login_exception)
@@ -55,7 +54,7 @@ class UserRepository {
             withContext(Dispatchers.IO) {
                 auth.signOut()
                 auth.signInWithEmailAndPassword(email, password).await()
-                DatabaseResult.success(auth.currentUser)
+                DatabaseResult.successData(auth.currentUser)
             }
         } catch (e: FirebaseTooManyRequestsException) { //Cuenta bloqueada por demasiados intentos fallidos
             DatabaseResult.failed(R.string.too_many_attempts_try_again_later_exception)
@@ -74,64 +73,42 @@ class UserRepository {
             if (email == currentUser?.email) {
                 var user: User? = User()
                 var routines: List<Routine> = emptyList()
-                var routinesScheduled: List<Routine> = emptyList()
                 var exercises: List<Exercise> = emptyList()
                 listOf(
                     async { //Obtenemos el usuario de la sesión
                         user = dbUsers.document(email).get().await().toObject(User::class.java)
                     },
                     async { //Obtenemos los ejercicios del usuario (Subcollection)
+                        val records = dbUsers.document(email).collection(USER_COLLECTION_RECORDS)
+                            .get().await().toObjects(Record::class.java)
+
                         exercises = dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
                             .get().await().toObjects(Exercise::class.java).map { exercise ->
                                 val videos = ArrayList<Video>()
                                 exercise.videoLinks.forEach { videoLink ->
                                     videos.add(youtubeAPI.fetchVideo(videoLink.videoUrl).copy(videoLink = videoLink))
                                 }
-                                exercise.copy(videos = videos)
+                                val recordsExercise = records.filter { it.idExercise == exercise.id }
+
+                                exercise.copy(videos = videos, records = recordsExercise)
                             }
                     },
                     async { //Obtenemos las rutinas del usuario (Subcollection)
                         routines = dbUsers.document(email)
                             .collection(USER_COLLECTION_ROUTINES).get().await()
-                            .toObjects(Routine::class.java).map { routine ->
-                                var exercisesRoutine = emptyList<Exercise>()
-
-                                if (routine.exercisesSetsReps.isNotEmpty())
-                                    exercisesRoutine =
-                                        db.collectionGroup(COLLECTION_EXERCISES).whereIn(
-                                        FieldPath.documentId(),
-                                        routine.exercisesSetsReps.map { it.idExercise }
-                                    ).get().await().toObjects(Exercise::class.java).map { exercise ->
-                                            val exerciseSetsReps = routine.exercisesSetsReps
-                                                .firstOrNull { it.idExercise.contains(exercise.id) }
-                                                ?: ExerciseSetsReps()
-                                            exercise.copy(
-                                                tempExerciseRoutineSets = exerciseSetsReps.sets,
-                                                tempExerciseRoutineReps = exerciseSetsReps.reps
-                                            )
-                                        }
-
-                                routine.copy(
-                                    exercises = exercisesRoutine
-                                )
-                            }
-                        routinesScheduled =
-                            orderRoutinesByWeekDay(routines.filter { it.dayOfWeekScheduled != -1 })
-                    }
+                            .toObjects(Routine::class.java)
+                    },
                 ).awaitAll()
-                DatabaseResult.success(
+                DatabaseResult.successData(
                     user?.copy(
                         routines = routines,
-                        routinesScheduled = routinesScheduled,
                         exercises = exercises
                     )
                 )
             } else {
                 DatabaseResult.failed(R.string.error_no_email_found)
             }
-        } } catch (e: Exception) {
-            print(e.message)
-            DatabaseResult.failed(R.string.error_fetch_user) }
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
     }
 
     suspend fun deleteExercise(exercise: Exercise, email: String): DatabaseResult<User?> {
@@ -147,7 +124,7 @@ class UserRepository {
                 },
             ).awaitAll()
 
-            fetchUserByEmail(email)
+            DatabaseResult.successMessage(R.string.exercise_deleted)
         } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.exercise_could_not_be_deleted) }
     }
 
@@ -181,8 +158,10 @@ class UserRepository {
                 dbUsers.document(email).collection(USER_COLLECTION_EXERCISES)
                     .add(newExercise).await()
 
-            fetchUserByEmail(email)
-        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_exercise) }
+            DatabaseResult.successMessage(R.string.exercise_updated)
+        } } catch (e: Exception) {
+            print(e.message)
+            DatabaseResult.failed(R.string.error_upload_exercise) }
     }
 
     suspend fun deleteRoutine(routine: Routine, email: String): DatabaseResult<User?> {
@@ -198,7 +177,7 @@ class UserRepository {
                 },
             ).awaitAll()
 
-            fetchUserByEmail(email)
+            DatabaseResult.successMessage(R.string.routine_deleted)
         } } catch (e: java.lang.Exception) { DatabaseResult.failed(R.string.routine_could_not_be_deleted) }
     }
 
@@ -232,7 +211,7 @@ class UserRepository {
                 dbUsers.document(email).collection(USER_COLLECTION_ROUTINES)
                     .add(newRoutine).await()
 
-            fetchUserByEmail(email)
+            DatabaseResult.successMessage(R.string.routine_updated)
         } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_routine) }
     }
 
@@ -244,7 +223,7 @@ class UserRepository {
             if (user != null && email != null && credential != null) {
                 user.reauthenticate(credential).await()
                 user.updatePassword(newPassword)
-                DatabaseResult.success(Unit)
+                DatabaseResult.successData(Unit)
             } else {
                 DatabaseResult.failed(R.string.error_update_password)
             }
@@ -265,7 +244,7 @@ class UserRepository {
                 dbUsers.document(email).delete().await()
                 //TODO Eliminar rutinas y ejercicios del usuario
 
-                DatabaseResult.success(Unit)
+                DatabaseResult.successData(Unit)
             } else {
                 DatabaseResult.failed(R.string.error_delete_user)
             }
@@ -278,5 +257,20 @@ class UserRepository {
     //Se cierra sesión en Firebase Authentication
     fun logout() {
         auth.signOut()
+    }
+
+    suspend fun uploadRecords(email: String, newRecords: ArrayList<Record>): DatabaseResult<User?> {
+        return try { withContext(Dispatchers.IO) {
+            val batch = db.batch()
+
+            newRecords.forEach { record ->
+                val newRecordRef = dbUsers.document(email).collection(USER_COLLECTION_RECORDS).document()
+                batch.set(newRecordRef, record)
+            }
+
+            batch.commit().await()
+
+            DatabaseResult.successMessage(R.string.training_uploaded)
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_uploading_training) }
     }
 }

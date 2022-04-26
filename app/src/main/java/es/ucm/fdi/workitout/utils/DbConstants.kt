@@ -8,5 +8,6 @@ object DbConstants {
     const val USER_EMAIL = "email"
     const val USER_COLLECTION_ROUTINES = "routines"
     const val USER_COLLECTION_EXERCISES = "exercises"
+    const val USER_COLLECTION_RECORDS = "records"
 
 }

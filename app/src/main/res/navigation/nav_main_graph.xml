@@ -39,6 +39,13 @@
             app:exitAnim="@anim/zoom_in_out"
             app:popEnterAnim="@anim/zoom_out_in"
             app:popExitAnim="@anim/zoom_out_out" />
+        <action
+            android:id="@+id/action_homeFragment_to_trainingExercisesFragment"
+            app:destination="@id/trainingExercisesFragment"
+            app:enterAnim="@anim/zoom_in_in"
+            app:exitAnim="@anim/zoom_in_out"
+            app:popEnterAnim="@anim/zoom_out_in"
+            app:popExitAnim="@anim/zoom_out_out"  />
     </fragment>
     <fragment
         android:id="@+id/exercisesFragment"
@@ -200,5 +207,31 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/trainingExercisesFragment"
+        android:name="es.ucm.fdi.workitout.view.TrainingExercisesFragment"
+        android:label="fragment_training_exercises"
+        tools:layout="@layout/fragment_training_exercises" >
+        <action
+            android:id="@+id/action_trainingExercisesFragment_to_trainingExerciseFragment"
+            app:destination="@id/trainingExerciseFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/trainingExerciseFragment"
+        android:name="es.ucm.fdi.workitout.view.TrainingExerciseFragment"
+        android:label="fragment_training_exercise"
+        tools:layout="@layout/fragment_training_exercise" >
+        <action
+            android:id="@+id/action_trainingExerciseFragment_to_viewExerciseFragment"
+            app:destination="@id/viewExerciseFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
 </navigation>

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="android.view.View" />
+        <variable name="recordLog" type="es.ucm.fdi.workitout.model.RecordLog" />
+        <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="colorCardDefault" type="int" />
+        <variable name="colorCardLogged" type="int" />
+        <variable name="colorTextDefault" type="int" />
+        <variable name="colorTextLogged" type="int" />
+        <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
+        <variable name="fragment" type="es.ucm.fdi.workitout.view.TrainingExerciseFragment" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="12dp"
+        style="?attr/materialCardViewElevatedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center"
+                    android:layout_margin="16dp"
+                    android:visibility="@{exercise.useReps || exercise.measureByReps ? View.VISIBLE : View.GONE, default=visible}"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="?attr/textAppearanceTitleMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="@string/reps" />
+
+                    <NumberPicker
+                        android:id="@+id/np_reps"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:value="@{recordLog.repsLogged > 0  ? recordLog.repsLogged : 1}"
+                        app:minValue="@{exercise.useReps || exercise.measureByReps ? 1 : 0}"
+                        app:maxValue="@{exercise.useReps || exercise.measureByReps ? 30 : 0}" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="?attr/materialCardViewFilledStyle"
+                        android:backgroundTint="@{recordLog.repsLogged > 0 ? colorCardLogged : colorCardDefault}"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="32dp"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_reps"
+                            style="?attr/textAppearanceTitleMedium"
+                            android:textColor="@{recordLog.repsLogged > 0 ? colorTextLogged : colorTextDefault}"
+                            android:layout_marginVertical="6dp"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="@{@string/reps_log(recordLog.repsLogged)}" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="@{exercise.measureByWeight ? View.VISIBLE : View.GONE, default=visible}"
+                    android:layout_weight="1"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="?attr/textAppearanceTitleMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="@string/weight_kg" />
+
+                    <NumberPicker
+                        android:id="@+id/np_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:value="@{recordLog.weightLogged > 0 ? recordLog.weightLogged : 1}"
+                        app:minValue="@{exercise.measureByWeight ? 1 : 0}"
+                        app:maxValue="@{exercise.measureByWeight ? 300 : 0}" />
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="?attr/materialCardViewFilledStyle"
+                        android:backgroundTint="@{recordLog.weightLogged > 0 ? colorCardLogged : colorCardDefault}"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="32dp"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_weight"
+                            style="?attr/textAppearanceTitleMedium"
+                            android:textColor="@{recordLog.weightLogged > 0 ? colorTextLogged : colorTextDefault}"
+                            android:layout_marginVertical="6dp"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="@{@string/weight_log(recordLog.weightLogged)}" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="@{exercise.measureByTime ? View.VISIBLE : View.GONE, default=visible}"
+                    android:layout_weight="1"
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        style="?attr/textAppearanceTitleMedium"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="@string/time_s" />
+
+                    <NumberPicker
+                        android:id="@+id/np_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:value="@{recordLog.timeLogged > 0 ? recordLog.timeLogged : 1}"
+                        app:minValue="@{exercise.measureByTime ? 1 : 0}"
+                        app:maxValue="@{exercise.measureByTime ? 300 : 0}"  />
+
+                    <com.google.android.material.card.MaterialCardView
+                        style="?attr/materialCardViewFilledStyle"
+                        android:backgroundTint="@{recordLog.timeLogged > 0 ? colorCardLogged : colorCardDefault}"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        app:cardCornerRadius="32dp"
+                        android:layout_height="wrap_content">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/tv_time"
+                            style="?attr/textAppearanceTitleMedium"
+                            android:textColor="@{recordLog.timeLogged > 0 ? colorTextLogged : colorTextDefault}"
+                            android:layout_marginVertical="6dp"
+                            android:layout_marginHorizontal="12dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="center"
+                            android:text="@{@string/time_log(recordLog.timeLogged)}" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|bottom"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="10dp"
+                android:onClick="@{() -> fragment.saveRecord(npReps.getValue(), npWeight.getValue(), npTime.getValue(), recordLog, exercise, routine)}"
+                android:text="@string/save_record" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>

@@ -150,7 +150,8 @@
                                 android:contentDescription="@string/start_routine"
                                 app:srcCompat="@drawable/ic_round_play_circle_24"
                                 android:tint="?attr/colorSecondary"
-                                android:background="@android:color/transparent"/>
+                                android:background="@android:color/transparent"
+                                android:onClick="@{() -> fragment.startTraining(user.routinesScheduled.get(0))}"/>
 
                         </LinearLayout>
 

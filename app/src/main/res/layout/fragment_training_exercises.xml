@@ -3,17 +3,16 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.MyRoutinesFragment">
+    tools:context=".view.TrainingExercisesFragment">
 
     <data>
         <import type="android.view.View" />
-        <import type="es.ucm.fdi.workitout.model.Routine" />
+        <import type="es.ucm.fdi.workitout.model.Exercise" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
-        <variable name="fragment" type="es.ucm.fdi.workitout.view.MyRoutinesFragment" />
-        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
-        <variable name="user" type="es.ucm.fdi.workitout.model.User" />
-        <variable name="emptyRoutine" type="es.ucm.fdi.workitout.model.Routine" />
         <variable name="loading" type="Boolean" />
+        <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
+        <variable name="emptyExercises" type="java.util.List&lt;Exercise&gt;" />
+        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -32,27 +31,12 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@string/my_routines"
-                app:titleTextColor="?attr/colorPrimary"
-                app:navigationOnClickListener="@{() -> activity.openDrawer()}"
-                app:titleTextAppearance="?attr/textAppearanceHeadlineMedium"
+                app:title="@string/training"
+                app:subtitle="@{routine.name}"
+                app:subtitleCentered="true"
+                app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
                 app:titleCentered="true"
-                app:navigationIcon="@drawable/ic_round_menu_24"
-                app:menu="@menu/menu_main"
-                app:sModel="@{sModel}"
-                app:navActionResToSettings="@{@id/action_myRoutinesFragment_to_settingsFragment}">
-
-                <ProgressBar
-                    android:id="@+id/pBar"
-                    style="?android:attr/progressBarStyleHorizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="12dp"
-                    android:layout_gravity="center"
-                    android:indeterminate="true"
-                    android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
-
-            </com.google.android.material.appbar.MaterialToolbar>
+                app:navigationIcon="@drawable/ic_round_close_24"/>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -61,12 +45,15 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginHorizontal="16dp"
                 android:orientation="vertical">
+
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_my_routines"
+                    android:id="@+id/rv_training_exercises"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -75,8 +62,12 @@
                     android:scrollbars="none"
                     app:layoutManager="LinearLayoutManager"
                     app:sModel="@{sModel}"
-                    app:myRoutines="@{user.routines}"
-                    app:fragment="@{fragment}"/>
+                    app:myExercises="@{emptyExercises}"
+                    app:exercises="@{routine.exercises}"
+                    app:activity="@{activity}"
+                    app:navActionResToEdit="@{0}"
+                    app:navActionResToView="@{@id/action_trainingExercisesFragment_to_trainingExerciseFragment}"
+                    app:routine="@{routine}"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -86,11 +77,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:contentDescription="@string/create_routine"
-            android:text="@string/create_routine"
-            app:icon="@drawable/ic_round_add_24"
+            android:contentDescription="@string/save_and_exit"
+            android:text="@string/save_and_exit"
+            app:icon="@drawable/ic_round_cloud_upload_24"
             android:layout_gravity="bottom|end"
-            android:onClick="@{() -> sModel.setAndNavigate(emptyRoutine, @id/action_myRoutinesFragment_to_createRoutineFragment)}"/>
+            android:onClick="@{() -> sModel.saveNewRecords(routine)}"/>
+
+        <ProgressBar
+            android:id="@+id/pBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="@{loading ? View.VISIBLE : View.GONE, default=gone}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

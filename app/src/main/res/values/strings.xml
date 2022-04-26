@@ -97,7 +97,6 @@
     <string name="suggested_videos">Suggested Videos</string>
     <string name="existing_video_link">This video has already been added</string>
     <string name="add_video">Add Video</string>
-    <string name="videos_updated">Videos Updated</string>
     <string name="choose_exercise">Choose Exercises</string>
     <string name="select_exercises">Select Exercises</string>
     <string name="selected">Selected</string>
@@ -114,4 +113,19 @@
     <string name="add">Add</string>
     <string name="sets">Sets</string>
     <string name="reps">Reps</string>
+    <string name="save_and_exit"><![CDATA[Save & Exit]]></string>
+    <string name="training">Training</string>
+    <string name="reps_log">%d</string>
+    <string name="weight_log">%d kgs.</string>
+    <string name="time_log">%d s.</string>
+    <string name="exercise_deleted">Exercise deleted</string>
+    <string name="exercise_updated">Exercise updated</string>
+    <string name="routine_deleted">Routine deleted</string>
+    <string name="routine_updated">Routine updated</string>
+    <string name="training_uploaded">Training uploaded</string>
+    <string name="error_uploading_training">Failed to upload training</string>
+    <string name="exercise_information">Exercise Information</string>
+    <string name="weight_kg">Weight (Kg.)</string>
+    <string name="time_s">Time (s.)</string>
+    <string name="save_record">Save Record</string>
 </resources>
