@@ -44,7 +44,7 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
                 val resultUser = userRepository.login(user.value.email, user.value.tempPassword)
                 _loading.emit(false)
 
-                if (resultUser is DatabaseResult.Success) {
+                if (resultUser is DatabaseResult.SuccessData) {
                     resultUser.data?.email?.let { _login.emit(it) }
                 } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
             }
@@ -66,7 +66,7 @@ class StartSharedViewModel(application: Application, private val savedStateHandl
                 val resultUser = userRepository.register(user.value.name, user.value.email, user.value.tempPassword)
                 _loading.emit(false)
 
-                if (resultUser is DatabaseResult.Success) {
+                if (resultUser is DatabaseResult.SuccessData) {
                     resultUser.data?.email?.let { _login.emit(it) }
                 } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
             }

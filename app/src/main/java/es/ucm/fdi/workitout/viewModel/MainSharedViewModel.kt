@@ -8,12 +8,15 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Timestamp
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.ExercisesRepository
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
 import es.ucm.fdi.workitout.utils.DbConstants
+import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
+import es.ucm.fdi.workitout.utils.putExercisesOnRoutines
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
@@ -32,9 +35,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     private val _selectedExercise = MutableStateFlow(savedStateHandle.get(::selectedExercise.name) ?: Exercise())
     val selectedExercise: StateFlow<Exercise> = _selectedExercise.asStateFlow()
-
-    private val _routines = MutableStateFlow<ArrayList<Routine>>(savedStateHandle.get(::routines.name) ?: ArrayList())
-    val routines: StateFlow<ArrayList<Routine>> = _routines.asStateFlow()
 
     private val _selectedRoutine = MutableStateFlow(savedStateHandle.get(::selectedRoutine.name) ?: Routine())
     val selectedRoutine: StateFlow<Routine> = _selectedRoutine.asStateFlow()
@@ -80,9 +80,9 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 else exercisesRepository.updateExercise(newExercise)
             _loading.emit(false)
 
-            if (result is DatabaseResult.Success) {
-                fetchAll(user.value.email)
-                _shortToastRes.emit(R.string.videos_updated)
+            if (result is DatabaseResult.SuccessMessage) {
+                fetchAll()
+                _shortToastRes.emit(result.resMessage)
             } else if(result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }
@@ -90,13 +90,13 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun deleteExercise(exercise: Exercise){
         viewModelScope.launch {
             _loading.emit(true)
-            val resultUser = userRepository.deleteExercise(exercise, user.value.email)
+            val result = userRepository.deleteExercise(exercise, user.value.email)
             _loading.emit(false)
 
-            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
-                _user.value = newUser
-                savedStateHandle.set(::user.name, user.value)
-            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            if (result is DatabaseResult.SuccessMessage) {
+                _shortToastRes.emit(result.resMessage)
+                fetchAll()
+            } else if(result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }
 
@@ -111,16 +111,23 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
             listOf(
                 async { fetchUserByEmail(email) },
-                async { fetchExercises() }
+                async { fetchExercises(email) }
             ).awaitAll()
+
+            //Rellenamos la información de ejercicios de las rutinas con los ejercicios obtenidos de la BBDD
+            val routinesWithRecords =
+                user.value.routines.putExercisesOnRoutines(user.value.exercises + exercises.value)
+            val routinesWithRecordsScheduled =
+                orderRoutinesByWeekDay(routinesWithRecords.filter { it.dayOfWeekScheduled != -1 })
+            _user.value = user.value.copy(routines = routinesWithRecords, routinesScheduled = routinesWithRecordsScheduled)
 
             _loading.emit(false)
         }
     }
 
-    private suspend fun fetchExercises() {
-        val resultExercises = exercisesRepository.fetchExercises()
-        if (resultExercises is DatabaseResult.Success) {
+    private suspend fun fetchExercises(email: String) {
+        val resultExercises = exercisesRepository.fetchExercises(email)
+        if (resultExercises is DatabaseResult.SuccessData) {
             _exercises.value = resultExercises.data
             _selectedExercise.value =
                 user.value.exercises.firstOrNull { it.id == selectedExercise.value.id } ?:
@@ -135,7 +142,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     private suspend fun fetchUserByEmail(email: String) {
         if (email.isNotEmpty()) { //Si el usuario no es invitado
             val resultUser = userRepository.fetchUserByEmail(email)
-            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
+            if (resultUser is DatabaseResult.SuccessData) resultUser.data?.let { newUser ->
                 _user.value = newUser
                 _selectedExercise.value =
                     user.value.exercises.firstOrNull { it.id == selectedExercise.value.id } ?:
@@ -152,28 +159,28 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun createExercise(ivExercise: ImageView, newExercise: Exercise) {
         viewModelScope.launch {
             _loading.emit(true)
-            val resultUser = userRepository.uploadExerciseAndImage(user.value.email, newExercise,
+            val result = userRepository.uploadExerciseAndImage(user.value.email, newExercise.copy(idUser = user.value.email),
                 ivExercise, tempImageUri.value != Uri.EMPTY)
             _loading.emit(false)
-            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
-                _user.value = newUser
-                savedStateHandle.set(::user.name, user.value)
+            if (result is DatabaseResult.SuccessMessage) {
+                _shortToastRes.emit(result.resMessage)
+                fetchAll()
                 _navigateActionRes.emit(0)
             }
-            else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }
 
     fun deleteRoutine(routine: Routine){
         viewModelScope.launch {
             _loading.emit(true)
-            val resultUser = userRepository.deleteRoutine(routine, user.value.email)
+            val result = userRepository.deleteRoutine(routine, user.value.email)
             _loading.emit(false)
 
-            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
-                _user.value = newUser
-                savedStateHandle.set(::user.name, user.value)
-            } else if(resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            if (result is DatabaseResult.SuccessMessage) {
+                _shortToastRes.emit(result.resMessage)
+                fetchAll()
+            } else if(result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }
 
@@ -183,7 +190,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             val result = userRepository.checkAndUpdatePassword(currentPassword, newPassword)
             _loading.emit(false)
 
-            if (result is DatabaseResult.Success) {
+            if (result is DatabaseResult.SuccessData) {
                 _shortToastRes.emit(R.string.password_updated)
                 alertDialog.dismiss()
             } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
@@ -194,7 +201,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         viewModelScope.launch {
             val result = userRepository.checkPasswordAndDeleteAccount(currentPassword)
 
-            if (result is DatabaseResult.Success) {
+            if (result is DatabaseResult.SuccessData) {
                 _shortToastRes.emit(R.string.user_deleted)
                 alertDialog.dismiss()
                 logout()
@@ -205,14 +212,58 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun createRoutine(ivRoutine: ImageView, newRoutine: Routine) {
         viewModelScope.launch {
             _loading.emit(true)
-            val resultUser = userRepository.uploadRoutineAndImage(user.value.email, newRoutine,
+            val result = userRepository.uploadRoutineAndImage(user.value.email, newRoutine,
                 ivRoutine, tempImageUri.value != Uri.EMPTY)
             _loading.emit(false)
-            if (resultUser is DatabaseResult.Success) resultUser.data?.let { newUser ->
-                _user.value = newUser
-                savedStateHandle.set(::user.name, user.value)
+            if (result is DatabaseResult.SuccessMessage) {
+                _shortToastRes.emit(result.resMessage)
+                fetchAll()
                 _navigateActionRes.emit(0)
-            } else if (resultUser is DatabaseResult.Failed) _shortToastRes.emit(resultUser.resMessage)
+            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+        }
+    }
+
+    fun saveNewRecords(routine: Routine) {
+        val newRecords = ArrayList<Record>()
+        routine.exercises.forEach { exercise ->
+            val newRecord = exercise.records.firstOrNull { it.id.isEmpty() } ?: Record()
+            val newRecordLogs = ArrayList<RecordLog>()
+            newRecord.recordLogs.forEach { recordLog ->
+                var saveRecordLog = true
+                if (exercise.measureByReps || exercise.useReps) if (recordLog.repsLogged < 1) saveRecordLog = false
+                if (exercise.measureByWeight) if (recordLog.weightLogged < 1) saveRecordLog = false
+                if (exercise.measureByTime) if (recordLog.timeLogged < 1) saveRecordLog = false
+
+                if (saveRecordLog)
+                    newRecordLogs.add(RecordLog(
+                        pos = 0,
+                        repsLogged = if (exercise.measureByReps || exercise.useReps) recordLog.repsLogged else 0,
+                        weightLogged = if (exercise.measureByWeight) recordLog.weightLogged else 0,
+                        timeLogged = if (exercise.measureByTime) recordLog.timeLogged else 0,
+                    ))
+            }
+
+            if (newRecordLogs.isNotEmpty())
+                newRecords.add(newRecord.copy(
+                    timestamp = Timestamp.now(),
+                    idExercise = exercise.id,
+                    recordLogs = newRecordLogs
+                ))
+        }
+
+        uploadRecords(newRecords)
+    }
+
+    private fun uploadRecords(newRecords: ArrayList<Record>) {
+        viewModelScope.launch {
+            _loading.emit(true)
+            val result = userRepository.uploadRecords(user.value.email, newRecords)
+            _loading.emit(false)
+            if (result is DatabaseResult.SuccessMessage) {
+                _shortToastRes.emit(result.resMessage)
+                fetchAll()
+                _navigateActionRes.emit(0)
+            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }
 
@@ -226,7 +277,12 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
-    fun <T> setAndNavigate(something: T, navActionRes: Int? = null) {
+    fun <T> setAndNavigate(something: T, navActionRes: Int) {
+        set(something)
+        navigate(navActionRes)
+    }
+
+    fun <T> set(something: T) {
         when (something) {
             is Exercise -> {
                 _selectedExercise.value = something
@@ -239,17 +295,15 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 savedStateHandle.set(::selectedRoutine.name, selectedRoutine.value)
             }
         }
-
-        navActionRes?.let { navigate(it) }
     }
+
+    fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
 
     fun clearErrors(til: TextInputLayout) { til.error = "" }
 
     fun setTempImage(uri: Uri) { viewModelScope.launch { _tempImageUri.emit(uri) } }
 
-    fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) }
-
-    fun navigate(navActionRes: Int) { viewModelScope.launch { _navigateActionRes.emit(navActionRes) } }
+    fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) } //TODO Añadir los demás StateFlows
 
     fun showToast(resMessage: Int) { viewModelScope.launch { _shortToastRes.emit(resMessage) } }
 }

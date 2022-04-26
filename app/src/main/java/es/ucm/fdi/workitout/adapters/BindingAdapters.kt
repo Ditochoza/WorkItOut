@@ -14,6 +14,7 @@ import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.ExerciseSetsReps
+import es.ucm.fdi.workitout.model.Record
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.getColorFromAttr
 import es.ucm.fdi.workitout.utils.loadResource
@@ -22,7 +23,6 @@ import es.ucm.fdi.workitout.viewModel.CreateExerciseViewModel
 import es.ucm.fdi.workitout.viewModel.CreateRoutineViewModel
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
-//BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado
 @BindingAdapter("sModel", "navActionResToSettings", requireAll = true)
 fun MaterialToolbar.onClickMainMenu(sModel: MainSharedViewModel, navActionResToSettings: Int) {
     this.menu.findItem(R.id.item_update_menu_main).setOnMenuItemClickListener {
@@ -39,11 +39,18 @@ fun MaterialToolbar.onClickMainMenu(sModel: MainSharedViewModel, navActionResToS
     }
 }
 
-//BindingAdapter para definir el funcionamiento de los botones del menú de la barra de estado
 @BindingAdapter("sModel", "navActionResToEdit", "exerciseOrRoutine", requireAll = true)
 fun MaterialToolbar.onClickEditMenu(sModel: MainSharedViewModel, navActionResToEdit: Int, exerciseOrRoutine: Any) {
     this.menu.findItem(R.id.item_edit_menu_edit).setOnMenuItemClickListener {
         sModel.setAndNavigate(exerciseOrRoutine, navActionResToEdit)
+        return@setOnMenuItemClickListener true
+    }
+}
+
+@BindingAdapter("sModel", "navActionResToView", requireAll = true)
+fun MaterialToolbar.onClickInfoMenu(sModel: MainSharedViewModel, navActionResToView: Int) {
+    this.menu.findItem(R.id.item_info_menu_info).setOnMenuItemClickListener {
+        sModel.navigate(navActionResToView)
         return@setOnMenuItemClickListener true
     }
 }
@@ -99,9 +106,15 @@ fun ImageView.loadImage(imageUrl: String) {
     if (imageUrl.isNotEmpty()) this.loadResource(imageUrl)
 }
 
+@BindingAdapter("minValue", "maxValue", requireAll = true)
+fun NumberPicker.adapterNumberPicker(minValue: Int, maxValue: Int) {
+    setMinValue(minValue)
+    setMaxValue(maxValue)
+}
+
 //BindingAdapter para mostrar los chips con los músculos de las rutinas
 @BindingAdapter("exercises")
-fun ChipGroup.adapterChipsExercises(exercises: List<Exercise>) {
+fun ChipGroup.adapterChipsExercisesMuscles(exercises: List<Exercise>) {
     removeAllViews()
     val muscles = exercises.flatMap { it.muscles }.distinct()
     muscles.forEach {
@@ -168,7 +181,7 @@ fun RecyclerView.adapterSelectExercises(sModel: MainSharedViewModel, exercises: 
         (adapter as SelectExercisesRecyclerViewAdapter).updateList(exercisesList.toList(), routine)
 }
 
-@BindingAdapter("sModel", "exercises", "myExercises", "activity", "navActionResToEdit", "navActionResToView", "routine")
+@BindingAdapter("sModel", "exercises", "myExercises", "activity", "navActionResToEdit", "navActionResToView", "routine", requireAll = true)
 fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<Exercise>,
                                   myExercises: List<Exercise>, activity: MainActivity,
                                   navActionResToEdit: Int, navActionResToView: Int, routine: Routine) {
@@ -189,6 +202,22 @@ fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<E
             activity, navActionResToEdit, navActionResToView)
     else
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesList)
+}
+
+@BindingAdapter("sModel", "exercise", "records", "routine", "fragment", requireAll = false)
+fun RecyclerView.adapterTrainingRecords(sModel: MainSharedViewModel, exercise: Exercise,
+                                        records: List<Record>, routine: Routine, fragment: TrainingExerciseFragment) {
+    val recordLogs = (records.firstOrNull { it.id.isEmpty() } ?: Record()).recordLogs
+    val colorCardDefault = context.getColorFromAttr(R.attr.colorSurfaceVariant)
+    val colorCardLogged = context.getColorFromAttr(R.attr.colorAccent)
+    val colorTextDefault = context.getColorFromAttr(R.attr.colorOnSurface)
+    val colorTextLogged = context.getColorFromAttr(R.attr.colorOnSecondary)
+
+    if (this.adapter == null)
+        this.adapter = TrainingRecordsRecyclerViewAdapter(recordLogs, exercise, routine, colorCardDefault,
+            colorCardLogged, colorTextDefault, colorTextLogged, sModel, fragment)
+    else
+        (adapter as TrainingRecordsRecyclerViewAdapter).updateList(recordLogs, routine)
 }
 
 @BindingAdapter("sModel", "exercise", "fragment", requireAll = false)

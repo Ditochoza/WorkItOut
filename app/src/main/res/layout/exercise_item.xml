@@ -7,6 +7,7 @@
         <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
         <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
+        <variable name="emptyExercise" type="es.ucm.fdi.workitout.model.Exercise" />
         <variable name="muscles" type="String" />
         <variable name="navActionResToEdit" type="int" />
         <variable name="navActionResToView" type="int" />
@@ -21,7 +22,7 @@
         android:focusable="true"
         app:cardCornerRadius="18dp"
         android:onClick="@{() -> sModel.setAndNavigate(exercise, navActionResToView)}"
-        android:onLongClick="@{() -> activity.onLongClickExercise(exercise, navActionResToEdit)}"
+        android:onLongClick="@{() -> navActionResToEdit != 0 ? activity.onLongClickExercise(exercise, navActionResToEdit) : activity.onLongClickExercise(emptyExercise, navActionResToEdit)}"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="12dp"
         style="?attr/materialCardViewFilledStyle">

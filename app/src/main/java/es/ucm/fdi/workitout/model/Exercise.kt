@@ -18,6 +18,7 @@ data class Exercise(
     var measureByReps: Boolean = false,
     var measureByTime: Boolean = false,
     var measureByWeight: Boolean = false,
+    @get: Exclude var records: List<Record> = emptyList(),
     @get: Exclude var videos: List<Video> = emptyList(),
     @get: Exclude var tempExerciseRoutineSets: Int = 0, //Se setea sólo al crear el RecyclerView en rutina
     @get: Exclude var tempExerciseRoutineReps: Int = 0, //Se setea sólo al crear el RecyclerView en rutina

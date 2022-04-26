@@ -16,7 +16,6 @@ import es.ucm.fdi.workitout.utils.*
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.*
 
 class MainActivity : AppCompatActivity() {
     private val mainSharedViewModel: MainSharedViewModel by viewModels()
@@ -42,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             } else { //Hay un usuario con sesión iniciada
 
                 mainSharedViewModel.fetchAll(email)
-                Collections.emptyList<String>()
+
                 setContentView(binding.root)
 
                 setupNavigationDrawerItemListener()

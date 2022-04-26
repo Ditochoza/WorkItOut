@@ -55,7 +55,7 @@ class SelectExercisesFragment : Fragment() {
         if (selected) {
             newExercises.removeIf { it.id == exercise.id }
             newExercisesSetsReps.removeIf { it.idExercise.contains(exercise.id) }
-            mainSharedViewModel.setAndNavigate(routine.copy(exercises = newExercises, exercisesSetsReps = newExercisesSetsReps))
+            mainSharedViewModel.set(routine.copy(exercises = newExercises, exercisesSetsReps = newExercisesSetsReps))
         } else {
             activity?.let { activity ->
                 val binding = DialogSelectSetsRepsExerciseRoutineBinding.inflate(activity.layoutInflater)
@@ -83,7 +83,7 @@ class SelectExercisesFragment : Fragment() {
                             tempExerciseRoutineReps = binding.npReps.value
                         ))
 
-                        mainSharedViewModel.setAndNavigate(routine.copy(
+                        mainSharedViewModel.set(routine.copy(
                             exercises = newExercises,
                             exercisesSetsReps = newExercisesSetsReps)
                         )

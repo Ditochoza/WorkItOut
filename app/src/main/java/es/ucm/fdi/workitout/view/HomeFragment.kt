@@ -13,6 +13,7 @@ import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.collectLatestFlow
 import es.ucm.fdi.workitout.utils.createAlertDialog
+import es.ucm.fdi.workitout.utils.getExercisesWithNewRecords
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class HomeFragment : Fragment() {
@@ -41,6 +42,13 @@ class HomeFragment : Fragment() {
     private fun setupCollectors() {
         mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
         mainSharedViewModel.user.collectLatestFlow(this) { binding.user = it }
+    }
+
+    fun startTraining(routine: Routine) {
+        mainSharedViewModel.setAndNavigate(
+            routine.copy(exercises = routine.getExercisesWithNewRecords()),
+            R.id.action_homeFragment_to_trainingExercisesFragment
+        )
     }
 
     fun onLongClickRoutine (routine: Routine):Boolean {

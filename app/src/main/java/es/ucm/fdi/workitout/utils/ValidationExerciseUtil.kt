@@ -28,7 +28,7 @@ object ValidationExerciseUtil {
                 resError = R.string.field_not_empty
             ) -> result = ValidationResult.failed()
             name.second.tilError( /** Error si el nombre es muy largo */
-                name.first.length > 35,
+                name.first.length > 100,
                 resError = R.string.field_long
             ) -> result = ValidationResult.failed()
             name.second.tilError( /** Error si el nombre es muy corto */
@@ -43,7 +43,7 @@ object ValidationExerciseUtil {
                 resError = R.string.field_not_empty
             ) -> result = ValidationResult.failed()
             description.second.tilError( /** Error si la descripción es muy larga */
-                description.first.length > 175,
+                description.first.length > 1000,
                 resError = R.string.field_long
             ) -> result = ValidationResult.failed()
             description.second.tilError( /** Error si la descripción es muy corta */
