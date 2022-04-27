@@ -115,9 +115,9 @@
     <string name="reps">Reps</string>
     <string name="save_and_exit"><![CDATA[Save & Exit]]></string>
     <string name="training">Training</string>
-    <string name="reps_log">%d</string>
-    <string name="weight_log">%d kgs.</string>
-    <string name="time_log">%d s.</string>
+    <string name="reps_log" translatable="false">%d</string>
+    <string name="weight_log" translatable="false">%d kgs.</string>
+    <string name="time_log" translatable="false">%d s.</string>
     <string name="exercise_deleted">Exercise deleted</string>
     <string name="exercise_updated">Exercise updated</string>
     <string name="routine_deleted">Routine deleted</string>
