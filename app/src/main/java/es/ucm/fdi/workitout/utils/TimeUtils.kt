@@ -40,6 +40,11 @@ fun timeStringToDateTime(time: String): LocalDateTime =
 /**
  * FORMATEOS
  */
+fun LocalDateTime.dateString(): String =
+    format(DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT))
+
+fun Timestamp.dateString() = toDateTime().dateString()
+
 fun LocalDateTime.timeString(): String =
     format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
 

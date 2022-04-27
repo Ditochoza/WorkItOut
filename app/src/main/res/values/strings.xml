@@ -26,7 +26,7 @@
     <string name="logout">Logout</string>
     <string name="start_routine">Start Routine</string>
     <string name="scheduled_routine_week_day_time">Scheduled: %1$s at %2$s</string>
-    <string name="empty" />
+    <string name="empty" translatable="false" />
     <string name="upcoming_routine">Upcoming routine</string>
     <string name="other_scheduled_routines">Other scheduled routines:</string>
     <string name="nothing_to_see_here">Nothing to see here</string>
@@ -128,4 +128,10 @@
     <string name="weight_kg">Weight (Kg.)</string>
     <string name="time_s">Time (s.)</string>
     <string name="save_record">Save Record</string>
+    <string name="records">Records</string>
+    <string name="exercise">Exercise</string>
+    <string name="routine">Routine</string>
+    <string name="weight_number">Weight: %d Kg.</string>
+    <string name="time_number">Time: %d s.</string>
+    <string name="date_at_time">%s at %s</string>
 </resources>

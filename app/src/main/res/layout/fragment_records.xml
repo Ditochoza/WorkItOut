@@ -3,22 +3,13 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".view.SelectExercisesFragment">
+    tools:context=".view.RecordsFragment">
 
     <data>
         <import type="android.view.View" />
-        <import type="es.ucm.fdi.workitout.model.Exercise" />
         <variable name="sModel" type="es.ucm.fdi.workitout.viewModel.MainSharedViewModel" />
-        <variable name="exercises" type="java.util.ArrayList&lt;Exercise&gt;" />
-        <variable name="fragment" type="es.ucm.fdi.workitout.view.SelectExercisesFragment" />
-        <variable name="loading" type="Boolean" />
-        <variable name="activity" type="es.ucm.fdi.workitout.view.MainActivity" />
-        <variable name="user" type="es.ucm.fdi.workitout.model.User" />
-        <variable name="routine" type="es.ucm.fdi.workitout.model.Routine" />
-        <variable name="emptyExercise" type="es.ucm.fdi.workitout.model.Exercise" />
+        <variable name="exercise" type="es.ucm.fdi.workitout.model.Exercise" />
     </data>
-
-    <!--TODO Comprobar que en los NumberPicker no se puede poner números a mano-->
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -36,10 +27,12 @@
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:title="@string/select_exercises"
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
-                app:titleCentered="true"
-                app:navigationIcon="@drawable/ic_round_arrow_back_24"/>
+                app:title="@string/records"
+                app:subtitle="@{exercise.name}"
+                app:navigationIcon="@drawable/ic_round_arrow_back_24">
+
+            </com.google.android.material.appbar.MaterialToolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -48,33 +41,20 @@
             android:layout_height="match_parent"
             android:fillViewport="true"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    style="?attr/textAppearanceLabelMedium"
-                    android:text="@string/long_press_to_select"/>
-
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_my_exercises"
+                    android:id="@+id/rv_my_routines"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:paddingBottom="70dp"
                     android:clipToPadding="false"
                     android:scrollbars="none"
                     app:layoutManager="LinearLayoutManager"
-                    app:sModel="@{sModel}"
-                    app:myExercises="@{user.exercises}"
-                    app:exercises="@{exercises}"
-                    app:routine="@{routine}"
-                    app:fragment="@{fragment}"/>
+                    app:records="@{exercise.records}"
+                    app:exercise="@{exercise}"/>
 
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

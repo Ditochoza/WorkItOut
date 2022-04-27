@@ -27,6 +27,7 @@
             android:fitsSystemWindows="true"
             app:liftOnScroll="true">
 
+            <!--TODO Controlar el botón de atrás para que se avise al usuario de que va a perder sus registros-->
             <com.google.android.material.appbar.MaterialToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"

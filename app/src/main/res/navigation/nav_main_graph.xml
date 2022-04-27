@@ -100,6 +100,13 @@
             app:exitAnim="@anim/zoom_in_out"
             app:popEnterAnim="@anim/zoom_out_in"
             app:popExitAnim="@anim/zoom_out_out"  />
+        <action
+            android:id="@+id/action_viewExerciseFragment_to_recordsFragment"
+            app:destination="@id/recordsFragment"
+            app:enterAnim="@anim/slide_in_bottom"
+            app:exitAnim="@anim/slide_out_top"
+            app:popEnterAnim="@anim/slide_in_top"
+            app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -234,4 +241,9 @@
             app:popEnterAnim="@anim/slide_in_top"
             app:popExitAnim="@anim/slide_out_bottom" />
     </fragment>
+    <fragment
+        android:id="@+id/recordsFragment"
+        android:name="es.ucm.fdi.workitout.view.RecordsFragment"
+        android:label="fragment_records"
+        tools:layout="@layout/fragment_records" />
 </navigation>

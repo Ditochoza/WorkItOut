@@ -12,10 +12,7 @@ import com.google.android.material.chip.ChipGroup
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputLayout
 import es.ucm.fdi.workitout.R
-import es.ucm.fdi.workitout.model.Exercise
-import es.ucm.fdi.workitout.model.ExerciseSetsReps
-import es.ucm.fdi.workitout.model.Record
-import es.ucm.fdi.workitout.model.Routine
+import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.utils.getColorFromAttr
 import es.ucm.fdi.workitout.utils.loadResource
 import es.ucm.fdi.workitout.view.*
@@ -39,10 +36,16 @@ fun MaterialToolbar.onClickMainMenu(sModel: MainSharedViewModel, navActionResToS
     }
 }
 
-@BindingAdapter("sModel", "navActionResToEdit", "exerciseOrRoutine", requireAll = true)
-fun MaterialToolbar.onClickEditMenu(sModel: MainSharedViewModel, navActionResToEdit: Int, exerciseOrRoutine: Any) {
+@BindingAdapter("sModel", "navActionResToEdit", "navActionResToRecords", "exerciseOrRoutine", requireAll = true)
+fun MaterialToolbar.onClickEditMenu(sModel: MainSharedViewModel, navActionResToEdit: Int,
+                                    navActionResToRecords: Int, exerciseOrRoutine: Any) {
     this.menu.findItem(R.id.item_edit_menu_edit).setOnMenuItemClickListener {
         sModel.setAndNavigate(exerciseOrRoutine, navActionResToEdit)
+        return@setOnMenuItemClickListener true
+    }
+    if (exerciseOrRoutine is Routine) this.menu.findItem(R.id.item_logs_menu_edit).isVisible = false
+    this.menu.findItem(R.id.item_logs_menu_edit).setOnMenuItemClickListener {
+        sModel.navigate(navActionResToRecords)
         return@setOnMenuItemClickListener true
     }
 }
@@ -110,6 +113,22 @@ fun ImageView.loadImage(imageUrl: String) {
 fun NumberPicker.adapterNumberPicker(minValue: Int, maxValue: Int) {
     setMinValue(minValue)
     setMaxValue(maxValue)
+}
+
+@BindingAdapter("recordLogs")
+fun LinearLayout.adapterRecordLogs(recordLogs: List<RecordLog>) {
+    removeAllViews()
+    recordLogs.forEachIndexed { index, recordLog ->
+        val recordLogsStrings = ArrayList<String>()
+        if (recordLog.repsLogged > 0) recordLogsStrings.add(context.getString(R.string.reps_number, recordLog.repsLogged))
+        if (recordLog.weightLogged > 0) recordLogsStrings.add(context.getString(R.string.weight_number, recordLog.weightLogged))
+        if (recordLog.timeLogged > 0) recordLogsStrings.add(context.getString(R.string.time_number, recordLog.timeLogged))
+        val textRecordLog = "${index+1}. ${recordLogsStrings.joinToString(" - ")}"
+        val textView = LayoutInflater.from(context).inflate(R.layout.record_log_text_view, this, false) as TextView
+        addView(textView.apply {
+            text = textRecordLog
+        })
+    }
 }
 
 //BindingAdapter para mostrar los chips con los músculos de las rutinas
@@ -204,7 +223,7 @@ fun RecyclerView.adapterExercises(sModel: MainSharedViewModel, exercises: List<E
         (adapter as ExercisesRecyclerViewAdapter).updateList(exercisesList)
 }
 
-@BindingAdapter("sModel", "exercise", "records", "routine", "fragment", requireAll = false)
+@BindingAdapter("sModel", "exercise", "records", "routine", "fragment", requireAll = true)
 fun RecyclerView.adapterTrainingRecords(sModel: MainSharedViewModel, exercise: Exercise,
                                         records: List<Record>, routine: Routine, fragment: TrainingExerciseFragment) {
     val recordLogs = (records.firstOrNull { it.id.isEmpty() } ?: Record()).recordLogs
@@ -218,6 +237,14 @@ fun RecyclerView.adapterTrainingRecords(sModel: MainSharedViewModel, exercise: E
             colorCardLogged, colorTextDefault, colorTextLogged, sModel, fragment)
     else
         (adapter as TrainingRecordsRecyclerViewAdapter).updateList(recordLogs, routine)
+}
+
+@BindingAdapter("exercise", "records", requireAll = true)
+fun RecyclerView.adapterRecords(exercise: Exercise, records: List<Record>) {
+    if (this.adapter == null)
+        this.adapter = RecordsRecyclerViewAdapter(records, exercise)
+    else
+        (adapter as RecordsRecyclerViewAdapter).updateList(records)
 }
 
 @BindingAdapter("sModel", "exercise", "fragment", requireAll = false)
