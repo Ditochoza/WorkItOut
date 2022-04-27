@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.0.0 Beta 1] [Unreleased]  - 27/04/2022
+### Nuevo
+- Nueva pantalla para ver el historial de los registros del usuario en cada ejercicio.
+
+### Arreglos
+- Los registros obtenidos de la base de datos ahora se ordenan por fecha descendente.
+
+### Cambios
+- El nombre de rutinas y ejercicios en sus respectivas pantallas de info ahora aparece en el subtítulo del Toolbar.
+
 ## [v0.9.0] [Unreleased]  - 27/04/2022
 ### Nuevo
 - El usuario puede iniciar un entrenamiento y guardar nuevos valores.
