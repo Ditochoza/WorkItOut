@@ -89,6 +89,7 @@ class UserRepository {
                                     videos.add(youtubeAPI.fetchVideo(videoLink.videoUrl).copy(videoLink = videoLink))
                                 }
                                 val recordsExercise = records.filter { it.idExercise == exercise.id }
+                                    .sortedByDescending { it.timestamp }
 
                                 exercise.copy(videos = videos, records = recordsExercise)
                             }
@@ -113,6 +114,8 @@ class UserRepository {
 
     suspend fun deleteExercise(exercise: Exercise, email: String): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {
+            //TODO Eliminar el ejercicio de las rutinas en las que está
+            //TODO Eliminar los registros (Records) asociados a el ejercicio
             listOf(
                 async { //Eliminamos el ejercicio
                     dbUsers.document(email).collection(USER_COLLECTION_EXERCISES).document(exercise.id).delete()

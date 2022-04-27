@@ -12,7 +12,7 @@ import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 
 class VideosRecyclerViewAdapter(
-    private var videosArrayList: List<Video>,
+    private var videos: List<Video>,
     private var exercise: Exercise,
     private val mainSharedViewModel: MainSharedViewModel,
     private val viewExerciseFragment: ViewExerciseFragment
@@ -24,22 +24,15 @@ class VideosRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(videosArrayList[position])
+        holder.bind(videos[position])
         holder.binding.executePendingBindings()
-        /*holder.binding.root.setOnClickListener {
-            mainSharedViewModel.goToVideoLink(it,videosArrayList[position].url)
-        }
-        holder.binding.root.setOnLongClickListener {
-            viewModel.onLongClickExerciseVideo(it,videosArrayList[position].url)
-        }*/
-
     }
 
-    override fun getItemCount() = videosArrayList.size
+    override fun getItemCount() = videos.size
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(videos: List<Video>) {
-        videosArrayList = videos
+        this.videos = videos
         notifyDataSetChanged()
     }
     inner class ViewHolder(val binding: VideoItemBinding) : RecyclerView.ViewHolder(binding.root) {

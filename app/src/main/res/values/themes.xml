@@ -33,4 +33,6 @@
         <item name="colorPrimaryInverse">@color/md_theme_light_primaryInverse</item>
     </style>
     <style name="AppTheme.WorkItOut" parent="BaseAppTheme.WorkItOut"/>
+
+    <!--TODO Añadir SplashScreen-->
 </resources>

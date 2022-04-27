@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--TODO Añadir texto de bienvenida con el nombre de usuario en la parte superior-->
     <item
         android:id="@+id/main_navigation_drawer"
         android:title="@string/navigation">

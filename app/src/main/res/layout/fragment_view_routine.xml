@@ -32,12 +32,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:navigationOnClickListener="@{() -> sModel.navigate(0)}"
-                app:title="@{routine.name}"
-                app:titleCentered="true"
+                app:title="@string/routine"
+                app:subtitle="@{routine.name}"
                 app:navigationIcon="@drawable/ic_round_arrow_back_24"
                 app:menu="@menu/menu_edit"
                 app:sModel="@{sModel}"
                 app:navActionResToEdit="@{@id/action_viewRoutineFragment_to_createRoutineFragment}"
+                app:navActionResToRecords="@{0}"
                 app:exerciseOrRoutine="@{routine}">
 
             </com.google.android.material.appbar.MaterialToolbar>
