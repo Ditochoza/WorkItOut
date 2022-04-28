@@ -12,6 +12,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.ActivityMainBinding
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.*
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.delay
@@ -143,6 +144,20 @@ class MainActivity : AppCompatActivity() {
         } else return false
     }
 
+    //Se crea un diálogo para cuando salimos del entrenamiento
+    private fun createDialogExitTraining() {
+        this.createAlertDialog(R.string.exit_training, R.string.exit_training_message,
+            icon = R.drawable.ic_round_exit_24,
+            ok = R.string.confirm to {
+                //val navController = supportFragmentManager.getNavController(R.id.fc_activity_main)
+                //if (navController != null) {
+                mainSharedViewModel.setAndNavigate(Routine(), R.id.action_trainingExercisesFragment_to_homeFragment)
+                //}
+            },
+            cancel = R.string.cancel to {}
+        ).show()
+    }
+
     private fun launchStartActivity() {
         val intent = Intent(this, StartActivity::class.java)
         startActivity(intent)
@@ -164,6 +179,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun closeDrawer() {
         binding.mainDrawerLayout.close()
+    }
+
+    //Controlamos si se quiere salir de un entrenamiento
+    override fun onBackPressed() {
+        if (supportFragmentManager.currentFragment is TrainingExercisesFragment)
+            createDialogExitTraining()
+        else super.onBackPressed()
     }
 
     //Guardamos el estado del ViewModel cuando la app pasa a segundo plano

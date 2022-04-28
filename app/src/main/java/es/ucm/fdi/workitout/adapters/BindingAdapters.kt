@@ -39,11 +39,18 @@ fun MaterialToolbar.onClickMainMenu(sModel: MainSharedViewModel, navActionResToS
 @BindingAdapter("sModel", "navActionResToEdit", "navActionResToRecords", "exerciseOrRoutine", requireAll = true)
 fun MaterialToolbar.onClickEditMenu(sModel: MainSharedViewModel, navActionResToEdit: Int,
                                     navActionResToRecords: Int, exerciseOrRoutine: Any) {
+
+    if (exerciseOrRoutine is Exercise) { //Ocultamos el botón de editar ejercicio si estamos en un entrenamiento
+        val selectedExercise = sModel.selectedRoutine.value.exercises.firstOrNull { it.id == exerciseOrRoutine.id } ?: Exercise()
+        if (selectedExercise.records.any { it.id.isEmpty() })
+            this.menu.findItem(R.id.item_edit_menu_edit).isVisible = false
+    }
+    if (exerciseOrRoutine is Routine) this.menu.findItem(R.id.item_logs_menu_edit).isVisible = false
+
     this.menu.findItem(R.id.item_edit_menu_edit).setOnMenuItemClickListener {
         sModel.setAndNavigate(exerciseOrRoutine, navActionResToEdit)
         return@setOnMenuItemClickListener true
     }
-    if (exerciseOrRoutine is Routine) this.menu.findItem(R.id.item_logs_menu_edit).isVisible = false
     this.menu.findItem(R.id.item_logs_menu_edit).setOnMenuItemClickListener {
         sModel.navigate(navActionResToRecords)
         return@setOnMenuItemClickListener true

@@ -24,16 +24,19 @@ class YoutubeAPI {
         client.newCall(request).execute().use { response ->
             val responseData: String = response.body!!.string()
             val json = JSONObject(responseData)
-            val items = json.getJSONArray("items").getJSONObject(0)
-            val snippet = items.getJSONObject("snippet")
-            video.url = url
-            video.title = snippet.getString("title")
-            video.description = snippet.getString("description")
+            val jsonArrayItems = json.getJSONArray("items")
+            if (jsonArrayItems.length() > 0) {
+                val items = jsonArrayItems.getJSONObject(0)
+                val snippet = items.getJSONObject("snippet")
+                video.url = url
+                video.title = snippet.getString("title")
+                video.description = snippet.getString("description")
 
 
-            val thumbnails = snippet.getJSONObject("thumbnails")
-            val thumbnail = thumbnails.getJSONObject("medium")
-            video.thumbnail = thumbnail.getString("url")
+                val thumbnails = snippet.getJSONObject("thumbnails")
+                val thumbnail = thumbnails.getJSONObject("medium")
+                video.thumbnail = thumbnail.getString("url")
+            }
         }
 
         return video

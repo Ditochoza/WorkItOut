@@ -46,7 +46,7 @@ fun Routine.getExercisesWithNewRecords() =
                 RecordLog(
                     pos = it,
                     repsLogged = if (exercise.tempExerciseRoutineReps == 0 && !exercise.measureByWeight)
-                        -1 else exercise.tempExerciseRoutineReps,
+                        0 else exercise.tempExerciseRoutineReps,
                     weightLogged = if (exercise.measureByWeight) 0 else -1,
                     timeLogged = if (exercise.measureByTime) 0 else -1
                 )

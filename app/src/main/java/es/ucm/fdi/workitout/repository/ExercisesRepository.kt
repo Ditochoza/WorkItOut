@@ -30,6 +30,7 @@ class ExercisesRepository {
                     videos.add(youtubeAPI.fetchVideo(videoLink.videoUrl).copy(videoLink = videoLink))
                 }
                 val recordsExercise = records.filter { it.idExercise == exercise.id }
+                    .sortedByDescending { it.timestamp }
 
                 exercise.copy(videos = videos, records = recordsExercise)
             }.toArrayList())
