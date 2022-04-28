@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Lanzamos la SplashScreen
+        installSplashScreen().setKeepOnScreenCondition {mainSharedViewModel.loading.value}
         super.onCreate(savedInstanceState)
         DynamicColors.applyToActivityIfAvailable(this)
 
@@ -44,6 +47,9 @@ class MainActivity : AppCompatActivity() {
                 mainSharedViewModel.fetchAll(email)
 
                 setContentView(binding.root)
+
+                //Aplicamos el color de fondo a la aplicación (Por problemas con DynamicColors)
+                setBackgroundDefault(R.id.fc_main_activity)
 
                 setupNavigationDrawerItemListener()
                 setupCollectors()

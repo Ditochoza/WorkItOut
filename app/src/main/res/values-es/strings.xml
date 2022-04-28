@@ -68,8 +68,8 @@
     <string name="scheduled_routine_week_day_time">Programada: %1$s a las %2$s</string>
     <string name="upcoming_routine">Próxima rutina</string>
     <string name="other_scheduled_routines">Otras rutinas programadas:</string>
-    <string name="nothing_to_see_here">Noy hay nada que ver por aquí</string>
-    <string name="nothing_to_see_here_image">No hay nada que ver por aquí Imagen</string>
+    <string name="nothing_to_see_here">Nada que ver por aquí</string>
+    <string name="nothing_to_see_here_image">Nada que ver por aquí Imagen</string>
     <string name="logging_out">Cerrando sesión…</string>
     <string name="update">Actualizar</string>
     <string name="account_header">Cuenta</string>

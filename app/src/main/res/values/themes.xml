@@ -34,5 +34,9 @@
     </style>
     <style name="AppTheme.WorkItOut" parent="BaseAppTheme.WorkItOut"/>
 
-    <!--TODO Añadir SplashScreen-->
+    <style name="BaseAppTheme.WorkItOut.SplashScreen" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/AppTheme.WorkItOut</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground_anim</item>
+    </style>
+    <style name="AppTheme.WorkItOut.SplashScreen" parent="BaseAppTheme.WorkItOut.SplashScreen"/>
 </resources>
