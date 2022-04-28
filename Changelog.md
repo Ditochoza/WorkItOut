@@ -10,6 +10,21 @@
 ### Cambios
 - El nombre de rutinas y ejercicios en sus respectivas pantallas de info ahora aparece en el subtítulo del Toolbar.
 
+## [v1.2.0 Beta 1] [Unreleased]  - 28/04/2022
+### Nuevo
+- Traducción al español
+- Añadido SplashScreen para las versiones que lo soportan (Con animación a partir de API 31).
+- Notificación de inicio de entrenamiento.
+- Notificación de registros de entrenamiento guardados.
+- PopUp al salir rutina para que se avise de que se van a perder los registros introducidos.
+
+### Arreglos
+- Arreglo en introducir registros de entrenamiento: Al medir con Reps a veces salía -1.
+- Orden de registros de ejercicios al obtenerlos de la tabla de ejercicios generales.
+
+### Cambios
+- Ahora no se pueden editar ejercicios dentro de un entrenamiento.
+
 ## [v0.9.0] [Unreleased]  - 27/04/2022
 ### Nuevo
 - El usuario puede iniciar un entrenamiento y guardar nuevos valores.
