@@ -134,4 +134,6 @@
     <string name="routine_routine">Rutina: %s</string>
     <string name="training_notifications">Notificaciones de entrenamiento</string>
     <string name="records_training_saved">Registros de entrenamiento guardados</string>
+    <string name="need_connection">Necesitas conexión a internet</string>
+    <string name="video_not_available_without_connection">Video no disponible sin conexión</string>
 </resources>

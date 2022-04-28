@@ -34,9 +34,7 @@ class ExercisesRepository {
 
                 exercise.copy(videos = videos, records = recordsExercise)
             }.toArrayList())
-        } } catch (e: Exception) {
-            print(e.message)
-            DatabaseResult.failed(R.string.error_fetch_exercises) }
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_exercises) }
 
     suspend fun updateExercise(newExercise: Exercise): DatabaseResult<Unit>  {
         return try { withContext(Dispatchers.IO) {

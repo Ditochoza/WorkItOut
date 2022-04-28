@@ -140,4 +140,6 @@
     <string name="routine_routine">Routine: %s</string>
     <string name="training_notifications">Training Notifications</string>
     <string name="records_training_saved">Training records saved</string>
+    <string name="need_connection">You need internet connection</string>
+    <string name="video_not_available_without_connection">Video not available without connection</string>
 </resources>

@@ -109,8 +109,7 @@ class UserRepository {
             } else {
                 DatabaseResult.failed(R.string.error_no_email_found)
             }
-        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) }
-    }
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_fetch_user) } }
 
     suspend fun deleteExercise(exercise: Exercise, email: String): DatabaseResult<User?> {
         return try { withContext(Dispatchers.IO) {

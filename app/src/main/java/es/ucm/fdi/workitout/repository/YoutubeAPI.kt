@@ -16,29 +16,32 @@ class YoutubeAPI {
 
     fun fetchVideo(url: String): Video {
         val video = Video()
-        val videoUrl = BASE_URL + url.substringAfter("?v=") + YOUTUBE_API_KEY
-        val request = Request.Builder()
-            .url(videoUrl)
-            .build()
+        try {
+            val videoUrl = BASE_URL + url.substringAfter("?v=") + YOUTUBE_API_KEY
+            val request = Request.Builder()
+                .url(videoUrl)
+                .build()
 
-        client.newCall(request).execute().use { response ->
-            val responseData: String = response.body!!.string()
-            val json = JSONObject(responseData)
-            val jsonArrayItems = json.getJSONArray("items")
-            if (jsonArrayItems.length() > 0) {
-                val items = jsonArrayItems.getJSONObject(0)
-                val snippet = items.getJSONObject("snippet")
-                video.url = url
-                video.title = snippet.getString("title")
-                video.description = snippet.getString("description")
+            client.newCall(request).execute().use { response ->
+                val responseData: String = response.body!!.string()
+                val json = JSONObject(responseData)
+                val jsonArrayItems = json.getJSONArray("items")
+                if (jsonArrayItems.length() > 0) {
+                    val items = jsonArrayItems.getJSONObject(0)
+                    val snippet = items.getJSONObject("snippet")
+                    video.url = url
+                    video.title = snippet.getString("title")
+                    video.description = snippet.getString("description")
 
 
-                val thumbnails = snippet.getJSONObject("thumbnails")
-                val thumbnail = thumbnails.getJSONObject("medium")
-                video.thumbnail = thumbnail.getString("url")
+                    val thumbnails = snippet.getJSONObject("thumbnails")
+                    val thumbnail = thumbnails.getJSONObject("medium")
+                    video.thumbnail = thumbnail.getString("url")
+                }
             }
+        } catch (e: Exception) {
+        } finally {
+            return video
         }
-
-        return video
     }
 }

@@ -18,7 +18,7 @@
         android:foreground="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> fragment.openVideo(video.url)}"
+        android:onClick="@{() -> fragment.openVideo(video.videoLink.videoUrl)}"
         app:cardCornerRadius="24dp"
         style="?attr/materialCardViewFilledStyle">
 
@@ -30,6 +30,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="@{video.url.isEmpty() ? View.GONE : View.VISIBLE, default=visible}"
                 android:layout_margin="12dp"
                 app:cardCornerRadius="24dp"
                 style="?attr/materialCardViewFilledStyle">
@@ -48,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginBottom="12dp"
-                android:text="@{video.title}"
+                android:text="@{video.url.isEmpty() ? @string/video_not_available_without_connection : video.title}"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textAppearance="?attr/textAppearanceTitleMedium"/>
@@ -58,8 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="12dp"
                 android:layout_marginBottom="12dp"
-                android:text="@{video.description}"
-                android:visibility="@{video.description.isEmpty() ? View.GONE : View.VISIBLE, default=gone}"
+                android:text="@{video.url.isEmpty() ? video.videoLink.videoUrl : video.description}"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:textAppearance="?attr/textAppearanceBodyMedium"/>
@@ -72,7 +72,7 @@
                 android:layout_marginBottom="8dp"
                 app:icon="@drawable/ic_round_delete_outline_24"
                 android:text="@string/delete"
-                android:visibility="@{sModel.user.value.email.equals(video.videoLink.idUser) ? View.VISIBLE : View.GONE, default=gone}"
+                android:visibility="@{sModel.user.value.email.equals(video.videoLink.idUser) &amp;&amp; !video.url.isEmpty() ? View.VISIBLE : View.GONE, default=gone}"
                 style="@style/Widget.Material3.Button.Icon"
                 android:onClick="@{ () -> sModel.deleteVideoFromExercise(video, exercise)}"/>
 

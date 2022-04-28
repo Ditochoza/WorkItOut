@@ -107,10 +107,11 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
     fun fetchAll(email: String = user.value.email) {
         viewModelScope.launch {
             _loading.emit(true)
+            val emailNotEmpty = if (email.isEmpty()) getStringUserDataStore(DbConstants.USER_EMAIL) else email
 
             listOf(
-                async { fetchUserByEmail(email) },
-                async { fetchExercises(email) }
+                async { fetchUserByEmail(emailNotEmpty) },
+                async { fetchExercises(emailNotEmpty) }
             ).awaitAll()
 
             //Rellenamos la información de ejercicios de las rutinas con los ejercicios obtenidos de la BBDD
@@ -256,21 +257,23 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     private fun uploadRecords(newRecords: ArrayList<Record>, routine: Routine, activity: MainActivity) {
         viewModelScope.launch {
-            _loading.emit(true)
-            val result = userRepository.uploadRecords(user.value.email, newRecords)
-            _loading.emit(false)
-            if (result is DatabaseResult.SuccessMessage) {
-                _shortToastRes.emit(result.resMessage)
-                fetchAll()
-                activity.deleteNotification(routine.requestRoutineIdNotification)
+            if (activity.checkConnection()) {
+                _loading.emit(true)
+                val result = userRepository.uploadRecords(user.value.email, newRecords)
+                _loading.emit(false)
+                if (result is DatabaseResult.SuccessMessage) {
+                    _shortToastRes.emit(result.resMessage)
+                    fetchAll()
+                    activity.deleteNotification(routine.requestRoutineIdNotification)
 
-                activity.createTrainingNotification(
-                    requestCode = routine.requestRoutineIdNotification,
-                    title = activity.getString(R.string.records_training_saved),
-                    message = activity.getString(R.string.routine_routine, routine.name)
-                )
-                _navigateActionRes.emit(R.id.action_trainingExercisesFragment_to_homeFragment)
-            } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+                    activity.createTrainingNotification(
+                        requestCode = routine.requestRoutineIdNotification,
+                        title = activity.getString(R.string.records_training_saved),
+                        message = activity.getString(R.string.routine_routine, routine.name)
+                    )
+                    _navigateActionRes.emit(R.id.action_trainingExercisesFragment_to_homeFragment)
+                } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
+            } else _shortToastRes.emit(R.string.need_connection)
         }
     }
 

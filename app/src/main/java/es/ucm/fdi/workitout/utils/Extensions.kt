@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.text.format.DateFormat
 import android.view.View
 import android.widget.EditText
@@ -37,6 +39,12 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
+fun Context.checkConnection(): Boolean {
+    val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork: NetworkInfo? = cm.activeNetworkInfo
+    return activeNetwork?.isConnectedOrConnecting == true
+}
 
 //Se carga la imagen en el ImageView
 fun ImageView.loadResource(resource: String?, diskCacheStrategy: DiskCacheStrategy = DiskCacheStrategy.ALL) {
