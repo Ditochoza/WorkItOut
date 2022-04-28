@@ -1,5 +1,6 @@
 package es.ucm.fdi.workitout.utils
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -13,6 +14,7 @@ import androidx.annotation.ColorInt
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -152,6 +154,13 @@ fun Context.getColorFromAttr(@AttrRes attrColor: Int): Int {
     val textColor = typedArray.getColor(0, 0)
     typedArray.recycle()
     return textColor
+}
+
+//Se establece el atributo de color de fondo
+fun Activity.setBackgroundDefault(idRes: Int) {
+    val root = findViewById<FragmentContainerView>(idRes)
+    root.setBackgroundColor(getColorFromAttr(android.R.attr.colorBackground))
+    window.navigationBarColor = getColorFromAttr(android.R.attr.colorBackground)
 }
 
 //Collector para SharedFlow

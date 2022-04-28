@@ -6,12 +6,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.ActivityMainBinding
 import es.ucm.fdi.workitout.model.Exercise
+import es.ucm.fdi.workitout.model.Routine
 import es.ucm.fdi.workitout.utils.*
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 import kotlinx.coroutines.delay
@@ -23,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Lanzamos la SplashScreen
+        installSplashScreen().setKeepOnScreenCondition {mainSharedViewModel.loading.value}
         super.onCreate(savedInstanceState)
         DynamicColors.applyToActivityIfAvailable(this)
 
@@ -43,6 +47,9 @@ class MainActivity : AppCompatActivity() {
                 mainSharedViewModel.fetchAll(email)
 
                 setContentView(binding.root)
+
+                //Aplicamos el color de fondo a la aplicación (Por problemas con DynamicColors)
+                setBackgroundDefault(R.id.fc_main_activity)
 
                 setupNavigationDrawerItemListener()
                 setupCollectors()
@@ -143,6 +150,18 @@ class MainActivity : AppCompatActivity() {
         } else return false
     }
 
+    //Se crea un diálogo para cuando salimos del entrenamiento
+    private fun createDialogExitTraining() {
+        this.createAlertDialog(R.string.exit_training, R.string.exit_training_message,
+            icon = R.drawable.ic_round_exit_24,
+            ok = R.string.confirm to {
+                deleteNotification(mainSharedViewModel.selectedRoutine.value.requestRoutineIdNotification)
+                mainSharedViewModel.setAndNavigate(Routine(), R.id.action_trainingExercisesFragment_to_homeFragment)
+            },
+            cancel = R.string.cancel to {}
+        ).show()
+    }
+
     private fun launchStartActivity() {
         val intent = Intent(this, StartActivity::class.java)
         startActivity(intent)
@@ -164,6 +183,13 @@ class MainActivity : AppCompatActivity() {
 
     private fun closeDrawer() {
         binding.mainDrawerLayout.close()
+    }
+
+    //Controlamos si se quiere salir de un entrenamiento
+    override fun onBackPressed() {
+        if (supportFragmentManager.currentFragment is TrainingExercisesFragment)
+            createDialogExitTraining()
+        else super.onBackPressed()
     }
 
     //Guardamos el estado del ViewModel cuando la app pasa a segundo plano

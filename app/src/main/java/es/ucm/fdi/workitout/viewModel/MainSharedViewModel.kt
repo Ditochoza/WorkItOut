@@ -14,9 +14,8 @@ import es.ucm.fdi.workitout.model.*
 import es.ucm.fdi.workitout.repository.ExercisesRepository
 import es.ucm.fdi.workitout.repository.UserDataStore
 import es.ucm.fdi.workitout.repository.UserRepository
-import es.ucm.fdi.workitout.utils.DbConstants
-import es.ucm.fdi.workitout.utils.orderRoutinesByWeekDay
-import es.ucm.fdi.workitout.utils.putExercisesOnRoutines
+import es.ucm.fdi.workitout.utils.*
+import es.ucm.fdi.workitout.view.MainActivity
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.*
@@ -223,7 +222,7 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         }
     }
 
-    fun saveNewRecords(routine: Routine) {
+    fun saveNewRecords(routine: Routine, activity: MainActivity) {
         val newRecords = ArrayList<Record>()
         routine.exercises.forEach { exercise ->
             val newRecord = exercise.records.firstOrNull { it.id.isEmpty() } ?: Record()
@@ -251,10 +250,11 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
                 ))
         }
 
-        uploadRecords(newRecords)
+        activity.deleteNotification(routine.requestRoutineIdNotification)
+        uploadRecords(newRecords, routine, activity)
     }
 
-    private fun uploadRecords(newRecords: ArrayList<Record>) {
+    private fun uploadRecords(newRecords: ArrayList<Record>, routine: Routine, activity: MainActivity) {
         viewModelScope.launch {
             _loading.emit(true)
             val result = userRepository.uploadRecords(user.value.email, newRecords)
@@ -262,7 +262,14 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             if (result is DatabaseResult.SuccessMessage) {
                 _shortToastRes.emit(result.resMessage)
                 fetchAll()
-                _navigateActionRes.emit(0)
+                activity.deleteNotification(routine.requestRoutineIdNotification)
+
+                activity.createTrainingNotification(
+                    requestCode = routine.requestRoutineIdNotification,
+                    title = activity.getString(R.string.records_training_saved),
+                    message = activity.getString(R.string.routine_routine, routine.name)
+                )
+                _navigateActionRes.emit(R.id.action_trainingExercisesFragment_to_homeFragment)
             } else if (result is DatabaseResult.Failed) _shortToastRes.emit(result.resMessage)
         }
     }

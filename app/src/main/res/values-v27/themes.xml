@@ -6,4 +6,9 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:windowLightNavigationBar">true</item>
     </style>
+
+    <style name="AppTheme.WorkItOut.SplashScreen" parent="BaseAppTheme.WorkItOut.SplashScreen">
+        <item name="android:windowLightNavigationBar">true</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
 </resources>

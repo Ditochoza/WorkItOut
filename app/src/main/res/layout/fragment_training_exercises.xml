@@ -82,7 +82,7 @@
             android:text="@string/save_and_exit"
             app:icon="@drawable/ic_round_cloud_upload_24"
             android:layout_gravity="bottom|end"
-            android:onClick="@{() -> sModel.saveNewRecords(routine)}"/>
+            android:onClick="@{() -> sModel.saveNewRecords(routine, activity)}"/>
 
         <ProgressBar
             android:id="@+id/pBar"

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WorkItOut!</string>
+    <string name="app_name" translatable="false">WorkItOut!</string>
     <string name="email_address">Email Address</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -36,8 +36,8 @@
     <string name="account_header">Account</string>
     <string name="change_password">Change Password</string>
     <string name="delete_account">Delete Account</string>
-    <string name="change_password_var">changePassword</string>
-    <string name="delete_account_var">deleteAccount</string>
+    <string name="change_password_var" translatable="false">changePassword</string>
+    <string name="delete_account_var" translatable="false">deleteAccount</string>
     <string name="validate_password">Validate Password</string>
     <string name="new_password">New Password</string>
     <string name="current_password">Current Password</string>
@@ -115,9 +115,9 @@
     <string name="reps">Reps</string>
     <string name="save_and_exit"><![CDATA[Save & Exit]]></string>
     <string name="training">Training</string>
-    <string name="reps_log">%d</string>
-    <string name="weight_log">%d kgs.</string>
-    <string name="time_log">%d s.</string>
+    <string name="reps_log" translatable="false">%d</string>
+    <string name="weight_log" translatable="false">%d kgs.</string>
+    <string name="time_log" translatable="false">%d s.</string>
     <string name="exercise_deleted">Exercise deleted</string>
     <string name="exercise_updated">Exercise updated</string>
     <string name="routine_deleted">Routine deleted</string>
@@ -134,4 +134,10 @@
     <string name="weight_number">Weight: %d Kg.</string>
     <string name="time_number">Time: %d s.</string>
     <string name="date_at_time">%s at %s</string>
+    <string name="exit_training">Exit Training</string>
+    <string name="exit_training_message"><![CDATA[Do you really want to exit from the current training? Your progress won\'t be saved and will be deleted. If you want to save before exiting press \"Save & Exit\"]]></string>
+    <string name="training_in_progress">Training in progress</string>
+    <string name="routine_routine">Routine: %s</string>
+    <string name="training_notifications">Training Notifications</string>
+    <string name="records_training_saved">Training records saved</string>
 </resources>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme.WorkItOut.SplashScreen" parent="BaseAppTheme.WorkItOut.SplashScreen">
+        <item name="windowSplashScreenAnimationDuration">2500</item>
+        <item name="windowSplashScreenBackground">?attr/background</item>
+    </style>
+</resources>

@@ -11,9 +11,7 @@ import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.databinding.FragmentHomeBinding
 import es.ucm.fdi.workitout.model.Exercise
 import es.ucm.fdi.workitout.model.Routine
-import es.ucm.fdi.workitout.utils.collectLatestFlow
-import es.ucm.fdi.workitout.utils.createAlertDialog
-import es.ucm.fdi.workitout.utils.getExercisesWithNewRecords
+import es.ucm.fdi.workitout.utils.*
 import es.ucm.fdi.workitout.viewModel.MainSharedViewModel
 
 class HomeFragment : Fragment() {
@@ -45,9 +43,20 @@ class HomeFragment : Fragment() {
     }
 
     fun startTraining(routine: Routine) {
+        createTrainingNotification(routine)
         mainSharedViewModel.setAndNavigate(
             routine.copy(exercises = routine.getExercisesWithNewRecords()),
             R.id.action_homeFragment_to_trainingExercisesFragment
+        )
+    }
+
+    private fun createTrainingNotification(routine: Routine) {
+        context?.deleteNotification(routine.requestRoutineIdNotification)
+
+        context?.createTrainingNotification(
+            requestCode = routine.requestRoutineIdNotification,
+            title = getString(R.string.training_in_progress),
+            message = getString(R.string.routine_routine, routine.name)
         )
     }
 

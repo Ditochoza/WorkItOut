@@ -3,6 +3,10 @@ package es.ucm.fdi.workitout.utils
 import com.google.firebase.Timestamp
 import es.ucm.fdi.workitout.model.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+val Routine.requestRoutineIdNotification: Int
+    get() = ("${this.dayOfWeekScheduled}${this.timeTimestampScheduled.toDateTime().format(DateTimeFormatter.ofPattern("HHmmss"))}").toInt()
 
 fun orderRoutinesByWeekDay(routines: List<Routine>): List<Routine> {
     val currentDayOfWeek = LocalDateTime.now().dayOfWeekIndex
@@ -46,7 +50,7 @@ fun Routine.getExercisesWithNewRecords() =
                 RecordLog(
                     pos = it,
                     repsLogged = if (exercise.tempExerciseRoutineReps == 0 && !exercise.measureByWeight)
-                        -1 else exercise.tempExerciseRoutineReps,
+                        0 else exercise.tempExerciseRoutineReps,
                     weightLogged = if (exercise.measureByWeight) 0 else -1,
                     timeLogged = if (exercise.measureByTime) 0 else -1
                 )

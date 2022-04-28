@@ -39,8 +39,6 @@ class TrainingExercisesFragment : Fragment() {
         mainSharedViewModel.loading.collectLatestFlow(this) { binding.loading = it }
     }
 
-    //TODO Controlar el botón de atrás para que se avise al usuario de que va a perder sus registros
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
