@@ -130,4 +130,8 @@
     <string name="delete_routine_confirmation_message">"¿Está seguro de querer eliminar esta rutina? La rutina se eliminará de forma permanenete "</string>
     <string name="exit_training">Salir del entrenamiento</string>
     <string name="exit_training_message">¿Desea salir del entrenamiento actual? Si lo hace se perderán los progresos que haya realizado. Si quiere guardar y salir pulse \"Guardar y Salir\"</string>
+    <string name="training_in_progress">Entrenamiento en curso</string>
+    <string name="routine_routine">Rutina: %s</string>
+    <string name="training_notifications">Notificaciones de entrenamiento</string>
+    <string name="records_training_saved">Registros de entrenamiento guardados</string>
 </resources>

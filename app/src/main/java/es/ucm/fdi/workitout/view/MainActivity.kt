@@ -155,10 +155,8 @@ class MainActivity : AppCompatActivity() {
         this.createAlertDialog(R.string.exit_training, R.string.exit_training_message,
             icon = R.drawable.ic_round_exit_24,
             ok = R.string.confirm to {
-                //val navController = supportFragmentManager.getNavController(R.id.fc_activity_main)
-                //if (navController != null) {
+                deleteNotification(mainSharedViewModel.selectedRoutine.value.requestRoutineIdNotification)
                 mainSharedViewModel.setAndNavigate(Routine(), R.id.action_trainingExercisesFragment_to_homeFragment)
-                //}
             },
             cancel = R.string.cancel to {}
         ).show()

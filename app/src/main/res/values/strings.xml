@@ -136,4 +136,8 @@
     <string name="date_at_time">%s at %s</string>
     <string name="exit_training">Exit Training</string>
     <string name="exit_training_message"><![CDATA[Do you really want to exit from the current training? Your progress won\'t be saved and will be deleted. If you want to save before exiting press \"Save & Exit\"]]></string>
+    <string name="training_in_progress">Training in progress</string>
+    <string name="routine_routine">Routine: %s</string>
+    <string name="training_notifications">Training Notifications</string>
+    <string name="records_training_saved">Training records saved</string>
 </resources>
