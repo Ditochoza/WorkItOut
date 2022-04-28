@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.2.0 Beta 2] [Unreleased]  - 28/04/2022
+### Nuevo
+- Al intentar guardar un entrenamiento sin conexión no se permite y te muestra un mensaje.
+
+### Arreglos
+- Arreglado API de Youtube para que cuando no haya conexión permita obtener el resto de datos de Firebase.
+- Se han arreglado los vídeos para que cuando no hay conexión aparezca un mensaje y el link.
+
 ## [v1.2.0 Beta 1] [Unreleased]  - 28/04/2022
 ### Nuevo
 - Traducción al español
