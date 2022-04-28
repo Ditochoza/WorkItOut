@@ -310,7 +310,13 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
 
     fun setTempImage(uri: Uri) { viewModelScope.launch { _tempImageUri.emit(uri) } }
 
-    fun saveStateHandle() { savedStateHandle.set(::user.name, user.value) } //TODO Añadir los demás StateFlows
+    fun saveStateHandle() {
+        savedStateHandle.set(::user.name, user.value)
+        savedStateHandle.set(::exercises.name, exercises.value)
+        savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
+        savedStateHandle.set(::selectedRoutine.name, selectedRoutine.value)
+        savedStateHandle.set(::tempImageUri.name, tempImageUri.value)
+    }
 
     fun showToast(resMessage: Int) { viewModelScope.launch { _shortToastRes.emit(resMessage) } }
 }
