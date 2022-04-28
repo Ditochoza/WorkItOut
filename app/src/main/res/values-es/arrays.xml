@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="muscles">
+        <item>Lower Leg</item>
+        <item>Upper Leg</item>
+        <item>Buttocks</item>
+        <item>Core</item>
+        <item>Back</item>
+        <item>Biceps</item>
+        <item>Triceps</item>
+        <item>Forearm</item>
+        <item>Shoulders</item>
+    </string-array>
+    <string-array name="week_days">
+        <item>Lunes</item>
+        <item>Martes</item>
+        <item>Miércoles</item>
+        <item>Jueves</item>
+        <item>Viernes</item>
+        <item>Sábado</item>
+        <item>Domingo</item>
+    </string-array>
+    <string-array name="array_options_exercise_routine" >
+        <item>Editar</item>
+        <item>Eliminar</item>
+    </string-array>
+</resources>
