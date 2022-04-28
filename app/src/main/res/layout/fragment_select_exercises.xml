@@ -18,6 +18,7 @@
         <variable name="emptyExercise" type="es.ucm.fdi.workitout.model.Exercise" />
     </data>
 
+    <!--TODO Añadir búsquedas y/o filtros-->
     <!--TODO Comprobar que en los NumberPicker no se puede poner números a mano-->
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

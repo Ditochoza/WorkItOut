@@ -7,6 +7,8 @@
     android:id="@+id/main_drawer_layout"
     tools:context=".view.MainActivity">
 
+    <!--TODO Hacer que sólo se pueda abrir en las 3 pantallas principales-->
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">

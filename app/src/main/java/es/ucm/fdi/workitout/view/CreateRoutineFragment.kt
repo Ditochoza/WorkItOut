@@ -27,9 +27,7 @@ class CreateRoutineFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentCreateRoutineBinding.inflate(inflater, container, false)
 
-        if(mainSharedViewModel.selectedRoutine.value.id.isNotEmpty()){
-            viewModel.editRoutine(mainSharedViewModel.selectedRoutine.value)
-        }
+        viewModel.editRoutine(mainSharedViewModel.selectedRoutine.value)
 
         binding.sModel = mainSharedViewModel
         binding.emptyList = emptyList<Exercise>()

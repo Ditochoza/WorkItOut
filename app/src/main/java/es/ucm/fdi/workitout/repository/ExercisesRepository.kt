@@ -1,6 +1,5 @@
 package es.ucm.fdi.workitout.repository
 
-import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import es.ucm.fdi.workitout.R
 import es.ucm.fdi.workitout.model.DatabaseResult
@@ -40,9 +39,7 @@ class ExercisesRepository {
         return try { withContext(Dispatchers.IO) {
             dbExercises.document(newExercise.id).set(newExercise).await()
 
-            DatabaseResult.successData(Unit)
-        } } catch (e: Exception) {
-            Log.e("ASDD", e.message.toString())
-            DatabaseResult.failed(R.string.error_upload_exercise) }
+            DatabaseResult.successMessage(R.string.exercise_updated)
+        } } catch (e: Exception) { DatabaseResult.failed(R.string.error_upload_exercise) }
     }
 }

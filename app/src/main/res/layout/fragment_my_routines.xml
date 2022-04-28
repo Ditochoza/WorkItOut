@@ -16,6 +16,8 @@
         <variable name="loading" type="Boolean" />
     </data>
 
+    <!--TODO Añadir búsquedas y/o filtros-->
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"

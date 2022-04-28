@@ -301,7 +301,8 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
             }
             is Routine -> {
                 _selectedRoutine.value = something
-                _tempImageUri.value = Uri.EMPTY
+                if (selectedRoutine.value == Routine())
+                    _tempImageUri.value = Uri.EMPTY
                 savedStateHandle.set(::selectedRoutine.name, selectedRoutine.value)
             }
         }
@@ -318,7 +319,6 @@ class MainSharedViewModel(application: Application, private val savedStateHandle
         savedStateHandle.set(::exercises.name, exercises.value)
         savedStateHandle.set(::selectedExercise.name, selectedExercise.value)
         savedStateHandle.set(::selectedRoutine.name, selectedRoutine.value)
-        savedStateHandle.set(::tempImageUri.name, tempImageUri.value)
     }
 
     fun showToast(resMessage: Int) { viewModelScope.launch { _shortToastRes.emit(resMessage) } }
