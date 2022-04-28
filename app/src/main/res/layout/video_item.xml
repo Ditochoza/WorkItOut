@@ -31,7 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="@{video.url.isEmpty() ? View.GONE : View.VISIBLE, default=visible}"
-                android:layout_margin="12dp"
+                android:layout_marginHorizontal="12dp"
+                android:layout_marginTop="12dp"
                 app:cardCornerRadius="24dp"
                 style="?attr/materialCardViewFilledStyle">
 
@@ -47,8 +48,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="12dp"
-                android:layout_marginBottom="12dp"
+                android:layout_margin="12dp"
                 android:text="@{video.url.isEmpty() ? @string/video_not_available_without_connection : video.title}"
                 android:ellipsize="end"
                 android:maxLines="2"
