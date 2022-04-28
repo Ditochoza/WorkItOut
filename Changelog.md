@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.2.0 Beta 3] [Unreleased]  - 28/04/2022
+### Nuevo
+- Añadido ScrollView en inicio de sesión y regitro.
+
+### Arreglos
+- Arreglado error en crear rutina por la que se perdían datos al elegir ejercicios.
+- Arreglado error por el que no se actualizaba la lista de videos de ejercicio al modificarla
+
 ## [v1.2.0 Beta 2] [Unreleased]  - 28/04/2022
 ### Nuevo
 - Al intentar guardar un entrenamiento sin conexión no se permite y te muestra un mensaje.
